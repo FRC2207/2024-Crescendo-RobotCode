@@ -72,10 +72,10 @@ public class DriveWithController extends Command {
         linearMagnitude = Math.copySign(linearMagnitude * linearMagnitude, linearMagnitude);
         rightX = Math.copySign(rightX * rightX, rightX);
         rightY = Math.copySign(rightY * rightY, rightY);
-
+ 
         // Apply speed limits
-        linearMagnitude *= 1.0;
-        rightX *= 0.75;
+        linearMagnitude *= 1.0/4;
+        rightX *= 0.75/4;
 
         // Calculate new linear components
         Translation2d linearVelocity =
@@ -100,9 +100,9 @@ public class DriveWithController extends Command {
             speeds = 
                 ChassisSpeeds.fromRobotRelativeSpeeds(
                     speeds.vxMetersPerSecond,
-                    speeds.vyMetersPerSecond,
+                    speeds.vyMetersPerSecond, 
                     speeds.omegaRadiansPerSecond,
-                    driveRotation.times(-1.0));
+                    driveRotation.times(-1.0)); // Invert this for sim
         }
 
         // Send X command to drive logic. Not included due to extra implementation required

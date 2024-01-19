@@ -14,8 +14,8 @@ public class GyroIOADXRS450 implements GyroIO {
     }
 
     public void updateInputs(GyroIOInputs inputs) {
-        double angle = ADXRS450.getAngle();
-        double rate = ADXRS450.getRate();
+        double angle = -ADXRS450.getAngle();
+        double rate = -ADXRS450.getRate();
         inputs.connected = ADXRS450.isConnected();
         inputs.rollPositionRad = 0.0;
         inputs.pitchPositionRad = 0.0;
