@@ -57,10 +57,10 @@ public class ModuleIOSparkMax implements ModuleIO {
                 absoluteEncoderOffset = new Rotation2d(Constants.SwerveConstants.Modules.BackLeft.encoderOffset);
                 break;
             case 3:
-                driveSparkMax = new CANSparkMax(Constants.SwerveConstants.Modules.BackLeft.drive, MotorType.kBrushless);
-                turnSparkMax = new CANSparkMax(Constants.SwerveConstants.Modules.BackLeft.turn, MotorType.kBrushless);
-                turnAbsoluteEncoder = new CANcoder(Constants.SwerveConstants.Modules.BackLeft.encoder);
-                absoluteEncoderOffset = new Rotation2d(Constants.SwerveConstants.Modules.BackLeft.encoderOffset);
+                driveSparkMax = new CANSparkMax(Constants.SwerveConstants.Modules.BackRight.drive, MotorType.kBrushless);
+                turnSparkMax = new CANSparkMax(Constants.SwerveConstants.Modules.BackRight.turn, MotorType.kBrushless);
+                turnAbsoluteEncoder = new CANcoder(Constants.SwerveConstants.Modules.BackRight.encoder);
+                absoluteEncoderOffset = new Rotation2d(Constants.SwerveConstants.Modules.BackRight.encoderOffset);
                 break;
             default:
                 throw new RuntimeException("Invalid module index for ModuleIOSparkMax");
