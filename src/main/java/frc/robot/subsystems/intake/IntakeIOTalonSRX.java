@@ -9,7 +9,6 @@ import frc.robot.Constants;
 
 public class IntakeIOTalonSRX implements IntakeIO {
     private final TalonSRX intakeMotor = new TalonSRX(Constants.IntakeConstants.intakeMotorID);
-    private final TalonSRX pivotMotor = new TalonSRX(Constants.IntakeConstants.pivotMotorID);
 
   public IntakeIOTalonSRX() {
     var config = new TalonSRXConfiguration();
