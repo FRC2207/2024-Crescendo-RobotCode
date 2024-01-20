@@ -4,7 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
-import frc.robot.subsystems.intake.IntakeIO.FlywheelIOInputs;
+import frc.robot.subsystems.intake.IntakeIO.IntakeIOInputs;
 
 public class IntakeIOSim implements IntakeIO {
 
@@ -16,7 +16,7 @@ public class IntakeIOSim implements IntakeIO {
     private double appliedVolts = 0.0;
 
     @Override
-    public void updateInputs(FlywheelIOInputs inputs) {
+    public void updateInputs(IntakeIOInputs inputs) {
         if (closedLoop) {
             appliedVolts = MathUtil.clamp(pid.calculate(sim.getAngularVelocityRadPerSec()) + ffVolts, -12.0, 12.0);
             sim.setInputVoltage(appliedVolts);

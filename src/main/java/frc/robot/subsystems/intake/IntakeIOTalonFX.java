@@ -4,6 +4,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -11,17 +12,18 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.intake.IntakeIO.FlywheelIOInputs;
+import frc.robot.Constants;
+import frc.robot.subsystems.intake.IntakeIO.IntakeIOInputs;
 
 public class IntakeIOTalonFX implements IntakeIO {
 
-    private static final double GEAR_RATIO = 1.5;
+    //private static final double GEAR_RATIO = 1.5;
 
-    private final TalonFX leader = new TalonFX(0);
-    private final TalonFX follower = new TalonFX(1);
+    //private final TalonFX leader = new TalonFX(0);
+   // private final TalonFX follower = new TalonFX(1);
+    private final WPI_TalonSRX intake = new WPI_TalonSRX(Constants.IntakeConstants.intakeID);
 
-    private final StatusSignal<Double> leaderPosition = leader.getPosition();
-    private final StatusSignal<Double> leaderVelocity = leader.getVelocity();
+    private final StatusSignal<Double> leaderVelocity = intake.getSelectedSensorVelocity();
     private final StatusSignal<Double> leaderAppliedVolts = leader.getMotorVoltage();
     private final StatusSignal<Double> leaderCurrent = leader.getStatorCurrent();
     private final StatusSignal<Double> followerCurrent = follower.getStatorCurrent();
@@ -42,11 +44,11 @@ public class IntakeIOTalonFX implements IntakeIO {
     }
 
     @Override
-    public void updateInputs(FlywheelIOInputs inputs) {
+    public void updateInputs(IntakeIOInputs inputs) {
         BaseStatusSignal.refreshAll(
                 leaderPosition, leaderVelocity, leaderAppliedVolts, leaderCurrent, followerCurrent);
-        inputs.positionRad = Units.rotationsToRadians(leaderPosition.getValueAsDouble()) / GEAR_RATIO;
-        inputs.velocityRadPerSec = Units.rotationsToRadians(leaderVelocity.getValueAsDouble()) / GEAR_RATIO;
+        inputs.positionRad = Units.rotationsToRadians(leaderPosition.getValueAsDouble()) / Constants.IntakeConstants.gearRatio;
+        inputs.velocityRadPerSec = Units.rotationsToRadians(leaderVelocity.getValueAsDouble()) / Constants.IntakeConstants.gearRatio;
         inputs.appliedVolts = leaderAppliedVolts.getValueAsDouble();
         inputs.currentAmps = new double[] { leaderCurrent.getValueAsDouble(), followerCurrent.getValueAsDouble() };
     }

@@ -32,4 +32,9 @@ public class Constants {
             }
         }
     }
+
+    public static class IntakeConstants {
+        public static int gearRatio = 3;
+        public static int intakeID = 14;
+    }
 }

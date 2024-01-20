@@ -5,68 +5,64 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
-    private final IntakeIO io;
-    private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
-    private final SimpleMotorFeedforward ffModel;
+    private static final double launchSpeedLauncher = 1.0;
+  private static final double launchSpeedFeeder = 1.0;
+  private static final double intakeSpeedLauncher = -1.0;
+  private static final double intakeSpeedFeeder = -0.2;
+  private static final double launchDelay = 1.0;
 
-    public Intake(IntakeIO io) {
-        this.io = io;
+  private final IntakeIO io;
+  private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
-        // Switch constants based on mode (the physics simulator is treated as a
-        // separate robot with different tuning)
-        switch (Constants.robot) {
-            case "Real":
-                ffModel = new SimpleMotorFeedforward(0.1, 0.05);
-                io.configurePID(1.0, 0.0, 0.0);
-                break;
-            case "SIM":
-                ffModel = new SimpleMotorFeedforward(0.0, 0.03);
-                io.configurePID(0.5, 0.0, 0.0);
-                break;
-            default:
-                ffModel = new SimpleMotorFeedforward(0.0, 0.0);
-                break;
-        }
-    }
+  public Intake(IntakeIO io) {
+    this.io = io;
+    setDefaultCommand(
+        run(
+            () -> {
+              io.setVoltage(0.0);
+            }));
+  }
 
-    @Override
-    public void periodic() {
-        io.updateInputs(inputs);
-        Logger.processInputs("Intake", inputs);
-    }
+  @Override
+  public void periodic() {
+    io.updateInputs(inputs);
+    Logger.processInputs("Launcher", inputs);
+  }
 
-    /** Run open loop at the specified voltage. */
-    public void runVolts(double volts) {
-        io.setVoltage(volts);
-    }
+  /** Returns a command that intakes a note. */
+  public Command intakeCommand() {
+    return startEnd(
+        () -> {
+          io.setVoltage(intakeSpeedLauncher);
+        },
+        () -> {
+          io.setVoltage(0.0);
+        });
+  }
 
-    /** Run closed loop at the specified velocity. */
-    public void runVelocity(double velocityRPM) {
-        var velocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(velocityRPM);
-        io.setVelocity(velocityRadPerSec, ffModel.calculate(velocityRadPerSec));
-
-        // Log flywheel setpoint
-        Logger.recordOutput("Intake/SetpointRPM", velocityRPM);
-    }
-
-    /** Stops the flywheel. */
-    public void stop() {
-        io.stop();
-    }
-
-    /** Returns the current velocity in RPM. */
-    @AutoLogOutput
-    public double getVelocityRPM() {
-        return Units.radiansPerSecondToRotationsPerMinute(inputs.velocityRadPerSec);
-    }
-
-    /** Returns the current velocity in radians per second. */
-    public double getCharacterizationVelocity() {
-        return inputs.velocityRadPerSec;
-    }
+  /** Returns a command that launches a note. */
+  public Command launchCommand() {
+    return Commands.sequence(
+            runOnce(
+                () -> {
+                  io.setVoltage(launchSpeedLauncher);
+                }),
+            Commands.waitSeconds(launchDelay),
+            runOnce(
+                () -> {
+                  io.setFeedVoltage(launchSpeedFeeder);
+                }),
+            Commands.idle())
+        .finallyDo(
+            () -> {
+              io.setVoltage(0.0);
+            });
+  }
 
 }
