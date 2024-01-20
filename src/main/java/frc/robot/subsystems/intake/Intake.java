@@ -25,7 +25,7 @@ public class Intake extends SubsystemBase {
     setDefaultCommand(
         run(
             () -> {
-              io.setVoltage(0.0);
+              io.setLaunchVoltage(0.0);
             }));
   }
 
@@ -39,10 +39,10 @@ public class Intake extends SubsystemBase {
   public Command intakeCommand() {
     return startEnd(
         () -> {
-          io.setVoltage(intakeSpeedLauncher);
+          io.setLaunchVoltage(intakeSpeedLauncher);
         },
         () -> {
-          io.setVoltage(0.0);
+          io.setFeedVoltage(0.0);
         });
   }
 
@@ -51,17 +51,14 @@ public class Intake extends SubsystemBase {
     return Commands.sequence(
             runOnce(
                 () -> {
-                  io.setVoltage(launchSpeedLauncher);
+                  io.setLaunchVoltage(launchSpeedLauncher);
                 }),
             Commands.waitSeconds(launchDelay),
-            runOnce(
-                () -> {
-                  io.setFeedVoltage(launchSpeedFeeder);
-                }),
+            
             Commands.idle())
         .finallyDo(
             () -> {
-              io.setVoltage(0.0);
+              io.setLaunchVoltage(0.0);
             });
   }
 

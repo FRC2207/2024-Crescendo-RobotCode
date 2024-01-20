@@ -3,54 +3,43 @@ package frc.robot.subsystems.intake;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot.subsystems.intake.IntakeIO.IntakeIOInputs;
 
 public class IntakeIOSim implements IntakeIO {
 
-    private FlywheelSim sim = new FlywheelSim(DCMotor.getNEO(1), 1.5, 0.004);
-    private PIDController pid = new PIDController(0.0, 0.0, 0.0);
+   private DCMotorSim launchSim = new DCMotorSim(DCMotor.getCIM(1), 1, 0.0001);
+  private DCMotorSim feedSim = new DCMotorSim(DCMotor.getCIM(1), 1, 0.0001);
 
-    private boolean closedLoop = false;
-    private double ffVolts = 0.0;
-    private double appliedVolts = 0.0;
+  private double launchAppliedVolts = 0.0;
+  private double feedAppliedVolts = 0.0;
 
-    @Override
-    public void updateInputs(IntakeIOInputs inputs) {
-        if (closedLoop) {
-            appliedVolts = MathUtil.clamp(pid.calculate(sim.getAngularVelocityRadPerSec()) + ffVolts, -12.0, 12.0);
-            sim.setInputVoltage(appliedVolts);
-        }
+  @Override
+  public void updateInputs(IntakeIOInputs inputs) {
+    launchSim.update(0.02);
+    feedSim.update(0.02);
 
-        sim.update(0.02);
+    inputs.launchPositionRad = launchSim.getAngularPositionRad();
+    inputs.launchVelocityRadPerSec = launchSim.getAngularVelocityRadPerSec();
+    inputs.launchAppliedVolts = launchAppliedVolts;
+    inputs.launchCurrentAmps = new double[] {launchSim.getCurrentDrawAmps()};
 
-        inputs.positionRad = 0.0;
-        inputs.velocityRadPerSec = sim.getAngularVelocityRadPerSec();
-        inputs.appliedVolts = appliedVolts;
-        inputs.currentAmps = new double[] { sim.getCurrentDrawAmps() };
-    }
+    inputs.feedPositionRad = feedSim.getAngularPositionRad();
+    inputs.feedVelocityRadPerSec = feedSim.getAngularVelocityRadPerSec();
+    inputs.feedAppliedVolts = feedAppliedVolts;
+    inputs.feedCurrentAmps = new double[] {feedSim.getCurrentDrawAmps()};
+  }
 
-    @Override
-    public void setVoltage(double volts) {
-        closedLoop = false;
-        appliedVolts = 0.0;
-        sim.setInputVoltage(volts);
-    }
+  @Override
+  public void setLaunchVoltage(double volts) {
+    launchAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
+    launchSim.setInputVoltage(launchAppliedVolts);
+  }
 
-    @Override
-    public void setVelocity(double velocityRadPerSec, double ffVolts) {
-        closedLoop = true;
-        pid.setSetpoint(velocityRadPerSec);
-        this.ffVolts = ffVolts;
-    }
-
-    @Override
-    public void stop() {
-        setVoltage(0.0);
-    }
-
-    @Override
-    public void configurePID(double kP, double kI, double kD) {
-        pid.setPID(kP, kI, kD);
-    }
+  @Override
+  public void setFeedVoltage(double volts) {
+    feedAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
+    feedSim.setInputVoltage(feedAppliedVolts);
+  }
 }

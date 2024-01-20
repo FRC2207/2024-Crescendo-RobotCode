@@ -5,24 +5,23 @@ import org.littletonrobotics.junction.AutoLog;
 public interface IntakeIO {
     @AutoLog
     public static class IntakeIOInputs {
-        public double positionRad = 0.0;
-        public double velocityRadPerSec = 0.0;
-        public double appliedVolts = 0.0;
-        public double[] currentAmps = new double[] {};
+      public double launchPositionRad = 0.0;
+      public double launchVelocityRadPerSec = 0.0;
+      public double launchAppliedVolts = 0.0;
+      public double[] launchCurrentAmps = new double[] {};
+  
+      public double feedPositionRad = 0.0;
+      public double feedVelocityRadPerSec = 0.0;
+      public double feedAppliedVolts = 0.0;
+      public double[] feedCurrentAmps = new double[] {};
     }
-
+  
     /** Updates the set of loggable inputs. */
     public default void updateInputs(IntakeIOInputs inputs) {}
-
-    /** Run open loop at the specified voltage. */
-    public default void setVoltage(double volts) {}
-
-    /** Run closed loop at the specified velocity. */
-    public default void setVelocity(double velocityRadPerSec, double ffVolts) {}
-
-    /** Stop in open loop. */
-    public default void stop() {}
-
-    /** Set velocity PID constants. */
-    public default void configurePID(double kP, double kI, double kD) {}
+  
+    /** Run the launcher wheel at the specified voltage. */
+    public default void setLaunchVoltage(double volts) {}
+  
+    /** Run the feeder wheel at the specified voltage. */
+    public default void setFeedVoltage(double volts) {}
 }

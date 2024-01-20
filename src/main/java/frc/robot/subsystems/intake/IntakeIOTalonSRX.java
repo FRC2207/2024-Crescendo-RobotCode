@@ -3,9 +3,13 @@ package frc.robot.subsystems.intake;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
+import frc.robot.Constants;
 
 public class IntakeIOTalonSRX implements IntakeIO {
-    private final TalonSRX intakeMotor = new TalonSRX(10);
+    private final TalonSRX intakeMotor = new TalonSRX(Constants.IntakeConstants.intakeMotorID);
+    private final TalonSRX pivotMotor = new TalonSRX(Constants.IntakeConstants.pivotMotorID);
 
   public IntakeIOTalonSRX() {
     var config = new TalonSRXConfiguration();
@@ -18,12 +22,12 @@ public class IntakeIOTalonSRX implements IntakeIO {
 
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
-    inputs.appliedVolts = intakeMotor.getMotorOutputVoltage();
-    inputs.currentAmps = new double[] {intakeMotor.getStatorCurrent()};
+    inputs.launchAppliedVolts = intakeMotor.getMotorOutputVoltage();
+    inputs.launchCurrentAmps = new double[] {intakeMotor.getStatorCurrent()};
   }
 
   @Override
-  public void setVoltage(double volts) {
+  public void setLaunchVoltage(double volts) {
     intakeMotor.set(TalonSRXControlMode.PercentOutput, volts * 12.0);
   }
 }
