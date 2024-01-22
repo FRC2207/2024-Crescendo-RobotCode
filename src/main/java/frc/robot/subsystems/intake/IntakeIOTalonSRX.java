@@ -3,8 +3,8 @@ package frc.robot.subsystems.intake;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.math.MathUtil;
 import frc.robot.Constants;
 
 public class IntakeIOTalonSRX implements IntakeIO {
@@ -27,6 +27,7 @@ public class IntakeIOTalonSRX implements IntakeIO {
 
   @Override
   public void setLaunchVoltage(double volts) {
+    volts = MathUtil.clamp(volts, -1, 1);
     intakeMotor.set(TalonSRXControlMode.PercentOutput, volts * 12.0);
   }
 }

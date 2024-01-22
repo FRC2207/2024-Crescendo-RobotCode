@@ -11,11 +11,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
-    private static final double launchSpeedLauncher = 1.0;
-  private static final double launchSpeedFeeder = 1.0;
+  private static final double burpSpeedLauncher = 1.0;
   private static final double intakeSpeedLauncher = -1.0;
-  private static final double intakeSpeedFeeder = -0.2;
-  private static final double launchDelay = 1.0;
+  private static final double intakeDelay = 1.0;
+  private static final double burpDelay = 1.0;
 
   private final IntakeIO io;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
@@ -37,25 +36,30 @@ public class Intake extends SubsystemBase {
 
   /** Returns a command that intakes a note. */
   public Command intakeCommand() {
-    return startEnd(
-        () -> {
-          io.setLaunchVoltage(intakeSpeedLauncher);
-        },
-        () -> {
-          io.setFeedVoltage(0.0);
-        });
+    return Commands.sequence(
+        runOnce(
+            () -> {
+              io.setLaunchVoltage(intakeSpeedLauncher);
+            }),
+        Commands.waitSeconds(intakeDelay),
+
+        Commands.idle())
+        .finallyDo(
+            () -> {
+              io.setLaunchVoltage(0.0);
+            });
   }
 
   /** Returns a command that launches a note. */
-  public Command launchCommand() {
+  public Command burpCommand() {
     return Commands.sequence(
-            runOnce(
-                () -> {
-                  io.setLaunchVoltage(launchSpeedLauncher);
-                }),
-            Commands.waitSeconds(launchDelay),
-            
-            Commands.idle())
+        runOnce(
+            () -> {
+              io.setLaunchVoltage(burpSpeedLauncher);
+            }),
+        Commands.waitSeconds(burpDelay),
+
+        Commands.idle())
         .finallyDo(
             () -> {
               io.setLaunchVoltage(0.0);
