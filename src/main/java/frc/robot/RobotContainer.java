@@ -86,8 +86,8 @@ public class RobotContainer {
     driveXbox.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     System.out.println("Set default command");
 
-    manipulatorXbox.a().onTrue(Commands.runOnce(intake::intakeCommand));
-    manipulatorXbox.b().onTrue(Commands.runOnce(intake::burpCommand));
+    manipulatorXbox.a().onTrue(intake.intakeCommand());
+    manipulatorXbox.b().onTrue(intake.burpCommand());
   }
 
   public Command getAutonomousCommand() {

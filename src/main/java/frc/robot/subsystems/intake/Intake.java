@@ -37,33 +37,25 @@ public class Intake extends SubsystemBase {
   /** Returns a command that intakes a note. */
   public Command intakeCommand() {
     return Commands.sequence(
-        runOnce(
-            () -> {
-              io.setLaunchVoltage(intakeSpeedLauncher);
-            }),
-        Commands.waitSeconds(intakeDelay),
-
-        Commands.idle())
-        .finallyDo(
-            () -> {
-              io.setLaunchVoltage(0.0);
-            });
+      runOnce(() -> {
+          io.setLaunchVoltage(intakeSpeedLauncher);
+        }),
+        Commands.waitSeconds(intakeDelay)
+      ).finallyDo(() -> {
+        io.setLaunchVoltage(0.0);
+      });
   }
 
   /** Returns a command that launches a note. */
   public Command burpCommand() {
     return Commands.sequence(
-        runOnce(
-            () -> {
-              io.setLaunchVoltage(burpSpeedLauncher);
-            }),
-        Commands.waitSeconds(burpDelay),
-
-        Commands.idle())
-        .finallyDo(
-            () -> {
-              io.setLaunchVoltage(0.0);
-            });
+        runOnce(() -> {
+          io.setLaunchVoltage(burpSpeedLauncher);
+        }),
+        Commands.waitSeconds(burpDelay)
+      ).finallyDo(() -> {
+        io.setLaunchVoltage(0.0);
+      });
   }
 
 }
