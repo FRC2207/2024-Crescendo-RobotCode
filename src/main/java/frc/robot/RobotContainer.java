@@ -21,7 +21,7 @@ import frc.robot.subsystems.intake.IntakeIOTalonSRX;
 public class RobotContainer {
   // Subsystems
   private Drive drive;
-  public Intake intake;
+  private Intake intake;
 
   // Controller
   private final CommandXboxController driveXbox = new CommandXboxController(0);

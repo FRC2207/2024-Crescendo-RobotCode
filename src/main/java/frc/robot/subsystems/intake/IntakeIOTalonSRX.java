@@ -26,7 +26,7 @@ public class IntakeIOTalonSRX implements IntakeIO {
   }
 
   @Override
-  public void setLaunchVoltage(double volts) {
+  public void setIntakeVoltage(double volts) {
     volts = MathUtil.clamp(volts, -1, 1);
     intakeMotor.set(TalonSRXControlMode.PercentOutput, volts * 12.0);
   }

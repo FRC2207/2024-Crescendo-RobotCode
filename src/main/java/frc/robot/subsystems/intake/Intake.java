@@ -22,10 +22,10 @@ public class Intake extends SubsystemBase {
   public Intake(IntakeIO io) {
     this.io = io;
     setDefaultCommand(
-        run(
-            () -> {
-              io.setLaunchVoltage(0.0);
-            }));
+      run(() -> {
+        io.setIntakeVoltage(0.0);
+      }
+    ));
   }
 
   @Override
@@ -37,25 +37,22 @@ public class Intake extends SubsystemBase {
   /** Returns a command that intakes a note. */
   public Command intakeCommand() {
     return Commands.sequence(
-      runOnce(() -> {
-          io.setLaunchVoltage(intakeSpeedLauncher);
+        runOnce(() -> {
+          io.setIntakeVoltage(intakeSpeedLauncher);
         }),
-        Commands.waitSeconds(intakeDelay)
-      ).finallyDo(() -> {
-        io.setLaunchVoltage(0.0);
-      });
+        Commands.waitSeconds(intakeDelay)).finallyDo(() -> {
+          io.setIntakeVoltage(0.0);
+        });
   }
 
-  /** Returns a command that launches a note. */
+  /** Returns a command that burps a note into the launcher. */
   public Command burpCommand() {
     return Commands.sequence(
         runOnce(() -> {
-          io.setLaunchVoltage(burpSpeedLauncher);
+          io.setIntakeVoltage(burpSpeedLauncher);
         }),
-        Commands.waitSeconds(burpDelay)
-      ).finallyDo(() -> {
-        io.setLaunchVoltage(0.0);
-      });
+        Commands.waitSeconds(burpDelay)).finallyDo(() -> {
+          io.setIntakeVoltage(0.0);
+        });
   }
-
 }
