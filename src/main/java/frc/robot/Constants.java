@@ -38,4 +38,9 @@ public class Constants {
         public static int intakeMotorID = 14;
         public static int pivotMotorID = 15;
     }
+
+    public static class LaunchConstants {
+        public static int launchMotorID = 16;
+        public static int followMotorID = 17;
+    }
 }
