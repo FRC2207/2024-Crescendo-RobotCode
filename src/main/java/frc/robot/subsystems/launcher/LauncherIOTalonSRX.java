@@ -8,10 +8,9 @@ import edu.wpi.first.math.MathUtil;
 import frc.robot.Constants;
 
 public class LauncherIOTalonSRX implements LauncherIO{
-     private final TalonSRX launchMotor = new TalonSRX(Constants.LaunchConstants.launchMotorID);
-     private final TalonSRX launchMotorFollow = new TalonSRX(Constants.LaunchConstants.followMotorID);
+     private final TalonSRX leftLaunchMotor = new TalonSRX(Constants.LaunchConstants.launchMotorID);
+     private final TalonSRX rightLaunchMotor = new TalonSRX(Constants.LaunchConstants.followMotorID);
 
-     // launchMotorFollow.follow(launchMotor);
 
   public LauncherIOTalonSRX() {
     var config = new TalonSRXConfiguration();
@@ -19,18 +18,29 @@ public class LauncherIOTalonSRX implements LauncherIO{
     config.peakCurrentDuration = 250;
     config.continuousCurrentLimit = 60;
     config.voltageCompSaturation = 12.0;
-    launchMotor.configAllSettings(config);
+    leftLaunchMotor.configAllSettings(config);
+    rightLaunchMotor.configAllSettings(config);
   }
 
   @Override
   public void updateInputs(LauncherIOInputs inputs) {
-    inputs.launchAppliedVolts = launchMotor.getMotorOutputVoltage();
-    inputs.launchCurrentAmps = new double[] {launchMotor.getStatorCurrent()};
+    inputs.leftLaunchAppliedVolts = leftLaunchMotor.getMotorOutputVoltage();
+    inputs.rightLaunchAppliedVolts = rightLaunchMotor.getMotorOutputVoltage();
+
+    inputs.leftLaunchCurrentAmps = new double[] {leftLaunchMotor.getStatorCurrent()};
+    inputs.rightLaunchCurrentAmps = new double[] {rightLaunchMotor.getStatorCurrent()};
+
   }
 
   @Override
-  public void setLaunchVoltage(double volts) {
+  public void setLeftLaunchVoltage(double volts) {
     volts = MathUtil.clamp(volts, -1, 1);
-    launchMotor.set(TalonSRXControlMode.PercentOutput, volts * 12.0);
+    leftLaunchMotor.set(TalonSRXControlMode.PercentOutput, volts * 12.0);
+  }
+
+  @Override
+  public void setRightLaunchVoltage(double volts) {
+    volts = MathUtil.clamp(volts, -1, 1);
+    rightLaunchMotor.set(TalonSRXControlMode.PercentOutput, volts * 12.0);
   }
 }

@@ -17,11 +17,16 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeIOTalonSRX;
+import frc.robot.subsystems.launcher.Launcher;
+import frc.robot.subsystems.launcher.LauncherIOSim;
+import frc.robot.subsystems.launcher.LauncherIOTalonSRX;
 
 public class RobotContainer {
   // Subsystems
   private Drive drive;
-  public Intake intake;
+  private Intake intake;
+  private Launcher launcher;
+
 
   // Controller
   private final CommandXboxController driveXbox = new CommandXboxController(0);
@@ -40,6 +45,7 @@ public class RobotContainer {
             new ModuleIOSim());
 
         intake = new Intake(new IntakeIOSim());
+        launcher = new Launcher(new LauncherIOSim(), intake);
         break;
       case "Real":
         drive =
@@ -51,6 +57,7 @@ public class RobotContainer {
             new ModuleIOSparkMax(3));
         
         intake = new Intake(new IntakeIOTalonSRX());
+        launcher = new Launcher(new LauncherIOTalonSRX(), intake);
         break;
     }
     
@@ -88,6 +95,7 @@ public class RobotContainer {
 
     manipulatorXbox.a().onTrue(intake.intakeCommand());
     manipulatorXbox.b().onTrue(intake.burpCommand());
+    manipulatorXbox.rightBumper().onTrue(launcher.launchCommand());
   }
 
   public Command getAutonomousCommand() {
