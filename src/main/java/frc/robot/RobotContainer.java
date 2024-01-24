@@ -13,13 +13,19 @@ import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOADXRS450;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSparkMax;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeIOTalonSRX;
 
 public class RobotContainer {
   // Subsystems
   private Drive drive;
+  private Intake intake;
 
   // Controller
-  private final CommandXboxController xboxOne = new CommandXboxController(0);
+  private final CommandXboxController driveXbox = new CommandXboxController(0);
+  private final CommandXboxController manipulatorXbox = new CommandXboxController(1);
   
   
   public RobotContainer() {
@@ -32,6 +38,8 @@ public class RobotContainer {
             new ModuleIOSim(),
             new ModuleIOSim(),
             new ModuleIOSim());
+
+        intake = new Intake(new IntakeIOSim());
         break;
       case "Real":
         drive =
@@ -41,6 +49,8 @@ public class RobotContainer {
             new ModuleIOSparkMax(1),
             new ModuleIOSparkMax(2),
             new ModuleIOSparkMax(3));
+        
+        intake = new Intake(new IntakeIOTalonSRX());
         break;
     }
     
@@ -71,10 +81,13 @@ public class RobotContainer {
     //         () -> xboxOne.a().getAsBoolean()
     //         );
     drive.setDefaultCommand(
-      new DriveWithController(drive, () -> xboxOne.getLeftX(), () -> xboxOne.getLeftY(), () -> xboxOne.getRightX(), () -> xboxOne.getRightY(), () -> xboxOne.a().getAsBoolean())
+      new DriveWithController(drive, () -> driveXbox.getLeftX(), () -> driveXbox.getLeftY(), () -> driveXbox.getRightX(), () -> driveXbox.getRightY(), () -> driveXbox.a().getAsBoolean())
     );
-    xboxOne.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    driveXbox.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     System.out.println("Set default command");
+
+    manipulatorXbox.a().onTrue(intake.intakeCommand());
+    manipulatorXbox.b().onTrue(intake.burpCommand());
   }
 
   public Command getAutonomousCommand() {
