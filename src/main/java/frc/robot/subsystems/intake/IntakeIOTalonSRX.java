@@ -21,8 +21,8 @@ public class IntakeIOTalonSRX implements IntakeIO {
 
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
-    inputs.launchAppliedVolts = intakeMotor.getMotorOutputVoltage();
-    inputs.launchCurrentAmps = new double[] {intakeMotor.getStatorCurrent()};
+    inputs.intakeAppliedVolts = intakeMotor.getMotorOutputVoltage();
+    inputs.intakeCurrentAmps = new double[] {intakeMotor.getStatorCurrent()};
   }
 
   @Override
