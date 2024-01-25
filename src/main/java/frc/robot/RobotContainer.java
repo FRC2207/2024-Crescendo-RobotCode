@@ -14,7 +14,6 @@ import frc.robot.subsystems.drive.GyroIOADXRS450;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSparkMax;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeIOTalonSRX;
 import frc.robot.subsystems.launcher.Launcher;
