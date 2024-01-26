@@ -39,7 +39,7 @@ public class Launcher extends SubsystemBase {
     return Commands.sequence(
       runOnce(() -> {
           io.setLeftLaunchVoltage(launchSpeed);
-          io.setRightLaunchVoltage(launchSpeed);
+          io.setRightLaunchVoltage(-1 * launchSpeed);
         }),
         Commands.waitSeconds(spinUpTime),
 
