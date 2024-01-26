@@ -19,5 +19,5 @@ public interface PivotIO {
     public default void setPivotVoltage(double volts) {}
 
     /** Get the measurement of an encoder. */
-    public default void getMeasurement() {}
+    public double getMeasurement();
 }

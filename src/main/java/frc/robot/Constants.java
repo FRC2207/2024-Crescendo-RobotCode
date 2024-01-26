@@ -51,5 +51,12 @@ public class Constants {
         public static int kMaxAccelerationRadPerSecSquared = 1;
         public static int kEncoderDistancePerPulse = 2048;
         public static int kArmOffsetRads = 2;
+
+        public static double kSVolts = 1;
+        public static double kGVolts = 1;
+        public static double kVVoltSecondPerRad = 0.5;
+        public static double kAVoltSecondSquaredPerRad = 0.1;
+
+
     }
 }

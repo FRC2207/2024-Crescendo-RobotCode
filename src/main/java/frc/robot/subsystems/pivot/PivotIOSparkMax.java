@@ -6,8 +6,13 @@ import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
+import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -17,6 +22,10 @@ public class PivotIOSparkMax implements PivotIO {
     private final Encoder m_encoder = new Encoder(Constants.IntakeConstants.pivotEncoderID, 0); // Temp encoder
     public final RelativeEncoder encoder = pivotMotor.getEncoder();
     public final DutyCycleEncoder throughEncoder = new DutyCycleEncoder(Constants.IntakeConstants.pivotEncoderID);
+    private final ArmFeedforward m_feedforward =
+      new ArmFeedforward(
+          IntakeConstants.kSVolts, IntakeConstants.kGVolts,
+          IntakeConstants.kVVoltSecondPerRad, IntakeConstants.kAVoltSecondSquaredPerRad);
 
     public PivotIOSparkMax() {
 
@@ -26,15 +35,16 @@ public class PivotIOSparkMax implements PivotIO {
 
     @Override
     public void setPivotVoltage(double volts) {
-        volts = MathUtil.clamp(volts, -1, 1);
-        pivotMotor.setVoltage(volts * 12);
+        volts = MathUtil.clamp(volts, -12, 12);
+        pivotMotor.setVoltage(volts);
     }
 
     @Override
-    public void getMeasurement(){ 
-        throughEncoder.getAbsolutePosition();
-        encoder.getPosition();        
+    public double getMeasurement(){ 
+        return throughEncoder.getAbsolutePosition();     
     }
+
+
 
     @Override
     public void updateInputs(PivotIOInputs inputs) {

@@ -13,52 +13,59 @@ import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOADXRS450;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSparkMax;
+
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeIOTalonSRX;
 
+import frc.robot.subsystems.pivot.Pivot;
+import frc.robot.subsystems.pivot.PivotIOSim;
+import frc.robot.subsystems.pivot.PivotIOSparkMax;
+
 public class RobotContainer {
   // Subsystems
   private Drive drive;
   private Intake intake;
+  private Pivot pivot;
 
   // Controller
   private final CommandXboxController driveXbox = new CommandXboxController(0);
   private final CommandXboxController manipulatorXbox = new CommandXboxController(1);
-  
-  
+
   public RobotContainer() {
     switch (Constants.robot) {
       case "SIM":
-        drive = 
-          new Drive(
-            new GyroIO() {},
+        drive = new Drive(
+            new GyroIO() {
+            },
             new ModuleIOSim(),
             new ModuleIOSim(),
             new ModuleIOSim(),
             new ModuleIOSim());
 
         intake = new Intake(new IntakeIOSim());
+        pivot = new Pivot(new PivotIOSim());
         break;
       case "Real":
-        drive =
-          new Drive(
-            new GyroIOADXRS450() {},
+        drive = new Drive(
+            new GyroIOADXRS450() {
+            },
             new ModuleIOSparkMax(0),
             new ModuleIOSparkMax(1),
             new ModuleIOSparkMax(2),
             new ModuleIOSparkMax(3));
-        
+
         intake = new Intake(new IntakeIOTalonSRX());
+        pivot = new Pivot(new PivotIOSparkMax());
         break;
     }
-    
+
     // Create missing drive subsystem if needed.
     if (drive == null) {
-      drive =
-        new Drive(
-          new GyroIO() {},
+      drive = new Drive(
+          new GyroIO() {
+          },
           new ModuleIOSim(),
           new ModuleIOSim(),
           new ModuleIOSim(),
@@ -71,23 +78,29 @@ public class RobotContainer {
   private void configureBindings() {
     // Joystick command factories
     // Function<Boolean, DriveWithController> driveWithControllerFactory =
-    //     () ->
-    //       new DriveWithController(
-    //         drive,
-    //         () -> xboxOne.getLeftX(),
-    //         () -> xboxOne.getLeftY(),
-    //         () -> xboxOne.getRightX(),
-    //         () -> xboxOne.getRightY(),
-    //         () -> xboxOne.a().getAsBoolean()
-    //         );
+    // () ->
+    // new DriveWithController(
+    // drive,
+    // () -> xboxOne.getLeftX(),
+    // () -> xboxOne.getLeftY(),
+    // () -> xboxOne.getRightX(),
+    // () -> xboxOne.getRightY(),
+    // () -> xboxOne.a().getAsBoolean()
+    // );
     drive.setDefaultCommand(
-      new DriveWithController(drive, () -> driveXbox.getLeftX(), () -> driveXbox.getLeftY(), () -> driveXbox.getRightX(), () -> driveXbox.getRightY(), () -> driveXbox.a().getAsBoolean())
-    );
+        new DriveWithController(drive, () -> driveXbox.getLeftX(), () -> driveXbox.getLeftY(),
+            () -> driveXbox.getRightX(), () -> driveXbox.getRightY(), () -> driveXbox.a().getAsBoolean()));
     driveXbox.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     System.out.println("Set default command");
 
     manipulatorXbox.a().onTrue(intake.intakeCommand());
     manipulatorXbox.b().onTrue(intake.burpCommand());
+
+    manipulatorXbox.x().onTrue(pivot.setIntakeAngle(0));
+    manipulatorXbox.y().onTrue(pivot.setIntakeAngle(90));
+
+    pivot.setPivotAngleRaw(
+        Math.abs(manipulatorXbox.getLeftY()) < .15 ? 0 : manipulatorXbox.getLeftY());
   }
 
   public Command getAutonomousCommand() {
