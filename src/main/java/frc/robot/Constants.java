@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DutyCycle;
+
 public class Constants {
     // public static final String robot = "SIM";
     public static final String robot = "Real";
@@ -41,7 +43,7 @@ public class Constants {
         public static int intakeMotorID = 14;
 
         public static int pivotMotorID = 15;
-        public static int pivotEncoderID = 150;
+        public static int pivotEncoderID = 1;
         public static int pivotGearRatio = 80;
 
         public static int kP = 1;

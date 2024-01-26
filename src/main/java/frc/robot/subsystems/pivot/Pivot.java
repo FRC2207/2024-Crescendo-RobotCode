@@ -5,10 +5,11 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import frc.robot.Constants;
+import frc.robot.subsystems.pivot.*;
 
 public class Pivot extends ProfiledPIDSubsystem {
     private final PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
-
+    encoder = 
 
     public Pivot(ProfiledPIDController controller) {
         super(
@@ -34,6 +35,9 @@ public class Pivot extends ProfiledPIDSubsystem {
     protected double getMeasurement() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getMeasurement'");
+        return encoder.getPosition();
     }
+
+    
     
 }

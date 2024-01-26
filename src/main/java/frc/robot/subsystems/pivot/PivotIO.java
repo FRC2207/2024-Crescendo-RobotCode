@@ -16,7 +16,8 @@ public interface PivotIO {
     public default void updateInputs(PivotIOInputs inputs) {}
 
     /** Run the pivot at the specified voltage. */
-    public default void setPivotVoltage(double volts) {
+    public default void setPivotVoltage(double volts) {}
 
-    }
+    /** Get the measurement of an encoder. */
+    public default void getMeasurement() {}
 }
