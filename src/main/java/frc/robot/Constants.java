@@ -45,7 +45,7 @@ public class Constants {
         public static int pivotMotorID = 15;
         public static int pivotEncoderID = 1;
         public static int pivotGearRatio = 80;
-        public static double rawPivotSpeedLimiter = 0.5;
+        public static double rawPivotSpeedLimiter = 0.25;
 
         public static int kP = 1;
         public static int kMaxVelocityRadPerSecond = 10000;
