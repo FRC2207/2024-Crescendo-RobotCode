@@ -1,12 +1,16 @@
 package frc.robot.subsystems.pivot;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.pivot.*;
@@ -17,6 +21,8 @@ public class Pivot extends ProfiledPIDSubsystem {
     private final ArmFeedforward m_feedforward = new ArmFeedforward(
             IntakeConstants.kSVolts, IntakeConstants.kGVolts,
             IntakeConstants.kVVoltSecondPerRad, IntakeConstants.kAVoltSecondSquaredPerRad);
+
+    private final SysIdRoutine sysId;
 
     public Pivot(PivotIO io) {
         super(
@@ -31,6 +37,17 @@ public class Pivot extends ProfiledPIDSubsystem {
         this.io = io;
         // Start arm at rest in neutral position
         setGoal(Constants.IntakeConstants.kArmOffsetRads);
+
+        sysId = new SysIdRoutine(
+                new SysIdRoutine.Config(null, null, null,
+                        (state) -> Logger.recordOutput("PivotSysId/State", state.toString())),
+                new SysIdRoutine.Mechanism((voltage) -> io.setPivotVoltage(voltage.in(Units.Volts)), null, this));
+    }
+
+    @Override
+    public void periodic() {
+        io.updateInputs(inputs);
+        Logger.processInputs("Pivot", inputs);
     }
 
     @Override
