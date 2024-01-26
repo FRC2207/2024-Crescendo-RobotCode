@@ -4,8 +4,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveWithController;
 import frc.robot.subsystems.drive.Drive;
@@ -99,8 +102,10 @@ public class RobotContainer {
     manipulatorXbox.x().onTrue(pivot.setIntakeAngle(0));
     manipulatorXbox.y().onTrue(pivot.setIntakeAngle(90));
 
-    pivot.setPivotAngleRaw(
-        Math.abs(manipulatorXbox.getLeftY()) < .15 ? 0 : manipulatorXbox.getLeftY());
+    // Move pivot motor with left joystick while holding the leftBumper
+    manipulatorXbox.leftBumper().whileTrue(new RunCommand(  
+      () -> pivot.setPivotAngleRaw(MathUtil.applyDeadband(manipulatorXbox.getLeftY(), .15) * Constants.IntakeConstants.rawPivotSpeedLimiter)
+    ));
   }
 
   public Command getAutonomousCommand() {

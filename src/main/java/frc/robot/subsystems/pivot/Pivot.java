@@ -49,7 +49,7 @@ public class Pivot extends ProfiledPIDSubsystem {
     }
 
     public void setPivotAngleRaw(double percent) {
-        io.setPivotVoltage(percent);
+        io.setPivotVoltage(percent * 12);
 
     }
 
