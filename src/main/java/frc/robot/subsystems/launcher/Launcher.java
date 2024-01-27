@@ -34,7 +34,7 @@ public class Launcher extends SubsystemBase {
 
   }
 
-  /** Returns a command that intakes a note. */
+  /** Returns a command that launches a note. */
   public Command launchCommand() {
     return Commands.sequence(
       runOnce(() -> {
@@ -51,5 +51,21 @@ public class Launcher extends SubsystemBase {
         io.setLeftLaunchVoltage(0.0);
         io.setRightLaunchVoltage(0.0);
       });
+  }
+
+  /** Returns a command that launches without intake usage */
+  public Command testLaunchCommand() {
+    return Commands.sequence(
+      runOnce(() -> {
+        io.setLeftLaunchVoltage(launchSpeed);
+        io.setRightLaunchVoltage(-1 * launchSpeed);
+      }),
+      Commands.waitSeconds(stopDelay)
+
+    ).finallyDo(() -> {
+      io.setLeftLaunchVoltage(0.0);
+      io.setRightLaunchVoltage(0.0);
+    });
+    
   }
 }

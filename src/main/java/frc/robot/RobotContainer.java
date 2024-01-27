@@ -103,10 +103,12 @@ public class RobotContainer {
 
     manipulatorXbox.a().onTrue(intake.intakeCommand());
     manipulatorXbox.b().onTrue(intake.burpCommand());
+    
     manipulatorXbox.rightBumper().onTrue(launcher.launchCommand());
+    manipulatorXbox.x().onTrue(launcher.testLaunchCommand());
 
-    manipulatorXbox.x().onTrue(pivot.setIntakeAngle(0));
-    manipulatorXbox.y().onTrue(pivot.setIntakeAngle(90));
+    //manipulatorXbox.x().onTrue(pivot.setIntakeAngle(0));
+    //manipulatorXbox.y().onTrue(pivot.setIntakeAngle(90));
 
     // Move pivot motor with left joystick while holding the leftBumper
     manipulatorXbox.leftBumper().whileTrue(new RunCommand(  
