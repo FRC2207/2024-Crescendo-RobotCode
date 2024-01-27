@@ -20,6 +20,8 @@ public class LauncherIOTalonSRX implements LauncherIO{
     config.voltageCompSaturation = 12.0;
     leftLaunchMotor.configAllSettings(config);
     rightLaunchMotor.configAllSettings(config);
+
+    rightLaunchMotor.setInverted(true);
   }
 
   @Override

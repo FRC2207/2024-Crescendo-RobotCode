@@ -39,7 +39,7 @@ public class Launcher extends SubsystemBase {
     return Commands.sequence(
       runOnce(() -> {
           io.setLeftLaunchVoltage(launchSpeed);
-          io.setRightLaunchVoltage(-1 * launchSpeed);
+          io.setRightLaunchVoltage(launchSpeed);
         }),
         Commands.waitSeconds(spinUpTime),
 
@@ -58,14 +58,13 @@ public class Launcher extends SubsystemBase {
     return Commands.sequence(
       runOnce(() -> {
         io.setLeftLaunchVoltage(launchSpeed);
-        io.setRightLaunchVoltage(-1 * launchSpeed);
+        io.setRightLaunchVoltage(launchSpeed);
       }),
       Commands.waitSeconds(stopDelay)
 
     ).finallyDo(() -> {
       io.setLeftLaunchVoltage(0.0);
       io.setRightLaunchVoltage(0.0);
-    });
-    
+    });  
   }
 }
