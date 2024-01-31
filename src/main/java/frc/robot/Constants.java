@@ -1,6 +1,5 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DutyCycle;
 
 public class Constants {
     // public static final String robot = "SIM";
@@ -41,6 +40,7 @@ public class Constants {
     public static class IntakeConstants {
 
         public static int intakeMotorID = 14;
+        public static double rawIntakeSpeedLimiter = 0.25;
 
         public static int pivotMotorID = 15;
         public static int pivotEncoderID = 1;
@@ -62,7 +62,8 @@ public class Constants {
     }
 
     public static class LaunchConstants {
-        public static int launchMotorID = 16;
-        public static int followMotorID = 17;
+        public static int leftMotorID = 16;
+        public static int rightMotorID = 17;
+
     }
 }

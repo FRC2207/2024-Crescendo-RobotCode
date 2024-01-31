@@ -19,10 +19,9 @@ public class Intake extends SubsystemBase {
   public Intake(IntakeIO io) {
     this.io = io;
     setDefaultCommand(
-      run(() -> {
-        io.setIntakeVoltage(0.0);
-      }
-    ));
+        run(() -> {
+          io.setIntakeVoltage(0.0);
+        }));
   }
 
   @Override
@@ -51,5 +50,10 @@ public class Intake extends SubsystemBase {
         Commands.waitSeconds(burpDelay)).finallyDo(() -> {
           io.setIntakeVoltage(0.0);
         });
+  }
+
+  public void setIntakeVoltageRaw(double percent) {
+    io.setIntakeVoltage(percent * 12);
+
   }
 }

@@ -7,9 +7,9 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+
 import frc.robot.commands.DriveWithController;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -20,6 +20,7 @@ import frc.robot.subsystems.drive.ModuleIOSparkMax;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeIOTalonSRX;
+
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherIOSim;
 import frc.robot.subsystems.launcher.LauncherIOTalonSRX;
@@ -101,8 +102,8 @@ public class RobotContainer {
     driveXbox.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     System.out.println("Set default command");
 
-    manipulatorXbox.a().onTrue(intake.intakeCommand());
-    manipulatorXbox.b().onTrue(intake.burpCommand());
+    manipulatorXbox.a().onTrue(intake.intakeCommand());    
+    manipulatorXbox.b().onTrue(launcher.launcherIntakeCommand());
     
     manipulatorXbox.rightBumper().onTrue(launcher.launchCommand());
     manipulatorXbox.x().onTrue(launcher.testLaunchCommand());
@@ -113,6 +114,10 @@ public class RobotContainer {
     // Move pivot motor with left joystick while holding the leftBumper
     manipulatorXbox.leftBumper().whileTrue(new RunCommand(  
       () -> pivot.setPivotAngleRaw(MathUtil.applyDeadband(manipulatorXbox.getLeftY(), .15) * Constants.IntakeConstants.rawPivotSpeedLimiter)
+    ));
+
+     manipulatorXbox.leftBumper().whileTrue(new RunCommand(  
+      () -> intake.setIntakeVoltageRaw(MathUtil.applyDeadband(manipulatorXbox.getRightY(), .15) * Constants.IntakeConstants.rawIntakeSpeedLimiter)
     ));
   }
 

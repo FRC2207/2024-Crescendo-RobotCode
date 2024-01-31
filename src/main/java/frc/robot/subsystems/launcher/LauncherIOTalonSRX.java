@@ -8,8 +8,8 @@ import edu.wpi.first.math.MathUtil;
 import frc.robot.Constants;
 
 public class LauncherIOTalonSRX implements LauncherIO{
-     private final TalonSRX leftLaunchMotor = new TalonSRX(Constants.LaunchConstants.launchMotorID);
-     private final TalonSRX rightLaunchMotor = new TalonSRX(Constants.LaunchConstants.followMotorID);
+     private final TalonSRX leftLaunchMotor = new TalonSRX(Constants.LaunchConstants.leftMotorID);
+     private final TalonSRX rightLaunchMotor = new TalonSRX(Constants.LaunchConstants.rightMotorID);
 
 
   public LauncherIOTalonSRX() {
