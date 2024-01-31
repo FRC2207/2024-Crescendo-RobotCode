@@ -62,7 +62,8 @@ public class Constants {
     }
 
     public static class LaunchConstants {
-        public static int launchMotorID = 16;
-        public static int followMotorID = 17;
+        public static int leftMotorID = 16;
+        public static int rightMotorID = 17;
+
     }
 }
