@@ -9,8 +9,8 @@ import frc.robot.subsystems.intake.Intake;
 
 public class Launcher extends SubsystemBase {
   private static final double launchSpeed = 1.0;
-  private static final double spinUpTime = 1.0;
-  private static final double stopDelay = 1.0;
+  private static final double spinUpTime = 0.5;
+  private static final double stopDelay = 0.5;
 
   private final LauncherIO io;
   private final LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
