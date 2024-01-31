@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveWithController;
@@ -111,6 +110,10 @@ public class RobotContainer {
     // Move pivot motor with left joystick while holding the leftBumper
     manipulatorXbox.leftBumper().whileTrue(new RunCommand(  
       () -> pivot.setPivotAngleRaw(MathUtil.applyDeadband(manipulatorXbox.getLeftY(), .15) * Constants.IntakeConstants.rawPivotSpeedLimiter)
+    ));
+
+     manipulatorXbox.leftBumper().whileTrue(new RunCommand(  
+      () -> intake.setIntakeVoltageRaw(MathUtil.applyDeadband(manipulatorXbox.getRightY(), .15) * Constants.IntakeConstants.rawIntakeSpeedLimiter)
     ));
   }
 
