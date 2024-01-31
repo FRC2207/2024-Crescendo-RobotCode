@@ -11,6 +11,8 @@ public class Launcher extends SubsystemBase {
   private static final double launchSpeed = 1.0;
   private static final double spinUpTime = 1.0;
   private static final double stopDelay = 1.0;
+  private static final double intakeSpeed = -1.0;
+  private static final double intakeDelay = 1.0;
 
   private final LauncherIO io;
   private final LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
@@ -48,6 +50,21 @@ public class Launcher extends SubsystemBase {
         Commands.waitSeconds(stopDelay)
       
       ).finallyDo(() -> {
+        io.setLeftLaunchVoltage(0.0);
+        io.setRightLaunchVoltage(0.0);
+      });
+  }
+
+  public Command launcherIntakeCommand() {
+    return Commands.sequence(
+      runOnce(() -> {
+        io.setLeftLaunchVoltage(intakeSpeed);
+        io.setLeftLaunchVoltage(-1 * intakeSpeed);
+      }),
+      intake.intakeCommand(),
+
+      Commands.waitSeconds(intakeDelay)
+    ).finallyDo(() -> {
         io.setLeftLaunchVoltage(0.0);
         io.setRightLaunchVoltage(0.0);
       });
