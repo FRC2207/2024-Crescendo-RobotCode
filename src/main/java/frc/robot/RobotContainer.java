@@ -101,7 +101,7 @@ public class RobotContainer {
     System.out.println("Set default command");
 
     manipulatorXbox.a().onTrue(intake.intakeCommand());
-    manipulatorXbox.b().onTrue(intake.burpCommand());
+    manipulatorXbox.b().onTrue(launcher.launcherIntakeCommand());
     manipulatorXbox.rightBumper().onTrue(launcher.launchCommand());
 
     manipulatorXbox.x().onTrue(pivot.setIntakeAngle(0));
