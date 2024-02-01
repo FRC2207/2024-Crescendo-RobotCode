@@ -102,7 +102,7 @@ public class RobotContainer {
     driveXbox.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     System.out.println("Set default command");
 
-    manipulatorXbox.a().onTrue(intake.intakeCommand());    
+    manipulatorXbox.a().onTrue(intake.continuousCommand());    
     manipulatorXbox.b().onTrue(launcher.launcherIntakeCommand());
     
     manipulatorXbox.rightBumper().onTrue(launcher.launchCommand());

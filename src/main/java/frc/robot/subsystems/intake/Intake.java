@@ -3,6 +3,7 @@ package frc.robot.subsystems.intake;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,6 +17,8 @@ public class Intake extends SubsystemBase {
   private final IntakeIO io;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
+  DigitalInput intakeLimitSwitch = new DigitalInput(0);
+
   public Intake(IntakeIO io) {
     this.io = io;
     setDefaultCommand(
@@ -27,7 +30,8 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs("Launcher", inputs);
+    Logger.processInputs("Intake", inputs);
+    Logger.recordOutput("Intake/LimitSwitch", intakeLimitSwitch.get());
   }
 
   /** Returns a command that intakes a note. */
@@ -39,6 +43,19 @@ public class Intake extends SubsystemBase {
         Commands.waitSeconds(intakeDelay)).finallyDo(() -> {
           io.setIntakeVoltage(0.0);
         });
+  }
+
+  /** Returns a command that runs the intake continuously until the limit switches are pressed then stops. */
+  public Command continuousCommand() {
+    return Commands.sequence(
+      runOnce(() -> {
+        io.setIntakeVoltage(intakeSpeedLauncher);
+      }),
+      Commands.waitUntil(this::hasNote).withTimeout(5),
+      runOnce(() -> {
+        io.setIntakeVoltage(0.0);
+      })
+    );
   }
 
   /** Returns a command that burps a note into the launcher. */
@@ -55,5 +72,9 @@ public class Intake extends SubsystemBase {
   public void setIntakeVoltageRaw(double percent) {
     io.setIntakeVoltage(percent * 12);
 
+  }
+
+  public boolean hasNote() {
+    return !intakeLimitSwitch.get();
   }
 }
