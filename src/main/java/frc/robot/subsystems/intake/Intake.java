@@ -51,7 +51,7 @@ public class Intake extends SubsystemBase {
       runOnce(() -> {
         io.setIntakeVoltage(intakeSpeedLauncher);
       }),
-      Commands.waitUntil(this::hasNote).withTimeout(5),
+      Commands.waitUntil(() -> hasNote() == true).withTimeout(5),
       runOnce(() -> {
         io.setIntakeVoltage(0.0);
       })
