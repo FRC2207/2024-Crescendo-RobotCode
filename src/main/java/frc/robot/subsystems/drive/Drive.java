@@ -49,7 +49,8 @@ public class Drive extends SubsystemBase {
     private boolean isBrakeMode = false;
     private Timer lastMovementTimer = new Timer();
 
-    private frc.robot.util.PoseEstimator poseEstimator = new frc.robot.util.PoseEstimator(VecBuilder.fill(0.003, 0.003, 0.0002));
+    // private frc.robot.util.PoseEstimator poseEstimator = new frc.robot.util.PoseEstimator(VecBuilder.fill(0.003, 0.003, 0.0002));
+    private frc.robot.util.PoseEstimator poseEstimator = new frc.robot.util.PoseEstimator(VecBuilder.fill(0.3, 0.3, 0.02)); // dif standard devs
     private double[] lastModulePositionMeters = new double[] {0.0, 0.0, 0.0, 0.0};
     private Rotation2d lastGyroYaw = new Rotation2d();
     private Twist2d fieldVelocity = new Twist2d();

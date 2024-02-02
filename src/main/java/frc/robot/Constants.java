@@ -1,8 +1,8 @@
 package frc.robot;
 
 public class Constants {
-    //public static final String robot = "SIM";
-    public static final String robot = "Real";
+    public static final String robot = "SIM";
+    //public static final String robot = "Real";
 
     public static class SwerveConstants {
         public static class Modules {

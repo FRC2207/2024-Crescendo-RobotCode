@@ -13,10 +13,13 @@ import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOADXRS450;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSparkMax;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
 
 public class RobotContainer {
   // Subsystems
   private Drive drive;
+  private Vision vision;
 
   // Controller
   private final CommandXboxController xboxOne = new CommandXboxController(0);
@@ -54,6 +57,12 @@ public class RobotContainer {
           new ModuleIOSim(),
           new ModuleIOSim());
     }
+
+    // Create vision
+    vision = new Vision(new VisionIOPhotonVision("0", 0));
+
+    // Set up subsystem(s)
+    vision.setDataInterfaces(drive::addVisionData, drive::getPose);
 
     configureBindings();
   }
