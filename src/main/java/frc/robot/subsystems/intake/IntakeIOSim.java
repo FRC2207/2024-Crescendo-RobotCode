@@ -17,11 +17,16 @@ public class IntakeIOSim implements IntakeIO {
 
     inputs.intakeAppliedVolts = launchAppliedVolts;
     inputs.intakeCurrentAmps = new double[] { intakeSim.getCurrentDrawAmps() };
+    inputs.intakeLimitSwitch = false;
   }
 
   @Override
   public void setIntakeVoltage(double volts) {
     launchAppliedVolts = MathUtil.clamp(volts, -1, 1);
     intakeSim.setInputVoltage(launchAppliedVolts);
+  }
+
+  public boolean hasNote() {
+    return false;
   }
 }

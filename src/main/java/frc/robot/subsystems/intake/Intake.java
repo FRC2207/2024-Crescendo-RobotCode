@@ -3,7 +3,6 @@ package frc.robot.subsystems.intake;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,8 +16,6 @@ public class Intake extends SubsystemBase {
   private final IntakeIO io;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
-  DigitalInput intakeLimitSwitch = new DigitalInput(0);
-
   public Intake(IntakeIO io) {
     this.io = io;
     setDefaultCommand(
@@ -31,7 +28,6 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Intake", inputs);
-    Logger.recordOutput("Intake/LimitSwitch", intakeLimitSwitch.get());
   }
 
   /** Returns a command that intakes a note. */
@@ -75,6 +71,6 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean hasNote() {
-    return !intakeLimitSwitch.get();
+    return io.hasNote();
   }
 }

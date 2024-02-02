@@ -40,6 +40,7 @@ public class Constants {
     public static class IntakeConstants {
 
         public static int intakeMotorID = 14;
+        public static int intakeLimitID = 0;
         public static double rawIntakeSpeedLimiter = 0.25;
 
         public static int pivotMotorID = 15;
