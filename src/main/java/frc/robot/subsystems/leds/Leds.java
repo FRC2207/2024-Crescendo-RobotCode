@@ -13,7 +13,8 @@ public class Leds extends SubsystemBase {
 
         setDefaultCommand(
         run(() -> {
-          io.rainbow(Section.UNDERGLOW);
+          io.rainbow(Section.FULL);
         }));
     }
+
 }

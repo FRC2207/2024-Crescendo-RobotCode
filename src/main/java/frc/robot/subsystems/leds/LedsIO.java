@@ -2,6 +2,7 @@ package frc.robot.subsystems.leds;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants.LedConstants;
 
 public class LedsIO {
@@ -35,6 +36,49 @@ public class LedsIO {
     m_rainbowFirstPixelHue %= 180;
 
     m_Led.setData(ledBuffer);
+  }
+
+  public void setColor(Section section, LedColor color) {
+    for (var i = 0; i < section.end(); i++) {
+      final var hue = color.hues();
+      // Sets the specified LED to the HSV values for the preferred color
+      ledBuffer.setHSV(i, hue, 255, 255);
+   }
+   
+   m_Led.setData(ledBuffer);
+  }
+
+  public static enum LedColor {
+    RED,
+    ORANGE,
+    YELLOW,
+    GREEN,
+    BLUE,
+    PURPLE,
+    PINK;
+  
+
+    public int hues() {
+      switch (this) {           // Values are divided by 2 because color pickers like Google are x/360, whereas WPILib is x/180
+                                
+        case RED:
+          return 0;
+        case ORANGE:
+          return 30 / 2;
+        case YELLOW:
+          return 60 / 2;
+        case GREEN:
+          return 110 / 2;
+        case BLUE:
+          return 230 / 2;
+        case PURPLE:
+          return 270 / 2;
+        case PINK:
+          return 310 / 2;
+        default:
+          return 0;
+      }
+    }
   }
 
   public static enum Section {
@@ -71,9 +115,7 @@ public class LedsIO {
           return LedConstants.underLength;
         default:
           return LedConstants.totalLength;
-
       }
     }
   }
-
 }
