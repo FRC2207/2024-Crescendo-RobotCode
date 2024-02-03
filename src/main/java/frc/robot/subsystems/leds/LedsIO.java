@@ -20,12 +20,12 @@ public class LedsIO {
     m_Led.start();
   }
 
-  public void rainbow() {
+  public void rainbow(Section section) {
     // For every pixel
-    for (var i = 0; i < Section.UNDERGLOW.end(); i++) {
+    for (var i = 0; i < section.end(); i++) {
       // Calculate the hue - hue is easier for rainbows because the color
       // shape is a circle so only one value needs to precess
-      final var hue = (m_rainbowFirstPixelHue + (i * 180 / Section.UNDERGLOW.start())) % 180;
+      final var hue = (m_rainbowFirstPixelHue + (i * 180 / section.start())) % 180;
       // Set the value
       ledBuffer.setHSV(i, hue, 255, 255);
     }
@@ -37,7 +37,7 @@ public class LedsIO {
     m_Led.setData(ledBuffer);
   }
 
-  private static enum Section {
+  public static enum Section {
     LEFT,
     RIGHT,
     FULL,
@@ -54,19 +54,23 @@ public class LedsIO {
           return 0;
         case UNDERGLOW:
           return 0;
+        default:
+          return 0;
       }
     }
 
     public int end() {
       switch (this) {
         case LEFT:
-          return LedConstants.underLength = LedConstants.leftLength;
+          return LedConstants.underLength + LedConstants.leftLength;
         case RIGHT:
           return LedConstants.totalLength;
         case FULL:
           return LedConstants.totalLength;
         case UNDERGLOW:
           return LedConstants.underLength;
+        default:
+          return LedConstants.totalLength;
 
       }
     }

@@ -2,6 +2,7 @@ package frc.robot.subsystems.leds;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.leds.LedsIO;
+import frc.robot.subsystems.leds.LedsIO.Section;
 
 public class Leds extends SubsystemBase {
     
@@ -12,7 +13,7 @@ public class Leds extends SubsystemBase {
 
         setDefaultCommand(
         run(() -> {
-          io.rainbow();
+          io.rainbow(Section.UNDERGLOW);
         }));
     }
 }
