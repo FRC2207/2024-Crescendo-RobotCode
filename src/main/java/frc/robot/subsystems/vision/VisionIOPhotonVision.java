@@ -52,7 +52,7 @@ public class VisionIOPhotonVision implements VisionIO {
                             Units.inchesToMeters(13), // 13 inches forward
                             Units.inchesToMeters(0), // 0 inches to the left
                             Units.inchesToMeters(3.75), // 3.75 inches off the ground
-                            new Rotation3d() // no rotation for now
+                            new Rotation3d(0, Units.degreesToRadians(-15), 0) // no rotation for now
                         )
                     };
                 break;
@@ -90,7 +90,7 @@ public class VisionIOPhotonVision implements VisionIO {
 
             // Simulated Camera Properties
             var cameraProp = new SimCameraProperties();
-            cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
+            cameraProp.setCalibration(1280, 800, Rotation2d.fromDegrees(70));
             cameraProp.setCalibError(0.35, 0.10);
             cameraProp.setFPS(50);
             cameraProp.setAvgLatencyMs(30);
@@ -188,7 +188,8 @@ public class VisionIOPhotonVision implements VisionIO {
             est -> {
                 inputs.estimatedPose = est.estimatedPose;
                 inputs.stdDevs = getEstimationStdDevs(est.estimatedPose.toPose2d());
-                inputs.timestamp = Units.secondsToMilliseconds(est.timestampSeconds);
+                //inputs.timestamp = Units.secondsToMilliseconds(est.timestampSeconds);
+                inputs.timestamp = est.timestampSeconds;
             },
             () -> {
                 inputs.estimatedPose = null;
