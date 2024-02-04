@@ -36,6 +36,7 @@ public class VisionIOPhotonVision implements VisionIO {
     private double lastEstTimestamp = 0;
 
     private static final Pose3d[] cameraPoses;
+    private static final String[] cameraIdentifiers;
     
     // Simulation
     private PhotonCameraSim cameraSim;
@@ -52,8 +53,20 @@ public class VisionIOPhotonVision implements VisionIO {
                             Units.inchesToMeters(13), // 13 inches forward
                             Units.inchesToMeters(0), // 0 inches to the left
                             Units.inchesToMeters(3.75), // 3.75 inches off the ground
-                            new Rotation3d(0, Units.degreesToRadians(-15), 0) // no rotation for now
+                            new Rotation3d(0, Units.degreesToRadians(-15), 0) // 15 degrees up
+                        ),
+                        // Camera mounted on the back of the robot
+                        new Pose3d(
+                            Units.inchesToMeters(-13), // 13 inches forward
+                            Units.inchesToMeters(0), // 0 inches to the left
+                            Units.inchesToMeters(3.75), // 3.75 inches off the ground
+                            new Rotation3d(0, Units.degreesToRadians(-15), Units.degreesToRadians(180)) // 15 degrees up, 180 around
                         )
+                    };
+                cameraIdentifiers =
+                    new String[] {
+                        "Front-Shooter",
+                        "Back"
                     };
                 break;
             case "Real":
@@ -67,20 +80,22 @@ public class VisionIOPhotonVision implements VisionIO {
                             new Rotation3d() // no rotation for now
                         )
                     };
+                cameraIdentifiers = new String[] {};
                 break;
             default:
                 cameraPoses = new Pose3d[] {};
+                cameraIdentifiers = new String[] {};
                 break;
         }
     }
 
-    public VisionIOPhotonVision(String identifier, int Instance) {
-        System.out.println("[Init] Creating VisionIOPhotonVision (" + identifier + ")");
-        camera = new PhotonCamera(identifier);
+    public VisionIOPhotonVision(String identifier, int instance) {
+        System.out.println("[Init] Creating VisionIOPhotonVision " + identifier + " with camera (" + cameraIdentifiers[instance] + ")");
+        camera = new PhotonCamera(cameraIdentifiers[instance]);
 
         photonEstimator = 
             //new PhotonPoseEstimator(AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(), PoseStrategy.MULTI_TAG_PNP_ON_RIO, new Transform3d(new Pose3d(), cameraPoses[Instance]));
-            new PhotonPoseEstimator(AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(), PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, new Transform3d(new Pose3d(), cameraPoses[Instance]));
+            new PhotonPoseEstimator(AprilTagFields.k2024Crescendo.loadAprilTagLayoutField(), PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, new Transform3d(new Pose3d(), cameraPoses[instance]));
         photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
         // Simulation
@@ -100,7 +115,7 @@ public class VisionIOPhotonVision implements VisionIO {
             cameraSim = new PhotonCameraSim(camera, cameraProp);
 
             // Add the simulated camera to view the targets on the simulated field
-            visionSim.addCamera(cameraSim, new Transform3d(new Pose3d(), cameraPoses[0]));
+            visionSim.addCamera(cameraSim, new Transform3d(new Pose3d(), cameraPoses[instance]));
 
             cameraSim.enableDrawWireframe(true);
         }

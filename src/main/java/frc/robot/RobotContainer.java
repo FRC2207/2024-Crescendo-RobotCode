@@ -59,7 +59,9 @@ public class RobotContainer {
     }
 
     // Create vision
-    vision = new Vision(new VisionIOPhotonVision("0", 0));
+    vision = new Vision(
+        new VisionIOPhotonVision("0", 0),
+        new VisionIOPhotonVision("1", 1));
 
     // Set up subsystem(s)
     vision.setDataInterfaces(drive::addVisionData, drive::getPose);
