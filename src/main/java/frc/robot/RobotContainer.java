@@ -122,8 +122,13 @@ public class RobotContainer {
 
     manipulatorXbox.povUp().onTrue(claw.upBothCommand());
     manipulatorXbox.povDown().onTrue(claw.downBothCommand());
+    manipulatorXbox.leftBumper().and(manipulatorXbox.povUp()).whileTrue(claw.upLeftCommand());
+    manipulatorXbox.leftBumper().and(manipulatorXbox.povDown()).whileTrue(claw.downLeftCommand());
+    manipulatorXbox.rightBumper().and(manipulatorXbox.povUp()).whileTrue(claw.upRightCommand());
+    manipulatorXbox.rightBumper().and(manipulatorXbox.povDown()).whileTrue(claw.downRightCommand());
 
-    manipulatorXbox.leftBumper().whileTrue.and(manipulatorXbox.povUp().onTrue(claw.upLeftCommand()));
+
+
 
     //manipulatorXbox.x().onTrue(pivot.setIntakeAngle(0));
     //manipulatorXbox.y().onTrue(pivot.setIntakeAngle(90));
