@@ -67,4 +67,9 @@ public class Constants {
         public static int rightMotorID = 17;
 
     }
+
+    public static class ClawConstants {
+        public static int leftMotorID = 18;
+        public static int rightMotorID = 19;
+    }
 }

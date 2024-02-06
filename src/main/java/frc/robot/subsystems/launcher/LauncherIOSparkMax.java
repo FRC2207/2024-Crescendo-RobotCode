@@ -1,15 +1,11 @@
 package frc.robot.subsystems.launcher;
 
-import org.littletonrobotics.junction.AutoLog;
 
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.MathUtil;
 import frc.robot.Constants;
-import frc.robot.Constants.IntakeConstants;
 
 public class LauncherIOSparkMax implements LauncherIO {
     private final CANSparkMax leftLaunchMotor = new CANSparkMax(Constants.LaunchConstants.leftMotorID,

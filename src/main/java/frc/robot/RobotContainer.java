@@ -11,6 +11,10 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.commands.DriveWithController;
+
+import frc.robot.subsystems.claw.Claw;
+import frc.robot.subsystems.claw.ClawIOSparkMax;
+
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOADXRS450;
@@ -35,6 +39,7 @@ public class RobotContainer {
   private Intake intake;
   private Launcher launcher;
   private Pivot pivot;
+  private Claw claw;
 
   // Controller
   private final CommandXboxController driveXbox = new CommandXboxController(0);
@@ -67,6 +72,7 @@ public class RobotContainer {
         intake = new Intake(new IntakeIOTalonSRX());
         launcher = new Launcher(new LauncherIOTalonSRX(), intake);
         pivot = new Pivot(new PivotIOSparkMax());
+        claw = new Claw(new ClawIOSparkMax());
         break;
     }
 
@@ -113,6 +119,11 @@ public class RobotContainer {
     
     manipulatorXbox.rightBumper().onTrue(launcher.launchCommand());
     manipulatorXbox.x().onTrue(launcher.testLaunchCommand());
+
+    manipulatorXbox.povUp().onTrue(claw.upBothCommand());
+    manipulatorXbox.povDown().onTrue(claw.downBothCommand());
+
+    manipulatorXbox.leftBumper().whileTrue.and(manipulatorXbox.povUp().onTrue(claw.upLeftCommand()));
 
     //manipulatorXbox.x().onTrue(pivot.setIntakeAngle(0));
     //manipulatorXbox.y().onTrue(pivot.setIntakeAngle(90));
