@@ -24,8 +24,8 @@ import frc.robot.subsystems.intake.IntakeIOTalonSRX;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherIOSim;
 import frc.robot.subsystems.launcher.LauncherIOTalonSRX;
+import frc.robot.subsystems.leds.Leds_;
 import frc.robot.subsystems.leds.Leds;
-import frc.robot.subsystems.leds.LedsIO;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOSparkMax;
@@ -36,7 +36,7 @@ public class RobotContainer {
   private Intake intake;
   private Launcher launcher;
   private Pivot pivot;
-  private Leds leds;
+  private Leds_ leds;
 
   // Controller
   private final CommandXboxController driveXbox = new CommandXboxController(0);
@@ -69,7 +69,7 @@ public class RobotContainer {
         intake = new Intake(new IntakeIOTalonSRX());
         launcher = new Launcher(new LauncherIOTalonSRX(), intake);
         pivot = new Pivot(new PivotIOSparkMax());
-        leds = new Leds(new LedsIO());
+        leds = new Leds_(new Leds());
         break;
     }
 
