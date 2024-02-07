@@ -1,12 +1,16 @@
 package frc.robot.subsystems.leds;
 
+import java.util.Optional;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LedConstants;
 
-public class Leds extends SubsystemBase  {
+public class Leds extends SubsystemBase {
   private static AddressableLED m_Led = new AddressableLED(LedConstants.LedID);
   // Reuse buffer
   // Default to a length of 60, start empty output
@@ -20,9 +24,19 @@ public class Leds extends SubsystemBase  {
     // Set the data
     m_Led.setData(ledBuffer);
     m_Led.start();
-    
+
     setDefaultCommand(run(() -> {
-      rainbow(Section.FULL);
+      Optional<Alliance> ally = DriverStation.getAlliance();
+      if (ally.isPresent()) {
+        if (ally.get() == Alliance.Blue) {
+          setColor(Section.UNDERGLOW, LedColor.BLUE);
+        }
+        if (ally.get() == Alliance.Red) {
+          setColor(Section.UNDERGLOW, LedColor.RED);
+        }
+      } else {
+        rainbow(Section.FULL);
+      }
     }));
   }
 
@@ -48,9 +62,9 @@ public class Leds extends SubsystemBase  {
       final var hue = color.hues();
       // Sets the specified LED to the HSV values for the preferred color
       ledBuffer.setHSV(i, hue, 255, 255);
-   }
-   
-   m_Led.setData(ledBuffer);
+    }
+
+    m_Led.setData(ledBuffer);
   }
 
   public static enum LedColor {
@@ -61,11 +75,11 @@ public class Leds extends SubsystemBase  {
     BLUE,
     PURPLE,
     PINK;
-  
 
     public int hues() {
-      switch (this) {           // Values are divided by 2 because color pickers like Google are x/360, whereas WPILib is x/180
-                                
+      switch (this) { // Values are divided by 2 because color pickers like Google are x/360, whereas
+                      // WPILib is x/180
+
         case RED:
           return 0;
         case ORANGE:
