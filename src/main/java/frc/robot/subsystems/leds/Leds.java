@@ -20,6 +20,7 @@ public class Leds extends SubsystemBase  {
     // Set the data
     m_Led.setData(ledBuffer);
     m_Led.start();
+    
     setDefaultCommand(run(() -> {
       rainbow(Section.FULL);
     }));
