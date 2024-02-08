@@ -107,6 +107,7 @@ public class RobotContainer {
     driveXbox.povDown().whileTrue(new RunCommand(() -> pivot.setPivotAngleRaw(0.125))).onFalse(new RunCommand(() -> pivot.setPivotAngleRaw(0.0))).debounce(0.1);
     driveXbox.a().onTrue(intake.continuousCommand());
     driveXbox.b().onTrue(intake.burpCommand());
+    driveXbox.y().onTrue(launcher.launchCommand());
 
     manipulatorXbox.a().onTrue(intake.continuousCommand());    
     manipulatorXbox.b().onTrue(launcher.launcherIntakeCommand());
