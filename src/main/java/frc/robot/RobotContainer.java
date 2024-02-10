@@ -68,7 +68,7 @@ public class RobotContainer {
         intake = new Intake(new IntakeIOTalonSRX());
         launcher = new Launcher(new LauncherIOTalonSRX(), intake);
         pivot = new Pivot(new PivotIOSparkMax());
-        leds = new Leds();
+        leds = new Leds(intake);
         break;
     }
 
