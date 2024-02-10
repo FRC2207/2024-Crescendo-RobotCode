@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LedConstants;
+import frc.robot.subsystems.intake.Intake;
 
 public class Leds extends SubsystemBase {
   private static AddressableLED m_Led = new AddressableLED(LedConstants.LedID);
@@ -19,12 +20,14 @@ public class Leds extends SubsystemBase {
   private int m_rainbowFirstPixelHue;
 
   public Leds() {
+
     m_Led.setLength(ledBuffer.getLength());
 
     // Set the data
     m_Led.setData(ledBuffer);
     m_Led.start();
-
+ 
+    /** Default command is setting the underglow to a rainbow pattern */
     setDefaultCommand(run(() -> {
       Optional<Alliance> ally = DriverStation.getAlliance();
       if (ally.isPresent()) {
