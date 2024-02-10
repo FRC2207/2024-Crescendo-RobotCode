@@ -9,16 +9,20 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LedConstants;
+import frc.robot.subsystems.intake.Intake;
 
 public class Leds extends SubsystemBase {
   private static AddressableLED m_Led = new AddressableLED(LedConstants.LedID);
+  private final Intake intake;
   // Reuse buffer
   // Default to a length of 60, start empty output
   // Length is expensive to set, so only set it once, then just update data
   private static AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(LedConstants.totalLength);
   private int m_rainbowFirstPixelHue;
 
-  public Leds() {
+  public Leds(Intake intake) {
+    this.intake = intake;
+
     m_Led.setLength(ledBuffer.getLength());
 
     // Set the data
@@ -65,6 +69,16 @@ public class Leds extends SubsystemBase {
     }
 
     m_Led.setData(ledBuffer);
+  }
+
+  public void setStatusColors() {
+    if (intake.hasNote() == true) {
+      setColor(Section.LEFT, LedColor.GREEN);
+    } else if (intake.hasNote() == false) {
+      setColor(Section.LEFT, LedColor.RED);
+    }
+
+    
   }
 
   public static enum LedColor {
