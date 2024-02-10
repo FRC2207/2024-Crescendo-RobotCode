@@ -4,10 +4,10 @@ import com.kauailabs.navx.frc.*;
 import edu.wpi.first.math.util.Units;
 
 
-public class GyroIOnavX2 implements GyroIO{
+public class GyroIONavX2 implements GyroIO{
     private final AHRS navX2 = new AHRS();
     
-    public GyroIOnavX2() {
+    public GyroIONavX2() {
         System.out.println("[Init] Creating GyroIOnavX2");
 
         navX2.reset();
