@@ -83,6 +83,8 @@ public class Leds extends SubsystemBase {
 
     if (DriverStation.isAutonomousEnabled() == true) {      // Sets the LED's to orange when the robot is in autonomous mode
       setColor(Section.FULL, LedColor.ORANGE);
+    } else {
+      m_Led.stop();
     }
     
   }
