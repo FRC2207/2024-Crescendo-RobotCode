@@ -25,6 +25,8 @@ import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherIOSim;
 import frc.robot.subsystems.launcher.LauncherIOTalonSRX;
 import frc.robot.subsystems.leds.Leds;
+import frc.robot.subsystems.leds.Leds.LedColor;
+import frc.robot.subsystems.leds.Leds.Section;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOSparkMax;
@@ -131,5 +133,6 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
+    leds.setColor(Section.FULL, LedColor.ORANGE);
   }
 }
