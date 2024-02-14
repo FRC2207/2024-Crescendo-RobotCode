@@ -47,26 +47,51 @@ public class VisionIOPhotonVision implements VisionIO {
         switch (Constants.robot) {
             case "SIM":
                 cameraPoses = 
+                    /*
                     new Pose3d[] {
                         // Camera mounted on front of robot
                         new Pose3d(
                             Units.inchesToMeters(13), // 13 inches forward
                             Units.inchesToMeters(0), // 0 inches to the left
-                            Units.inchesToMeters(3.75), // 3.75 inches off the ground
+                            Units.inchesToMeters(20), // 3.75 inches off the ground
                             new Rotation3d(0, Units.degreesToRadians(-15), 0) // 15 degrees up
                         ),
                         // Camera mounted on the back of the robot
                         new Pose3d(
                             Units.inchesToMeters(-13), // 13 inches forward
                             Units.inchesToMeters(0), // 0 inches to the left
-                            Units.inchesToMeters(3.75), // 3.75 inches off the ground
+                            Units.inchesToMeters(5.75), // 3.75 inches off the ground
                             new Rotation3d(0, Units.degreesToRadians(-15), Units.degreesToRadians(180)) // 15 degrees up, 180 around
+                        )
+                    };
+                    */
+                    new Pose3d[] {
+                        // Left Module
+                        new Pose3d(
+                            Units.inchesToMeters(20.75/2), // Forward
+                            Units.inchesToMeters(20.75/2), // Left
+                            Units.inchesToMeters(7.5),
+                            new Rotation3d(0, Units.degreesToRadians(-15), Units.degreesToRadians(30))
+                        ),
+                        // Right Module
+                        new Pose3d(
+                            Units.inchesToMeters(20.75/2), // Forward
+                            Units.inchesToMeters(-20.75/2), // Right
+                            Units.inchesToMeters(7.5),
+                            new Rotation3d(0, Units.degreesToRadians(-15), Units.degreesToRadians(-30))
+                        ),
+                        new Pose3d(
+                            Units.inchesToMeters(13),
+                            Units.inchesToMeters(0),
+                            Units.inchesToMeters(20),
+                            new Rotation3d(0, Units.degreesToRadians(-30), 0)
                         )
                     };
                 cameraIdentifiers =
                     new String[] {
-                        "Front-Shooter",
-                        "Back"
+                        "FL-Module",
+                        "FR-Module",
+                        "Shooter"
                     };
                 break;
             case "Real":
