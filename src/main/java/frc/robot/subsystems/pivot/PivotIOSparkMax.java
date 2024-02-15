@@ -30,10 +30,10 @@ public class PivotIOSparkMax implements PivotIO {
     }
 
 
-
     @Override
     public void updateInputs(PivotIOInputs inputs) {
-        inputs.positionRad = Units.rotationsToRadians(throughEncoder.getAbsolutePosition() / Constants.IntakeConstants.pivotGearRatio);
+        //inputs.positionRad = Units.rotationsToRadians(throughEncoder.getAbsolutePosition() / Constants.IntakeConstants.pivotGearRatio);
+        inputs.positionRad = Units.rotationsToRadians(-throughEncoder.get()) + 1.2693; // The encoder is mounted to the output. No gear ratio is required.
         //inputs.velocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(throughEncoder.get() / Constants.IntakeConstants.pivotGearRatio);
         inputs.appliedVolts = pivotMotor.getAppliedOutput() * pivotMotor.getBusVoltage();
         inputs.currentAmps = new double[] { pivotMotor.getOutputCurrent(), pivotMotor.getOutputCurrent() };
