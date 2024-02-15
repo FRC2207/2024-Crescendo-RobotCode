@@ -107,11 +107,12 @@ public class RobotContainer {
     System.out.println("Set default command");
 
     // Single controller commands
-    driveXbox.povUp().whileTrue(new RunCommand(() -> pivot.setPivotAngleRaw(-0.125))).onFalse(new RunCommand(() -> pivot.setPivotAngleRaw(0.0))).debounce(0.1);
-    driveXbox.povDown().whileTrue(new RunCommand(() -> pivot.setPivotAngleRaw(0.125))).onFalse(new RunCommand(() -> pivot.setPivotAngleRaw(0.0))).debounce(0.1);
+    driveXbox.povUp().whileTrue(Commands.run(() -> pivot.setPivotAngleRaw(-0.1825), pivot)).onFalse(Commands.run(() -> pivot.setPivotAngleRaw(0.0), pivot)).debounce(0.1);
+    driveXbox.povDown().whileTrue(Commands.run(() -> pivot.setPivotAngleRaw(0.1825), pivot)).onFalse(Commands.run(() -> pivot.setPivotAngleRaw(0.0), pivot)).debounce(0.1);
     driveXbox.a().onTrue(intake.continuousCommand());
     driveXbox.b().onTrue(intake.burpCommand());
     driveXbox.y().onTrue(launcher.launchCommand());
+    driveXbox.rightBumper().whileTrue(Commands.run(() -> intake.setIntakeVoltageRaw(1), intake)).onFalse(Commands.run(() -> intake.setIntakeVoltageRaw(0), intake));
 
     manipulatorXbox.a().onTrue(intake.continuousCommand());    
     manipulatorXbox.b().onTrue(launcher.launcherIntakeCommand());
