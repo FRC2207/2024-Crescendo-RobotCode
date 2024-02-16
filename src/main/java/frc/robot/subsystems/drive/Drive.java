@@ -19,7 +19,9 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.util.PoseEstimator.TimestampedVisionUpdate;
 
 public class Drive extends SubsystemBase {
@@ -34,6 +36,8 @@ public class Drive extends SubsystemBase {
     private final GyroIO gyroIO;
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
     private final Module[] modules = new Module[4]; // FL, FR, BL, BR
+
+    private final SysIdRoutine sysId;
 
     private double maxAngularSpeed;
     private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
@@ -73,6 +77,23 @@ public class Drive extends SubsystemBase {
 
       maxAngularSpeed =
         maxLinearSpeed / Arrays.stream(getModuleTranslations()).map(translation -> translation.getNorm()).max(Double::compare).get();
+
+      // Configure SysId
+      sysId = 
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null, 
+                null, 
+                null, 
+                (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> {
+                    for (int i = 0; i < 4; i++) {
+                        modules[i].runCharacterization(voltage.in(edu.wpi.first.units.Units.Volts));
+                    }
+                }, 
+                null, 
+                this));
     }
 
     public void periodic() {
@@ -245,6 +266,28 @@ public class Drive extends SubsystemBase {
                 new SwerveModuleState(
                     lastSetpointStates[i].speedMetersPerSecond, getModuleTranslations()[i].getAngle());
         }
+    }
+
+    /**
+     * A method that returns sysId commands for the quasistatic test in the specified direction.
+     * 
+     * @param direction The direction to run the sysId test in.
+     * 
+     * @return A sysId quasistatic command.
+     */
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return sysId.quasistatic(direction);
+    }
+
+    /**
+     * A method that returns sysId commands for the dynamic test in the specified direction.
+     * 
+     * @param direction The direction to run the sysId test in.
+     * 
+     * @return A sysId dynamic command.
+     */
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return sysId.dynamic(direction);
     }
 
     /** Returns the maximum linear speed in meters per sec. */

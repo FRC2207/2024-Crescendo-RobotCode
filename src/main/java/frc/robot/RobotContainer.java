@@ -4,9 +4,13 @@
 
 package frc.robot;
 
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveWithController;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -31,6 +35,10 @@ public class RobotContainer {
   private final CommandXboxController driveXbox = new CommandXboxController(0);
   private final CommandXboxController manipulatorXbox = new CommandXboxController(1);
   
+
+  // Autonomous Routine Chooser - This may be changed if we move over to a solution such as PathPlanner that has it's own AutoBuilder. SmartDashboard for now :)
+  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+  private final Command autoDefault = Commands.print("Default auto selected. No autonomous command configured.");
   
   public RobotContainer() {
     switch (Constants.robot) {
@@ -71,6 +79,16 @@ public class RobotContainer {
           new ModuleIOSim());
     }
 
+    // Add autonomous routines to the SendableChooser
+    autoChooser.setDefaultOption("Default Auto", autoDefault);
+    autoChooser.addOption("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption("Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption("Drive SysId (Quasistatic Forward)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption("Drive SysId (Quasistatic Reverse)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+
+    // Put SendableChooser to SmartDashboard
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+
     configureBindings();
   }
 
@@ -98,6 +116,10 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    if (autoChooser.getSelected() != null) {
+      return autoChooser.getSelected();
+    } else {
+      return Commands.print("No autonomous command configured");
+    }
   }
 }

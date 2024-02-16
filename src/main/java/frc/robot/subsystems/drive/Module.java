@@ -88,6 +88,15 @@ public class Module {
         return optimizedState;
     }
 
+    public void runCharacterization(double volts) {
+        // Closed loop control of module rotation
+        io.setTurnVoltage(
+            turnFeedback.calculate(getAngle().getRadians(), 0.0));
+
+        // Open loop control of module drive
+        io.setDriveVoltage(volts);
+    }
+
     /** Disables al outputs to motors. */
     public void stop() {
         io.setTurnVoltage(0.0);
