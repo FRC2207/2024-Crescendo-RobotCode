@@ -1,12 +1,7 @@
 package frc.robot.subsystems.pivot;
 
-import com.revrobotics.CANSparkMax;
-
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import frc.robot.Constants;
 
 public class PivotIOSim implements PivotIO {
     private DCMotorSim pivotSim = new DCMotorSim(DCMotor.getCIM(1), 1, 0.0001);
