@@ -1,15 +1,10 @@
 package frc.robot.subsystems.launcher;
 
-import org.littletonrobotics.junction.AutoLog;
-
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.MathUtil;
 import frc.robot.Constants;
-import frc.robot.Constants.IntakeConstants;
 
 public class LauncherIOSparkMax implements LauncherIO {
     private final CANSparkMax leftLaunchMotor = new CANSparkMax(Constants.LaunchConstants.leftMotorID,
@@ -34,13 +29,13 @@ public class LauncherIOSparkMax implements LauncherIO {
 
     /** Run the left launcher wheel at the specified voltage. */
     public void setLeftLaunchVoltage(double volts) {
-        volts = MathUtil.clamp(volts, -1, 1);
+        volts = MathUtil.clamp(volts, -12, 12);
         leftLaunchMotor.setVoltage(volts);
     }
 
     /** Run the right launcher wheel at the specidied voltage. */
     public void setRightLaunchVoltage(double volts) {
-        volts = MathUtil.clamp(volts, -1, 1);
+        volts = MathUtil.clamp(volts, -12, 12);
         rightLaunchMotor.setVoltage(volts);
     }
 }

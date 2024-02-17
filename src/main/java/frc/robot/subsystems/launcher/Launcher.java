@@ -2,6 +2,7 @@ package frc.robot.subsystems.launcher;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -40,8 +41,8 @@ public class Launcher extends SubsystemBase {
   public Command launchCommand() {
     return Commands.sequence(
       runOnce(() -> {
-          io.setLeftLaunchVoltage(launchSpeed);
-          io.setRightLaunchVoltage(launchSpeed);
+          io.setLeftLaunchVoltage(launchSpeed * 12.0);
+          io.setRightLaunchVoltage(launchSpeed * 12.0);
         }),
         Commands.waitSeconds(spinUpTime),
 
