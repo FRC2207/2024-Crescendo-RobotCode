@@ -1,6 +1,5 @@
 package frc.robot.subsystems.launcher;
 
-
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
@@ -30,13 +29,13 @@ public class LauncherIOSparkMax implements LauncherIO {
 
     /** Run the left launcher wheel at the specified voltage. */
     public void setLeftLaunchVoltage(double volts) {
-        volts = MathUtil.clamp(volts, -1, 1);
+        volts = MathUtil.clamp(volts, -12, 12);
         leftLaunchMotor.setVoltage(volts);
     }
 
     /** Run the right launcher wheel at the specidied voltage. */
     public void setRightLaunchVoltage(double volts) {
-        volts = MathUtil.clamp(volts, -1, 1);
+        volts = MathUtil.clamp(volts, -12, 12);
         rightLaunchMotor.setVoltage(volts);
     }
 }

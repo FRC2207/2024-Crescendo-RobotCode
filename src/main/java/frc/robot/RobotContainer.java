@@ -25,7 +25,7 @@ import frc.robot.subsystems.intake.IntakeIOTalonSRX;
 
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherIOSim;
-import frc.robot.subsystems.launcher.LauncherIOTalonSRX;
+import frc.robot.subsystems.launcher.LauncherIOSparkMax;
 
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIOSim;
@@ -68,7 +68,7 @@ public class RobotContainer {
             new ModuleIOSparkMax(3));
 
         intake = new Intake(new IntakeIOTalonSRX());
-        launcher = new Launcher(new LauncherIOTalonSRX(), intake);
+        launcher = new Launcher(new LauncherIOSparkMax(), intake);
         pivot = new Pivot(new PivotIOSparkMax());
         climber = new Climber(new ClimberIOSparkMax());
         break;
