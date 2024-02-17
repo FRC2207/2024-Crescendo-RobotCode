@@ -4,6 +4,9 @@ public class Constants {
     public static final String robot = "SIM";
     //public static final String robot = "Real";
 
+    // Is tunable constant. Enables SysId routines in the autonomous selectable chooser.
+    public static final boolean isTuningMode = true;
+
     public static class SwerveConstants {
         public static class Modules {
             public static class FrontLeft {
