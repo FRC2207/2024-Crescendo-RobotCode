@@ -118,7 +118,6 @@ public class RobotContainer {
     manipulatorXbox.b().onTrue(launcher.launcherIntakeCommand());
     
     manipulatorXbox.rightBumper().onTrue(launcher.launchCommand());
-    manipulatorXbox.x().onTrue(launcher.testLaunchCommand());
 
     manipulatorXbox.povUp().onTrue(climber.upBothCommand());
     manipulatorXbox.povDown().onTrue(climber.downBothCommand());
