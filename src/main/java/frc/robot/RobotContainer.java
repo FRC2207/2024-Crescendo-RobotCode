@@ -14,6 +14,7 @@ import frc.robot.commands.DriveWithController;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOADXRS450;
+import frc.robot.subsystems.drive.GyroIONavX2;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSparkMax;
 
@@ -56,9 +57,9 @@ public class RobotContainer {
         pivot = new Pivot(new PivotIOSim());
         break;
       case "Real":
-        drive = new Drive(
-            new GyroIOADXRS450() {
-            },
+        drive =
+          new Drive(
+            new GyroIONavX2() {},
             new ModuleIOSparkMax(0),
             new ModuleIOSparkMax(1),
             new ModuleIOSparkMax(2),
