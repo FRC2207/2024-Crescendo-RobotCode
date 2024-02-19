@@ -9,8 +9,10 @@ import frc.robot.subsystems.intake.Intake;
 
 public class Launcher extends SubsystemBase {
   private static final double launchSpeed = 1.0;
-  private static final double spinUpTime = 1.0;
-  private static final double stopDelay = 1.0;
+  private static final double spinUpTime = 0.5;
+  private static final double stopDelay = 0.5;
+  private static final double intakeSpeed = -1.0;
+  private static final double intakeDelay = 1.0;
 
   private final LauncherIO io;
   private final LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
@@ -34,12 +36,12 @@ public class Launcher extends SubsystemBase {
 
   }
 
-  /** Returns a command that intakes a note. */
+  /** Returns a command that launches a note. */
   public Command launchCommand() {
     return Commands.sequence(
       runOnce(() -> {
-          io.setLeftLaunchVoltage(launchSpeed);
-          io.setRightLaunchVoltage(-1 * launchSpeed);
+          io.setLeftLaunchVoltage(launchSpeed * 12.0);
+          io.setRightLaunchVoltage(launchSpeed * 12.0);
         }),
         Commands.waitSeconds(spinUpTime),
 
@@ -48,6 +50,22 @@ public class Launcher extends SubsystemBase {
         Commands.waitSeconds(stopDelay)
       
       ).finallyDo(() -> {
+        io.setLeftLaunchVoltage(0.0);
+        io.setRightLaunchVoltage(0.0);
+      });
+  }
+
+  /** Returns a command that intakes a note using the launcher */
+  public Command launcherIntakeCommand() {
+    return Commands.sequence(
+      runOnce(() -> {
+        io.setLeftLaunchVoltage(intakeSpeed);
+        io.setRightLaunchVoltage(intakeSpeed);
+      }),
+      intake.intakeCommand(),
+
+      Commands.waitSeconds(intakeDelay)
+    ).finallyDo(() -> {
         io.setLeftLaunchVoltage(0.0);
         io.setRightLaunchVoltage(0.0);
       });
