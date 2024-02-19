@@ -55,21 +55,7 @@ public class Launcher extends SubsystemBase {
       });
   }
 
-  /** Returns a command that launches without intake usage */
-  public Command testLaunchCommand() {
-    return Commands.sequence(
-      runOnce(() -> {
-        io.setLeftLaunchVoltage(launchSpeed);
-        io.setRightLaunchVoltage(launchSpeed);
-      }),
-      Commands.waitSeconds(stopDelay)
-
-    ).finallyDo(() -> {
-      io.setLeftLaunchVoltage(0.0);
-      io.setRightLaunchVoltage(0.0);
-    });  
-  }
-
+  /** Returns a command that intakes a note using the launcher */
   public Command launcherIntakeCommand() {
     return Commands.sequence(
       runOnce(() -> {
