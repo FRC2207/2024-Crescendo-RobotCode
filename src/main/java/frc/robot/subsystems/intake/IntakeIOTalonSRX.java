@@ -20,8 +20,6 @@ public class IntakeIOTalonSRX implements IntakeIO {
     config.voltageCompSaturation = 12.0;
     intakeMotor.configAllSettings(config);
 
-    // Weird inversion. Not sure why this all of a sudden needed to be inverted but this is here as a quick fix
-    intakeMotor.setInverted(true);
   }
 
   @Override
