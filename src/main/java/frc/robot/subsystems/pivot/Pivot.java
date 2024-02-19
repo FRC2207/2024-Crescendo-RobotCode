@@ -54,11 +54,13 @@ public class Pivot extends ProfiledPIDSubsystem {
         return io.getMeasurement();
     }
 
+    /** Method to manually operate the pivot angle */
     public void setPivotAngleRaw(double percent) {
         io.setPivotVoltage(percent * 12);
 
     }
 
+    /** Returns a command to set the angle of the pivot using PID control */
     public Command setIntakeAngle(double angle) {
         return runOnce(() -> {
             setGoal(angle);
