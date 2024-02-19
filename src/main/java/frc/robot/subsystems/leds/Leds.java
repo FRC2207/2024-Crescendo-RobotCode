@@ -28,7 +28,7 @@ public class Leds extends SubsystemBase {
     m_Led.setData(ledBuffer);
     m_Led.start();
  
-    /** Default command is setting the underglow to a rainbow pattern */
+    /** Default command is setting the underglow of the robot */
     setDefaultCommand(run(() -> {
       Optional<Alliance> ally = DriverStation.getAlliance();
       if (ally.isPresent()) {
@@ -44,6 +44,7 @@ public class Leds extends SubsystemBase {
     }));
   }
 
+  /** Method to set a rainbow effect to a given section of the LED strip */
   public void rainbow(Section section) {
     // For every pixel
     for (var i = 0; i < section.end(); i++) {
@@ -61,6 +62,7 @@ public class Leds extends SubsystemBase {
     m_Led.setData(ledBuffer);
   }
 
+  /** Method to set a given color to a given section of the LED strip */
   public void setColor(Section section, LedColor color) {
     for (var i = 0; i < section.end(); i++) {
       final var hue = color.hues();
