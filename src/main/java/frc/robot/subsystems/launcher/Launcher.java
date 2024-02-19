@@ -15,7 +15,7 @@ public class Launcher extends SubsystemBase {
   private static final double intakeDelay = 1.0;
 
   private final LauncherIO io;
-  private final LauncherIOIneputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
+  private final LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
   private final Intake intake;
 
   public Launcher(LauncherIO io, Intake intake) {
