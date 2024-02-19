@@ -67,6 +67,13 @@ public class Module {
         Logger.processInputs("Drive/Module" + Integer.toString(index), inputs);
     }
 
+    /**
+     * Runs the module using setpoints provided by a SwerveModuleState while optimizing the angle.
+     * 
+     * @param state Setpoint in the form of a SwerveModuleState.
+     * 
+     * @return The optimized SwerveModuleState.
+     */
     public SwerveModuleState runSetpoint(SwerveModuleState state) {
         // Optimize state based on current angle
         // This avoids "taking the long road" to a module angle. (270 degrees to 0 degrees should only be a 90 degree route, not 270.)
@@ -88,6 +95,11 @@ public class Module {
         return optimizedState;
     }
 
+    /**
+     * Sends a voltage value to the drive motor of a module while maintaining closed loop control with an angle setpoint of 0.0 on the turn motor.
+     * 
+     * @param volts Voltage to be sent to the drive motor.
+     */
     public void runCharacterization(double volts) {
         // Closed loop control of module rotation
         io.setTurnVoltage(
@@ -97,7 +109,7 @@ public class Module {
         io.setDriveVoltage(volts);
     }
 
-    /** Disables al outputs to motors. */
+    /** Disables all outputs to motors. */
     public void stop() {
         io.setTurnVoltage(0.0);
         io.setDriveVoltage(0.0);
