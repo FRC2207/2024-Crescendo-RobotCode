@@ -6,6 +6,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.leds.Leds;
+import frc.robot.subsystems.leds.Leds.LedColor;
+import frc.robot.subsystems.leds.Leds.Section;
 
 public class Launcher extends SubsystemBase {
   private static final double launchSpeed = 1.0;
@@ -17,10 +20,12 @@ public class Launcher extends SubsystemBase {
   private final LauncherIO io;
   private final LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
   private final Intake intake;
+  private final Leds leds;
 
-  public Launcher(LauncherIO io, Intake intake) {
+  public Launcher(LauncherIO io, Intake intake, Leds leds) {
     this.io = io;
     this.intake = intake;
+    this.leds = leds;
 
     setDefaultCommand(
         run(
@@ -39,49 +44,58 @@ public class Launcher extends SubsystemBase {
   /** Returns a command that launches a note. */
   public Command launchCommand() {
     return Commands.sequence(
-      runOnce(() -> {
+        runOnce(() -> {            // Starts the launch motors to gain speed
           io.setLeftLaunchVoltage(launchSpeed);
           io.setRightLaunchVoltage(launchSpeed);
         }),
+
+        run(() -> {
+          leds.wave(Section.LEFT, LedColor.GREEN, null, .1, spinUpTime + stopDelay); // Runs the LED effect
+          leds.wave(Section.RIGHT, LedColor.GREEN, null, .1, spinUpTime + stopDelay);
+        }),
         Commands.waitSeconds(spinUpTime),
 
-        intake.burpCommand(),
-
+        intake.burpCommand(),      // Intake ejects the disc into the launcher
+        runOnce(() -> {
+          leds.setColor(Section.LEFT, LedColor.GREEN); // Fixes the LED state once the disc has been ejected
+          leds.setColor(Section.RIGHT, LedColor.GREEN);
+        }),
         Commands.waitSeconds(stopDelay)
-      
-      ).finallyDo(() -> {
-        io.setLeftLaunchVoltage(0.0);
-        io.setRightLaunchVoltage(0.0);
-      });
+
+    ).finallyDo(() -> {           // Stops the launch wheels and turns the LED off. 
+      io.setLeftLaunchVoltage(0.0);
+      io.setRightLaunchVoltage(0.0);
+      leds.m_Led.stop();
+      leds.m_Led.stop();
+    });
   }
 
   /** Returns a command that launches without intake usage */
   public Command testLaunchCommand() {
     return Commands.sequence(
-      runOnce(() -> {
-        io.setLeftLaunchVoltage(launchSpeed);
-        io.setRightLaunchVoltage(launchSpeed);
-      }),
-      Commands.waitSeconds(stopDelay)
+        runOnce(() -> {
+          io.setLeftLaunchVoltage(launchSpeed);
+          io.setRightLaunchVoltage(launchSpeed);
+        }),
+        Commands.waitSeconds(stopDelay)
 
     ).finallyDo(() -> {
       io.setLeftLaunchVoltage(0.0);
       io.setRightLaunchVoltage(0.0);
-    });  
+    });
   }
 
   public Command launcherIntakeCommand() {
     return Commands.sequence(
-      runOnce(() -> {
-        io.setLeftLaunchVoltage(intakeSpeed);
-        io.setRightLaunchVoltage(intakeSpeed);
-      }),
-      intake.intakeCommand(),
+        runOnce(() -> {
+          io.setLeftLaunchVoltage(intakeSpeed);
+          io.setRightLaunchVoltage(intakeSpeed);
+        }),
+        intake.intakeCommand(),
 
-      Commands.waitSeconds(intakeDelay)
-    ).finallyDo(() -> {
-        io.setLeftLaunchVoltage(0.0);
-        io.setRightLaunchVoltage(0.0);
-      });
+        Commands.waitSeconds(intakeDelay)).finallyDo(() -> {
+          io.setLeftLaunchVoltage(0.0);
+          io.setRightLaunchVoltage(0.0);
+        });
   }
 }

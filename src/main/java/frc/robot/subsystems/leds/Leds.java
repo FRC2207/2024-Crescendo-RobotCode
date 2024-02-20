@@ -5,19 +5,19 @@ import java.util.Optional;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LedConstants;
 import frc.robot.subsystems.intake.Intake;
 
 public class Leds extends SubsystemBase {
-  private static AddressableLED m_Led = new AddressableLED(LedConstants.LedID);
-  private final Intake intake;
-  // Reuse buffer
-  // Default to a length of 60, start empty output
-  // Length is expensive to set, so only set it once, then just update data
+  public AddressableLED m_Led = new AddressableLED(LedConstants.LedID);
   private static AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(LedConstants.totalLength);
+  private final Intake intake;
+
   private int m_rainbowFirstPixelHue;
+  private static final double waveExponent = 0.4;
 
   public Leds(Intake intake) {
     this.intake = intake;
@@ -27,7 +27,7 @@ public class Leds extends SubsystemBase {
     // Set the data
     m_Led.setData(ledBuffer);
     m_Led.start();
- 
+
     /** Default command is setting the underglow of the robot */
     setDefaultCommand(run(() -> {
       Optional<Alliance> ally = DriverStation.getAlliance();
@@ -73,19 +73,39 @@ public class Leds extends SubsystemBase {
     m_Led.setData(ledBuffer);
   }
 
+  public void wave(Section section, LedColor color, LedColor color2, double cycleLength, double duration) {
+    double x = (1 - ((Timer.getFPGATimestamp() % duration) / duration)) * 2.0 * Math.PI;
+    double xDiffPerLed = (2.0 * Math.PI) / cycleLength;
+    for (int i = 0; i < section.end(); i++) {
+      x += xDiffPerLed;
+      if (i >= section.start()) {
+        double ratio = (Math.pow(Math.sin(x), waveExponent) + 1.0) / 2.0;
+        if (Double.isNaN(ratio)) {
+          ratio = (-Math.pow(Math.sin(x + Math.PI), waveExponent) + 1.0) / 2.0;
+        }
+        if (Double.isNaN(ratio)) {
+          ratio = 0.5;
+        }
+        int outputColor = (int) Math.round((color.hues() * (1 - ratio)) + (color2.hues() * ratio));
+        ledBuffer.setHSV(i, outputColor, 255, 255);
+      }
+    }
+  }
+
+  /** Method to set the LEDs to different states during the match */
   public void setStatusColors() {
-    if (intake.hasNote() == true) {                   // Sets the LED's to green when the robot has a note in the intake
+    if (intake.hasNote() == true) { // Sets the LED's to green when the robot has a note in the intake
       setColor(Section.LEFT, LedColor.GREEN);
     } else if (intake.hasNote() == false) {
       setColor(Section.LEFT, LedColor.RED);
     }
 
-    if (DriverStation.isAutonomousEnabled() == true) {      // Sets the LED's to orange when the robot is in autonomous mode
+    if (DriverStation.isAutonomousEnabled() == true) { // Sets the LED's to orange when the robot is in autonomous mode
       setColor(Section.FULL, LedColor.ORANGE);
     } else {
       m_Led.stop();
     }
-    
+
   }
 
   public static enum LedColor {
