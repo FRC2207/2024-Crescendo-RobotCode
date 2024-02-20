@@ -68,7 +68,7 @@ public class Constants {
 
     }
 
-    public static class ClawConstants {
+    public static class ClimberConstants {
         public static int leftMotorID = 18;
         public static int rightMotorID = 19;
     }

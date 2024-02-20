@@ -37,7 +37,7 @@ public class RobotContainer {
   private Intake intake;
   private Launcher launcher;
   private Pivot pivot;
-  private Climber claw;
+  private Climber climber;
 
   // Controller
   private final CommandXboxController driveXbox = new CommandXboxController(0);
@@ -70,7 +70,7 @@ public class RobotContainer {
         intake = new Intake(new IntakeIOTalonSRX());
         launcher = new Launcher(new LauncherIOTalonSRX(), intake);
         pivot = new Pivot(new PivotIOSparkMax());
-        claw = new Climber(new ClimberIOSparkMax());
+        climber = new Climber(new ClimberIOSparkMax());
         break;
     }
 
@@ -118,12 +118,12 @@ public class RobotContainer {
     manipulatorXbox.rightBumper().onTrue(launcher.launchCommand());
     manipulatorXbox.x().onTrue(launcher.testLaunchCommand());
 
-    manipulatorXbox.povUp().onTrue(claw.upBothCommand());
-    manipulatorXbox.povDown().onTrue(claw.downBothCommand());
-    manipulatorXbox.leftBumper().and(manipulatorXbox.povUp()).whileTrue(claw.upLeftCommand());
-    manipulatorXbox.leftBumper().and(manipulatorXbox.povDown()).whileTrue(claw.downLeftCommand());
-    manipulatorXbox.rightBumper().and(manipulatorXbox.povUp()).whileTrue(claw.upRightCommand());
-    manipulatorXbox.rightBumper().and(manipulatorXbox.povDown()).whileTrue(claw.downRightCommand());
+    manipulatorXbox.povUp().onTrue(climber.upBothCommand());
+    manipulatorXbox.povDown().onTrue(climber.downBothCommand());
+    manipulatorXbox.leftBumper().and(manipulatorXbox.povUp()).whileTrue(climber.upLeftCommand());
+    manipulatorXbox.leftBumper().and(manipulatorXbox.povDown()).whileTrue(climber.downLeftCommand());
+    manipulatorXbox.rightBumper().and(manipulatorXbox.povUp()).whileTrue(climber.upRightCommand());
+    manipulatorXbox.rightBumper().and(manipulatorXbox.povDown()).whileTrue(climber.downRightCommand());
 
 
 
