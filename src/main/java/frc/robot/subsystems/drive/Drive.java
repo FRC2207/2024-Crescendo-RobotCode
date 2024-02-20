@@ -269,9 +269,9 @@ public class Drive extends SubsystemBase {
     }
 
     /**
-     * A method that returns sysId commands for the quasistatic test in the specified direction.
+     * Returns sysId commands for the quasistatic test in the specified direction.
      * 
-     * @param direction The direction to run the sysId test in.
+     * @param direction The {@link SysIdRoutine#Direction} to run the sysId test in.
      * 
      * @return A sysId quasistatic command.
      */
@@ -280,9 +280,9 @@ public class Drive extends SubsystemBase {
     }
 
     /**
-     * A method that returns sysId commands for the dynamic test in the specified direction.
+     * Returns sysId commands for the dynamic test in the specified direction.
      * 
-     * @param direction The direction to run the sysId test in.
+     * @param direction The {@link SysIdRoutine#Direction} to run the sysId test in.
      * 
      * @return A sysId dynamic command.
      */
