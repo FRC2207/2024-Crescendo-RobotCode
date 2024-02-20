@@ -11,10 +11,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.commands.DriveWithController;
-
-import frc.robot.subsystems.claw.Claw;
-import frc.robot.subsystems.claw.ClawIOSparkMax;
-
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberIOSparkMax;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOADXRS450;
@@ -39,7 +37,7 @@ public class RobotContainer {
   private Intake intake;
   private Launcher launcher;
   private Pivot pivot;
-  private Claw claw;
+  private Climber claw;
 
   // Controller
   private final CommandXboxController driveXbox = new CommandXboxController(0);
@@ -72,7 +70,7 @@ public class RobotContainer {
         intake = new Intake(new IntakeIOTalonSRX());
         launcher = new Launcher(new LauncherIOTalonSRX(), intake);
         pivot = new Pivot(new PivotIOSparkMax());
-        claw = new Claw(new ClawIOSparkMax());
+        claw = new Climber(new ClimberIOSparkMax());
         break;
     }
 

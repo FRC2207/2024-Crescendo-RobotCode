@@ -1,19 +1,20 @@
-package frc.robot.subsystems.claw;
+package frc.robot.subsystems.climber;
 
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.climber.ClimberIOInputsAutoLogged;
 
-public class Claw extends SubsystemBase {
+public class Climber extends SubsystemBase {
     private final double upSpeed = 0.5;
     private final double downSpeed = -1 * 0.25;
 
-    private final ClawIO io;
-    private final ClawIOInputsAutoLogged inputs = new ClawIOInputsAutoLogged();
+    private final ClimberIO io;
+    private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
 
-    public Claw(ClawIO io) {
+    public Climber(ClimberIO io) {
         this.io = io;
 
         setDefaultCommand(
