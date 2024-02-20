@@ -48,11 +48,19 @@ public class Module {
                 this.turnKp = 23.0;
                 this.turnKd = 0.0;
                 break;
-            case "Real":
+            case "RealOld":
                 this.driveKp = 0.1;
                 this.driveKd = 0.0;
                 this.driveKs = 0.18868;
                 this.driveKv = 0.12825;
+                this.turnKp = 4.0;
+                this.turnKd = 0.0;
+                break;
+            case "Real":
+                this.driveKp = 0.036297;
+                this.driveKd = 0.0;
+                this.driveKs = 0.0;
+                this.driveKv = 0.11369;
                 this.turnKp = 4.0;
                 this.turnKd = 0.0;
         }
