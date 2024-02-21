@@ -71,5 +71,7 @@ public class Constants {
     public static class ClimberConstants {
         public static int leftMotorID = 18;
         public static int rightMotorID = 19;
+
+        public static double axleRadius = 0.5;
     }
 }
