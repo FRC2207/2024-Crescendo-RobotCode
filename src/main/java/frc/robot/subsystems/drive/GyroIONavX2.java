@@ -14,8 +14,8 @@ public class GyroIONavX2 implements GyroIO{
     }
 
     public void updateInputs(GyroIOInputs inputs) {
-        double angle = navX2.getYaw();
-        double rate = navX2.getRawGyroZ();
+        double angle = -navX2.getYaw();
+        double rate = -navX2.getRawGyroZ();
         inputs.connected = navX2.isConnected();
         inputs.rollPositionRad = navX2.getRoll();
         inputs.pitchPositionRad = navX2.getPitch();
