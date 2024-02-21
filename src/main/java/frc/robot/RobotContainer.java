@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -63,8 +64,8 @@ public class RobotContainer {
             new ModuleIOSparkMax(2),
             new ModuleIOSparkMax(3));
         
-        intake = new Intake(new IntakeIOTalonSRX());
-        launcher = new Launcher(new LauncherIOTalonSRX(), intake);
+        intake = new Intake(new IntakeIOSim());
+        launcher = new Launcher(new LauncherIOSim(), intake);
         break;
     }
     
@@ -112,6 +113,7 @@ public class RobotContainer {
     );
     driveXbox.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     System.out.println("Set default command");
+    driveXbox.start().onTrue(Commands.runOnce(() -> drive.setPose(new Pose2d())));
 
     manipulatorXbox.a().onTrue(intake.intakeCommand());
     manipulatorXbox.b().onTrue(intake.burpCommand());
