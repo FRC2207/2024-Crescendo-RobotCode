@@ -54,22 +54,22 @@ public class DriveToPose extends Command {
             case "SIM":
             case "Real":
             default:
-                driveKp = 2.0*6;
+                driveKp = 2.0*3;
                 driveKd = 0.0;
                 thetaKp = 5.0;
                 thetaKd = 0.0;
                 driveMaxVelocity = Units.feetToMeters(15.3);
                 driveMaxVelocitySlow = Units.feetToMeters(3);
-                driveMaxAcceleration = Units.feetToMeters(6*3);
+                driveMaxAcceleration = Units.feetToMeters(6*2);
                 thetaMaxVelocity = Units.degreesToRadians(360);
                 thetaMaxVelocitySlow = Units.degreesToRadians(90);
-                thetaMaxAcceleration = Units.degreesToRadians(720);
+                thetaMaxAcceleration = Units.degreesToRadians(720/1.5);
                 driveTolerance = 0.01;
                 driveToleranceSlow = 0.06;
                 thetaTolerance = Units.degreesToRadians(1);
                 thetaToleranceSlow = Units.degreesToRadians(3);
                 ffMinRadius = 0.2*4;
-                ffMaxRadius = 0.8*2;
+                ffMaxRadius = 0.8*4;
                 break;
         }
     }

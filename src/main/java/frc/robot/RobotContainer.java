@@ -138,7 +138,8 @@ public class RobotContainer {
     driveXbox.y().onTrue(launcher.launchCommand());
     driveXbox.rightBumper().whileTrue(Commands.run(() -> intake.setIntakeVoltageRaw(1), intake)).onFalse(Commands.run(() -> intake.setIntakeVoltageRaw(0), intake));
 
-    driveXbox.start().whileTrue(new DriveToPose(drive, false, new Pose2d(new Translation2d(3, 2), new Rotation2d(Math.PI/4))));
+    driveXbox.leftBumper().onTrue(Commands.runOnce(() -> drive.setPose(AutoAlign.speakerCenterPose)));
+    driveXbox.start().whileTrue(new DriveToPose(drive, true, new Pose2d(new Translation2d(3, 2), new Rotation2d(Math.PI/4))));
     driveXbox.back().whileTrue(new AutoAlign(drive, Target.CENTER));
 
     manipulatorXbox.a().onTrue(intake.continuousCommand());    
