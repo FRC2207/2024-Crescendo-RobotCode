@@ -23,6 +23,12 @@ public class ClimberIOTalonSRX implements ClimberIO {
         inputs.rightCurrentAmps = new double[] { rightMotor.getStatorCurrent() };
     }
 
+    /** method to bring the left arm to a designated position */
+    public void setLeftPosition(double inches) {}
+
+    /** method to bring the right arm to a designated position */
+    public void setRightPosition(double inches) {}
+
     // sets the voltage for the left climber arm
     public void setLeftVoltage(double volts) {
         volts = MathUtil.clamp(volts, -1, 1);

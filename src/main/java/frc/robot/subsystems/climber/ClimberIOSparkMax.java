@@ -15,6 +15,7 @@ public class ClimberIOSparkMax implements ClimberIO {
 
     public ClimberIOSparkMax() {
         rightMotor.setInverted(true);
+        rightEncoder.setInverted(true);
     }
 
     // outputs the values of the left and right climber arms
@@ -23,18 +24,28 @@ public class ClimberIOSparkMax implements ClimberIO {
         inputs.rightClimberAppliedVolts = rightMotor.getAppliedOutput();
     }
 
+    /** method to bring the left arm to a designated position */
     public void setLeftPosition(double inches) {
-        double rotations = inches * (Math.PI * Math.pow(ClimberConstants.axleRadius, 2));
-        leftEncoder.setPosition(rotations);
+        double inputRotations = inches / (Math.PI * Math.pow(ClimberConstants.axleRadius, 2));
+        double outputRotations = inputRotations * ClimberConstants.gearRatio;
+        leftEncoder.setPosition(outputRotations);
     }
 
-    // sets the voltage for the left climber arm
+
+    /** method to bring the right arm to a designated position */
+    public void setRightPosition(double inches) {
+        double inputRotations = inches / (Math.PI * Math.pow(ClimberConstants.axleRadius, 2));
+        double outputRotations = inputRotations * ClimberConstants.gearRatio;
+        rightEncoder.setPosition(outputRotations);
+    }
+
+    /** sets the voltage for the left climber arm */
     public void setLeftVoltage(double volts) {
         volts = MathUtil.clamp(volts, -1,1);
         leftMotor.setVoltage(volts);
     }
 
-    // sets the voltage for the right climber arm
+    /** sets the voltage for the right climber arm */
     public void setRightVoltage(double volts) {
         volts = MathUtil.clamp(volts, -1,1);
         rightMotor.setVoltage(volts);

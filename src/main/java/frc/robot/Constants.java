@@ -73,5 +73,6 @@ public class Constants {
         public static int rightMotorID = 19;
 
         public static double axleRadius = 0.5;
+        public static double gearRatio = 80;
     }
 }
