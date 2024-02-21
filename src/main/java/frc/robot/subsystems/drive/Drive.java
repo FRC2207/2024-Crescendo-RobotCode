@@ -301,7 +301,7 @@ public class Drive extends SubsystemBase {
     }
 
     /**
-     * Returns the measured X, Y, and theta field velocitiesr in meters per sec. The components
+     * Returns the measured X, Y, and theta field velocities in meters per sec. The components
      * of the twist are velocities and NOT changes in position.
      */
     public Twist2d getFieldVelocity() {
