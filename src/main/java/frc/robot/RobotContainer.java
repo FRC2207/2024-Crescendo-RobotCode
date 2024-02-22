@@ -39,10 +39,13 @@ import frc.robot.subsystems.launcher.LauncherIOSparkMax;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOSparkMax;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
 
 public class RobotContainer {
   // Subsystems
   private Drive drive;
+  private Vision vision;
   private Intake intake;
   private Launcher launcher;
   private Pivot pivot;
@@ -95,6 +98,15 @@ public class RobotContainer {
           new ModuleIOSim(),
           new ModuleIOSim());
     }
+
+    // Create vision
+    vision = new Vision(
+        new VisionIOPhotonVision("0", 0),
+        new VisionIOPhotonVision("1", 1),
+        new VisionIOPhotonVision("2", 2));
+
+    // Set up subsystem(s)
+    vision.setDataInterfaces(drive::addVisionData, drive::getPose);
 
     // Add autonomous routines to the SendableChooser
     autoChooser.setDefaultOption("Default Auto", autoDefault);
