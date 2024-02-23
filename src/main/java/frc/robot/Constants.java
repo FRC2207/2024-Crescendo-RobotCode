@@ -74,5 +74,6 @@ public class Constants {
 
         public static double axleRadius = 0.5;
         public static double gearRatio = 80;
+        public static double maxPosition = 12;
     }
 }

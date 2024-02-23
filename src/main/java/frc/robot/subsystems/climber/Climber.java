@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.climber.ClimberIOInputsAutoLogged;
+import frc.robot.Constants.ClimberConstants;
 
 public class Climber extends SubsystemBase {
     private final double upSpeed = 0.5;
@@ -18,11 +19,10 @@ public class Climber extends SubsystemBase {
         this.io = io;
 
         setDefaultCommand(
-                run(
-                        () -> {
-                            io.setLeftVoltage(0.0);
-                            io.setRightVoltage(0.0);
-                        }));
+                run(() -> {
+                    io.setLeftVoltage(0.0);
+                    io.setRightVoltage(0.0);
+                }));
     }
 
     @Override
@@ -30,6 +30,18 @@ public class Climber extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("Launcher", inputs);
 
+    }
+
+    /** command to climb autonomously once in position */
+    public Command autoClimb() {
+        return Commands.sequence(
+            runOnce(() -> {
+            io.setLeftPosition(ClimberConstants.maxPosition);
+            io.setRightPosition(ClimberConstants.maxPosition);
+            })
+
+
+        );
     }
 
     /** sets the upward voltage to both arms */
@@ -57,7 +69,6 @@ public class Climber extends SubsystemBase {
                 });
     }
 
-
     /** sets the downward voltage to both arms */
     public Command downBothCommand() {
         return Commands.run(
@@ -71,7 +82,7 @@ public class Climber extends SubsystemBase {
     public Command downLeftCommand() {
         return Commands.run(
                 () -> {
-                    io.setLeftVoltage(downSpeed);  
+                    io.setLeftVoltage(downSpeed);
                 });
     }
 
@@ -79,9 +90,8 @@ public class Climber extends SubsystemBase {
     public Command downRightCommand() {
         return Commands.run(
                 () -> {
-                    io.setRightVoltage(downSpeed);  
+                    io.setRightVoltage(downSpeed);
                 });
     }
-
 
 }
