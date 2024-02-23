@@ -5,13 +5,11 @@ import org.littletonrobotics.junction.AutoLog;
 public interface LauncherIO {
     @AutoLog
     public static class LauncherIOInputs {
-      public double leftLaunchPositionRad = 0.0;
-      public double leftLaunchVelocityRadPerSec = 0.0;
+      public double leftLaunchVelocityRotPerMin = 0.0;
       public double leftLaunchAppliedVolts = 0.0;
       public double[] leftLaunchCurrentAmps = new double[] {};
 
-      public double rightLaunchPositionRad = 0.0;
-      public double rightLaunchVelocityRadPerSec = 0.0;
+      public double rightLaunchVelocityRotPerMin = 0.0;
       public double rightLaunchAppliedVolts = 0.0;
       public double[] rightLaunchCurrentAmps = new double[] {};
     }
@@ -31,10 +29,12 @@ public interface LauncherIO {
     /** Run the right launcher wheel at the specified speed */
     public default void setRightLaunchSpeed(double speed) {}
 
+    /** Returns the speed of the left launch wheel in RPM */
     public default double getLeftLaunchSpeed() {
       return 0;
     }
 
+    /** Returns the speed of the rigth launch wheel in RPM */
     public default double getRightLaunchSpeed() {
       return 0;
     }

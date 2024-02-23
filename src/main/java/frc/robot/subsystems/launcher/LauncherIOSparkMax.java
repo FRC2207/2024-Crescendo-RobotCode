@@ -24,6 +24,9 @@ public class LauncherIOSparkMax implements LauncherIO {
         inputs.leftLaunchAppliedVolts = leftLaunchMotor.getAppliedOutput();
         inputs.rightLaunchAppliedVolts = rightLaunchMotor.getAppliedOutput();
 
+        inputs.leftLaunchVelocityRotPerMin = getLeftLaunchSpeed();
+        inputs.rightLaunchVelocityRotPerMin = getRightLaunchSpeed();
+
         // inputs.leftLaunchCurrentAmps = new double[] {null};
         // inputs.rightLaunchCurrentAmps = new double[]
         // {rightLaunchMotor.getStatorCurrent()};
@@ -54,10 +57,12 @@ public class LauncherIOSparkMax implements LauncherIO {
         rightLaunchMotor.set(speed);
     }
 
+    /** Returns the speed of the left launch wheel in RPM */
     public double getLeftLaunchSpeed() {
         return leftEncoder.getVelocity();
     }
 
+    /** Returns the speed of the right launch wheel in RPM */
     public double getRightLaunchSpeed() {
         return rightEncoder.getVelocity();
     }

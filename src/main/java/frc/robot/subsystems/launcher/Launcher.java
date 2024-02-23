@@ -9,7 +9,7 @@ import frc.robot.subsystems.intake.Intake;
 
 public class Launcher extends SubsystemBase {
   private static final double launchSpeed = 1.0;
-  private static final double minLaunchRPM = 500.0;
+  private static final double minLaunchRPM = 2000;
   private static final double spinUpTime = 0.5;
   private static final double stopDelay = 0.5;
   private static final double intakeSpeed = -1.0;
@@ -60,8 +60,8 @@ public class Launcher extends SubsystemBase {
   public Command launcherIntakeCommand() {
     return Commands.sequence(
         runOnce(() -> {
-          io.setLeftLaunchVoltage(intakeSpeed);
-          io.setRightLaunchVoltage(intakeSpeed);
+          io.setLeftLaunchSpeed(intakeSpeed);
+          io.setRightLaunchSpeed(intakeSpeed);
         }),
         intake.continuousCommand(),
 
