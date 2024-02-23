@@ -9,6 +9,7 @@ import frc.robot.subsystems.intake.Intake;
 
 public class Launcher extends SubsystemBase {
   private static final double launchSpeed = 1.0;
+  private static final double minLaunchRPM = 500.0;
   private static final double spinUpTime = 0.5;
   private static final double stopDelay = 0.5;
   private static final double intakeSpeed = -1.0;
@@ -40,10 +41,10 @@ public class Launcher extends SubsystemBase {
   public Command launchCommand() {
     return Commands.sequence(
         runOnce(() -> {
-          io.setLeftLaunchVoltage(launchSpeed * 12.0);
-          io.setRightLaunchVoltage(launchSpeed * 12.0);
+          io.setLeftLaunchSpeed(launchSpeed);
+          io.setRightLaunchSpeed(launchSpeed);
         }),
-        Commands.waitSeconds(spinUpTime),
+        Commands.waitUntil(() -> io.getLeftLaunchSpeed() >= minLaunchRPM && io.getRightLaunchSpeed() >= minLaunchRPM),
 
         intake.burpCommand(),
 

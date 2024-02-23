@@ -22,6 +22,21 @@ public interface LauncherIO {
     /** Run the left launcher wheel at the specified voltage. */
     public default void setLeftLaunchVoltage(double volts) {}
 
-    /** Run the right launcher wheel at the specidied voltage. */
+    /** Run the right launcher wheel at the specified voltage. */
     public default void setRightLaunchVoltage(double volts) {}
+
+    /** Run the left launcher wheel at the specified speed */
+    public default void setLeftLaunchSpeed(double speed) {}
+
+    /** Run the right launcher wheel at the specified speed */
+    public default void setRightLaunchSpeed(double speed) {}
+
+    public default double getLeftLaunchSpeed() {
+      return 0;
+    }
+
+    public default double getRightLaunchSpeed() {
+      return 0;
+    }
+
 }
