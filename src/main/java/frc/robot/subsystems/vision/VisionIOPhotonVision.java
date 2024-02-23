@@ -68,15 +68,15 @@ public class VisionIOPhotonVision implements VisionIO {
                     new Pose3d[] {
                         // Left Module
                         new Pose3d(
-                            Units.inchesToMeters(20.75/2), // Forward
-                            Units.inchesToMeters(20.75/2), // Left
+                            Units.inchesToMeters(20.25/2), // Forward
+                            Units.inchesToMeters(20.25/2), // Left
                             Units.inchesToMeters(8.625),
                             new Rotation3d(0, Units.degreesToRadians(-15), Units.degreesToRadians(30))
                         ),
                         // Right Module
                         new Pose3d(
-                            Units.inchesToMeters(20.75/2), // Forward
-                            Units.inchesToMeters(-20.75/2), // Right
+                            Units.inchesToMeters(20.25/2), // Forward
+                            Units.inchesToMeters(-20.25/2), // Right
                             Units.inchesToMeters(8.625),
                             new Rotation3d(0, Units.degreesToRadians(-15), Units.degreesToRadians(-30))
                         ),

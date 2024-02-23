@@ -16,7 +16,7 @@ public class Module {
     private ModuleIO io;
     private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
 
-    private static double wheelRadius = Units.inchesToMeters(2.0);
+    private static double wheelRadius = Units.inchesToMeters(1.95866);
     private double driveKp;
     private double driveKd;
     private double driveKs;
