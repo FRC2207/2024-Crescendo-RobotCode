@@ -94,7 +94,7 @@ public class DriveWithController extends Command {
         if (!robotRelativeOverride.get()) {
             var driveRotation = drive.getRotation();
             // This was giving a weird error as written. Trying this and we'll see what happens
-            if (DriverStation.getAlliance().equals(Alliance.Red)) {
+            if (DriverStation.getAlliance().get() == Alliance.Red) {
                 driveRotation = driveRotation.plus(new Rotation2d(Math.PI));
             }
             speeds = 
