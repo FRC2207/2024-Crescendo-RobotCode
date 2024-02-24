@@ -121,7 +121,7 @@ public class VisionIOPhotonVision implements VisionIO {
                 cameraIdentifiers = new String[] {
                     "FL-Module",
                     "FR-Module",
-                    "Shooter"
+                    "Shooter2207"
                 };
                 break;
             default:
