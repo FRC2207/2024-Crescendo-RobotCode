@@ -56,13 +56,11 @@ public class Pivot extends ProfiledPIDSubsystem {
 
     /** Method to manually operate the pivot angle */
     public void setPivotAngleRaw(double percent) {
-        double power = 0;
         //If the arm is beyond the desired range and continuing in that direction, stop.
-        if (getMeasurement() >= IntakeConstants.pivotMaxAngleRad && inputs.appliedVolts < 0) { power = 0; } 
-        else if (getMeasurement() <= IntakeConstants.pivotMinAngleRad && inputs.appliedVolts > 0) { power = 0; }
-        else { power = percent * 12; }   // Otherwise run at the designated speed
-
-        io.setPivotVoltage(power);
+        if (getMeasurement() >= IntakeConstants.pivotMaxAngleRad && percent < 0) { percent = 0; } 
+        if (getMeasurement() <= IntakeConstants.pivotMinAngleRad && percent > 0) { percent = 0; }
+        
+        io.setPivotVoltage(percent);
     }
 
     /** Returns a command to set the angle of the pivot using PID control */
