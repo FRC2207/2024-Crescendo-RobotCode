@@ -112,9 +112,9 @@ public class VisionIOPhotonVision implements VisionIO {
                     new Rotation3d(0, Units.degreesToRadians(-15), Units.degreesToRadians(-30))
                 ),
                 new Pose3d(
-                    Units.inchesToMeters(11),
+                    Units.inchesToMeters(12),
                     Units.inchesToMeters(0),
-                    Units.inchesToMeters(24),
+                    Units.inchesToMeters(22.5),
                     new Rotation3d(0, Units.degreesToRadians(-45), 0)
                 )
                 };
