@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -102,8 +103,8 @@ public class RobotContainer {
     // Create vision
     vision = new Vision(
         new VisionIOPhotonVision("0", 0),
-        new VisionIOPhotonVision("1", 1));
-        //new VisionIOPhotonVision("2", 2));
+        new VisionIOPhotonVision("1", 1),
+        new VisionIOPhotonVision("2", 2));
 
     // Set up subsystem(s)
     vision.setDataInterfaces(drive::addVisionData, drive::getPose);
@@ -150,7 +151,8 @@ public class RobotContainer {
     driveXbox.y().onTrue(launcher.launchCommand());
     driveXbox.rightBumper().whileTrue(Commands.run(() -> intake.setIntakeVoltageRaw(1), intake)).onFalse(Commands.run(() -> intake.setIntakeVoltageRaw(0), intake));
 
-    driveXbox.leftBumper().onTrue(Commands.runOnce(() -> drive.setPose(AutoAlign.speakerCenterPose)));
+    //driveXbox.leftBumper().onTrue(Commands.runOnce(() -> drive.setPose(AutoAlign.speakerCenterPose)));
+    driveXbox.rightBumper().onTrue(Commands.runOnce(() -> drive.setPose(new Pose2d(new Translation2d(), new Rotation2d(Units.degreesToRadians(180))))));
     //driveXbox.start().whileTrue(new DriveToPose(drive, true, new Pose2d(new Translation2d(3, 2), new Rotation2d(Math.PI/4))));
     driveXbox.start().whileTrue(new AutoAlign(drive, Target.CENTER));
     driveXbox.back().whileTrue(new AutoAlign(drive, Target.SOURCESIDE));
