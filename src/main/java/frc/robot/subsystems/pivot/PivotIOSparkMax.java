@@ -26,7 +26,7 @@ public class PivotIOSparkMax implements PivotIO {
 
     @Override
     public double getMeasurement(){ 
-        return (-1 * (throughEncoder.getAbsolutePosition() + IntakeConstants.encoderZeroOffset)) * (2 * Math.PI);     
+        return (.716 + (-((throughEncoder.getAbsolutePosition() + 0.5) % 1))) * (2 * Math.PI);
     }
 
 

@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
   private static final double burpSpeedLauncher = -1.0;
-  private static final double intakeSpeedLauncher = 1.0;
+  private static final double intakeSpeedLauncher = 0.75;
   private static final double intakeDelay = 0.75;
   private static final double burpDelay = 1.0;
 
