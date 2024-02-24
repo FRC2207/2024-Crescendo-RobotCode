@@ -60,7 +60,7 @@ public class Pivot extends ProfiledPIDSubsystem {
         if (getMeasurement() >= IntakeConstants.pivotMaxAngleRad && percent < 0) { percent = 0; } 
         if (getMeasurement() <= IntakeConstants.pivotMinAngleRad && percent > 0) { percent = 0; }
         
-        io.setPivotVoltage(percent);
+        io.setPivotVoltage(percent * 12);
     }
 
     /** Returns a command to set the angle of the pivot using PID control */
