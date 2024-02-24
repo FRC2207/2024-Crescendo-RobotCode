@@ -2,6 +2,7 @@ package frc.robot.subsystems.vision;
 
 import java.util.Optional;
 
+import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 import org.photonvision.EstimatedRobotPose;
@@ -15,6 +16,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.*;
 
 public interface VisionIO {
+    //@AutoLog
     public static class VisionIOInputs {
         public int tagCount = 0;
         public Pose3d estimatedPose = new Pose3d();
