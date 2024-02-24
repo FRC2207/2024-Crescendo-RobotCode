@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
+import frc.robot.Constants.IntakeConstants;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.AutoAlign;
 import frc.robot.commands.DriveToPose;
@@ -161,6 +161,12 @@ public class RobotContainer {
     manipulatorXbox.b().onTrue(launcher.launcherIntakeCommand());
     
     manipulatorXbox.rightBumper().onTrue(launcher.launchCommand());
+
+    manipulatorXbox.povUp().whileTrue(Commands.run(() -> pivot.setPivotAngleRaw(-0.25), pivot))
+      .onFalse(Commands.run(() -> pivot.setPivotAngleRaw(0.0), pivot)).debounce(0.1);
+
+    manipulatorXbox.povDown().whileTrue(Commands.run(() -> pivot.setPivotAngleRaw(0.325), pivot))
+      .onFalse(Commands.run(() -> pivot.setPivotAngleRaw(0.0), pivot)).debounce(0.1);
 
     // Move pivot motor with left joystick while holding the leftBumper
     manipulatorXbox.leftBumper().whileTrue(new RunCommand(  
