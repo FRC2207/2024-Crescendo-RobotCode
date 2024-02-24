@@ -5,12 +5,23 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.AutoAlign;
+import frc.robot.commands.DriveToPose;
 import frc.robot.commands.DriveWithController;
+import frc.robot.commands.AutoAlign.Target;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX2;
@@ -28,10 +39,13 @@ import frc.robot.subsystems.launcher.LauncherIOSparkMax;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIOSim;
 import frc.robot.subsystems.pivot.PivotIOSparkMax;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
 
 public class RobotContainer {
   // Subsystems
   private Drive drive;
+  private Vision vision;
   private Intake intake;
   private Launcher launcher;
   private Pivot pivot;
@@ -39,6 +53,10 @@ public class RobotContainer {
   // Controller
   private final CommandXboxController driveXbox = new CommandXboxController(0);
   private final CommandXboxController manipulatorXbox = new CommandXboxController(1);
+
+  // Autonomous Routine Chooser - This may be changed if we move over to a solution such as PathPlanner that has it's own AutoBuilder. SmartDashboard for now :)
+  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+  private final Command autoDefault = Commands.print("Default auto selected. No autonomous command configured.");
 
   public RobotContainer() {
     switch (Constants.robot) {
@@ -81,6 +99,28 @@ public class RobotContainer {
           new ModuleIOSim());
     }
 
+    // Create vision
+    vision = new Vision(
+        new VisionIOPhotonVision("0", 0),
+        new VisionIOPhotonVision("1", 1),
+        new VisionIOPhotonVision("2", 2));
+
+    // Set up subsystem(s)
+    vision.setDataInterfaces(drive::addVisionData, drive::getPose);
+
+    // Add autonomous routines to the SendableChooser
+    autoChooser.setDefaultOption("Default Auto", autoDefault);
+
+    if (Constants.isTuningMode) {
+      autoChooser.addOption("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+      autoChooser.addOption("Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+      autoChooser.addOption("Drive SysId (Quasistatic Forward)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+      autoChooser.addOption("Drive SysId (Quasistatic Reverse)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    }
+
+    // Put SendableChooser to SmartDashboard
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+
     configureBindings();
   }
 
@@ -110,6 +150,12 @@ public class RobotContainer {
     driveXbox.y().onTrue(launcher.launchCommand());
     driveXbox.rightBumper().whileTrue(Commands.run(() -> intake.setIntakeVoltageRaw(1), intake)).onFalse(Commands.run(() -> intake.setIntakeVoltageRaw(0), intake));
 
+    //driveXbox.leftBumper().onTrue(Commands.runOnce(() -> drive.setPose(AutoAlign.speakerCenterPose)));
+    driveXbox.leftBumper().onTrue(Commands.runOnce(() -> drive.setPose(new Pose2d(new Translation2d(), new Rotation2d(Units.degreesToRadians(180))))));
+    //driveXbox.start().whileTrue(new DriveToPose(drive, true, new Pose2d(new Translation2d(3, 2), new Rotation2d(Math.PI/4))));
+    driveXbox.start().whileTrue(new AutoAlign(drive, Target.CENTER));
+    driveXbox.back().whileTrue(new AutoAlign(drive, Target.SOURCESIDE));
+
     manipulatorXbox.a().onTrue(intake.continuousCommand());    
     manipulatorXbox.b().onTrue(launcher.launcherIntakeCommand());
     
@@ -126,6 +172,10 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    if (autoChooser.getSelected() != null) {
+      return autoChooser.getSelected();
+    } else {
+      return Commands.print("No autonomous command configured");
+    }
   }
 }

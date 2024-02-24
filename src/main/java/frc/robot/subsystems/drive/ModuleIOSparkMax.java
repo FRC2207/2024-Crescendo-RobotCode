@@ -106,6 +106,7 @@ public class ModuleIOSparkMax implements ModuleIO {
             CleanSparkMaxValue.cleanSparkMaxValue(
                 inputs.drivePositionRad,
                 Units.rotationsToRadians(driveEncoder.getPosition()) / driveAfterEncoderReduction);
+        inputs.driveVelocityRadPerSec = 
             CleanSparkMaxValue.cleanSparkMaxValue(
                 inputs.driveVelocityRadPerSec,
                 Units.rotationsPerMinuteToRadiansPerSecond(driveEncoder.getVelocity()) / driveAfterEncoderReduction);
@@ -126,6 +127,10 @@ public class ModuleIOSparkMax implements ModuleIO {
                 inputs.turnPositionRad, 
                 Units.rotationsToRadians(turnRelativeEncoder.getPosition())
                 / turnAfterEncoderReduction);
+        inputs.turnVelocityRadPerSec = 
+            CleanSparkMaxValue.cleanSparkMaxValue(
+                inputs.turnVelocityRadPerSec, 
+                Units.rotationsPerMinuteToRadiansPerSecond(turnRelativeEncoder.getVelocity()) / turnAfterEncoderReduction);
         inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
         inputs.turnCurrentAmps = new double[] {turnSparkMax.getOutputCurrent()};
         inputs.turnTempCelcius = new double[] {turnSparkMax.getMotorTemperature()};

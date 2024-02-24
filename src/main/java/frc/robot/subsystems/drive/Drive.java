@@ -19,7 +19,9 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.util.PoseEstimator.TimestampedVisionUpdate;
 
 public class Drive extends SubsystemBase {
@@ -35,6 +37,8 @@ public class Drive extends SubsystemBase {
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
     private final Module[] modules = new Module[4]; // FL, FR, BL, BR
 
+    private final SysIdRoutine sysId;
+
     private double maxAngularSpeed;
     private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
 
@@ -49,7 +53,8 @@ public class Drive extends SubsystemBase {
     private boolean isBrakeMode = false;
     private Timer lastMovementTimer = new Timer();
 
-    private frc.robot.util.PoseEstimator poseEstimator = new frc.robot.util.PoseEstimator(VecBuilder.fill(0.003, 0.003, 0.0002));
+    private frc.robot.util.PoseEstimator poseEstimator = new frc.robot.util.PoseEstimator(VecBuilder.fill(0.3, 0.3, 0.02*5));
+    //private frc.robot.util.PoseEstimator poseEstimator = new frc.robot.util.PoseEstimator(VecBuilder.fill(0.3, 0.3, 0.02)); // dif standard devs
     private double[] lastModulePositionMeters = new double[] {0.0, 0.0, 0.0, 0.0};
     private Rotation2d lastGyroYaw = new Rotation2d();
     private Twist2d fieldVelocity = new Twist2d();
@@ -73,6 +78,23 @@ public class Drive extends SubsystemBase {
 
       maxAngularSpeed =
         maxLinearSpeed / Arrays.stream(getModuleTranslations()).map(translation -> translation.getNorm()).max(Double::compare).get();
+
+      // Configure SysId
+      sysId = 
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null, 
+                null, 
+                null, 
+                (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> {
+                    for (int i = 0; i < 4; i++) {
+                        modules[i].runCharacterization(voltage.in(edu.wpi.first.units.Units.Volts));
+                    }
+                }, 
+                null, 
+                this));
     }
 
     public void periodic() {
@@ -247,6 +269,28 @@ public class Drive extends SubsystemBase {
         }
     }
 
+    /**
+     * Returns sysId commands for the quasistatic test in the specified direction.
+     * 
+     * @param direction The {@link SysIdRoutine#Direction} to run the sysId test in.
+     * 
+     * @return A sysId quasistatic command.
+     */
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return sysId.quasistatic(direction);
+    }
+
+    /**
+     * Returns sysId commands for the dynamic test in the specified direction.
+     * 
+     * @param direction The {@link SysIdRoutine#Direction} to run the sysId test in.
+     * 
+     * @return A sysId dynamic command.
+     */
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return sysId.dynamic(direction);
+    }
+
     /** Returns the maximum linear speed in meters per sec. */
     public double getMaxLinearSpeedMetersPerSec() {
         return maxLinearSpeed;
@@ -258,7 +302,7 @@ public class Drive extends SubsystemBase {
     }
 
     /**
-     * Returns the measured X, Y, and theta field velocitiesr in meters per sec. The components
+     * Returns the measured X, Y, and theta field velocities in meters per sec. The components
      * of the twist are velocities and NOT changes in position.
      */
     public Twist2d getFieldVelocity() {
