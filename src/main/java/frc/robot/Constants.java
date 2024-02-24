@@ -73,6 +73,7 @@ public class Constants {
 
         public static int underLength = 104;
         public static int leftLength = 26;
+        public static int topLength = 26;
         public static int rightLength = 26;
         public static int totalLength = underLength + leftLength + rightLength;
     }

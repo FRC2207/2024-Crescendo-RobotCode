@@ -47,7 +47,7 @@ public class Leds extends SubsystemBase {
   /** Method to set a rainbow effect to a given section of the LED strip */
   public void rainbow(Section section) {
     // For every pixel
-    for (var i = 0; i < section.end(); i++) {
+    for (var i = section.start(); i < section.end(); i++) {
       // Calculate the hue - hue is easier for rainbows because the color
       // shape is a circle so only one value needs to precess
       final var hue = (m_rainbowFirstPixelHue + (i * 180 / section.start())) % 180;
@@ -64,7 +64,7 @@ public class Leds extends SubsystemBase {
 
   /** Method to set a given color to a given section of the LED strip */
   public void setColor(Section section, LedColor color) {
-    for (var i = 0; i < section.end(); i++) {
+    for (var i = section.start(); i < section.end(); i++) {
       final var hue = color.hues();
       // Sets the specified LED to the HSV values for the preferred color
       ledBuffer.setHSV(i, hue, 255, 255);
@@ -76,7 +76,7 @@ public class Leds extends SubsystemBase {
   public void wave(Section section, LedColor color, LedColor color2, double cycleLength, double duration) {
     double x = (1 - ((Timer.getFPGATimestamp() % duration) / duration)) * 2.0 * Math.PI;
     double xDiffPerLed = (2.0 * Math.PI) / cycleLength;
-    for (int i = 0; i < section.end(); i++) {
+    for (int i = section.start(); i < section.end(); i++) {
       x += xDiffPerLed;
       if (i >= section.start()) {
         double ratio = (Math.pow(Math.sin(x), waveExponent) + 1.0) / 2.0;
@@ -143,6 +143,7 @@ public class Leds extends SubsystemBase {
 
   public static enum Section {
     LEFT,
+    TOP,
     RIGHT,
     FULL,
     UNDERGLOW;
@@ -152,8 +153,10 @@ public class Leds extends SubsystemBase {
 
         case LEFT:
           return LedConstants.underLength;
-        case RIGHT:
+        case TOP:
           return LedConstants.underLength + LedConstants.leftLength;
+        case RIGHT:
+          return LedConstants.underLength + LedConstants.leftLength + LedConstants.topLength;
         case FULL:
           return 0;
         case UNDERGLOW:
@@ -167,6 +170,8 @@ public class Leds extends SubsystemBase {
       switch (this) {
         case LEFT:
           return LedConstants.underLength + LedConstants.leftLength;
+        case TOP:
+          return LedConstants.underLength + LedConstants.leftLength + LedConstants.topLength;
         case RIGHT:
           return LedConstants.totalLength;
         case FULL:
