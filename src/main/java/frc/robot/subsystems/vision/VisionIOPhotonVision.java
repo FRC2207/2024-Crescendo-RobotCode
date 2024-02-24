@@ -68,23 +68,23 @@ public class VisionIOPhotonVision implements VisionIO {
                     new Pose3d[] {
                         // Left Module
                         new Pose3d(
-                            Units.inchesToMeters(20.25/2), // Forward
-                            Units.inchesToMeters(20.25/2), // Left
+                            Units.inchesToMeters(20.75/2), // Forward
+                            Units.inchesToMeters(20.75/2), // Left
                             Units.inchesToMeters(8.625),
                             new Rotation3d(0, Units.degreesToRadians(-15), Units.degreesToRadians(30))
                         ),
                         // Right Module
                         new Pose3d(
-                            Units.inchesToMeters(20.25/2), // Forward
-                            Units.inchesToMeters(-20.25/2), // Right
+                            Units.inchesToMeters(20.75/2), // Forward
+                            Units.inchesToMeters(-20.75/2), // Right
                             Units.inchesToMeters(8.625),
                             new Rotation3d(0, Units.degreesToRadians(-15), Units.degreesToRadians(-30))
                         ),
                         new Pose3d(
-                            Units.inchesToMeters(13),
+                            Units.inchesToMeters(11),
                             Units.inchesToMeters(0),
-                            Units.inchesToMeters(20),
-                            new Rotation3d(0, Units.degreesToRadians(-30), 0)
+                            Units.inchesToMeters(24),
+                            new Rotation3d(0, Units.degreesToRadians(-45), 0)
                         )
                     };
                 cameraIdentifiers =
@@ -99,28 +99,29 @@ public class VisionIOPhotonVision implements VisionIO {
             new Pose3d[] {
                 // Left Module
                 new Pose3d(
-                    Units.inchesToMeters(20.75/2), // Forward
-                    Units.inchesToMeters(20.75/2), // Left
+                    Units.inchesToMeters(20.25/2), // Forward
+                    Units.inchesToMeters(20.25/2), // Left
                     Units.inchesToMeters(8.625),
                     new Rotation3d(0, Units.degreesToRadians(-15), Units.degreesToRadians(30))
                 ),
                 // Right Module
                 new Pose3d(
-                    Units.inchesToMeters(20.75/2), // Forward
-                    Units.inchesToMeters(-20.75/2), // Right
+                    Units.inchesToMeters(20.25/2), // Forward
+                    Units.inchesToMeters(-20.25/2), // Right
                     Units.inchesToMeters(8.625),
                     new Rotation3d(0, Units.degreesToRadians(-15), Units.degreesToRadians(-30))
                 ),
                 new Pose3d(
-                    Units.inchesToMeters(13),
+                    Units.inchesToMeters(11),
                     Units.inchesToMeters(0),
-                    Units.inchesToMeters(20),
-                    new Rotation3d(0, Units.degreesToRadians(-30), 0)
+                    Units.inchesToMeters(24),
+                    new Rotation3d(0, Units.degreesToRadians(-45), 0)
                 )
                 };
                 cameraIdentifiers = new String[] {
                     "FL-Module",
-                    "FR-Module"
+                    "FR-Module",
+                    "Shooter"
                 };
                 break;
             default:
@@ -236,8 +237,10 @@ public class VisionIOPhotonVision implements VisionIO {
 
     @Override
     public void updateInputs(VisionIOInputs inputs) {
-        //4visionSim.update(inputs.robotPose);
-        
+        if (Robot.isSimulation()) {
+            visionSim.update(inputs.robotPose);
+        }
+
         inputs.tagCount = getLatestResult().getTargets().size();
         var poseEst = getEstimatedGlobalPose();
         poseEst.ifPresentOrElse(
