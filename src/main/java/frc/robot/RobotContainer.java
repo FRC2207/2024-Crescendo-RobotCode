@@ -115,10 +115,10 @@ public class RobotContainer {
     
     manipulatorXbox.rightBumper().onTrue(launcher.launchCommand());
 
-    manipulatorXbox.povUp().whileTrue(Commands.run(() -> pivot.setPivotAngleRaw(-0.125), pivot))
+    manipulatorXbox.povUp().whileTrue(Commands.run(() -> pivot.setPivotAngleRaw(-0.25), pivot))
       .onFalse(Commands.run(() -> pivot.setPivotAngleRaw(0.0), pivot)).debounce(0.1);
 
-    manipulatorXbox.povDown().whileTrue(Commands.run(() -> pivot.setPivotAngleRaw(0.25), pivot))
+    manipulatorXbox.povDown().whileTrue(Commands.run(() -> pivot.setPivotAngleRaw(0.325), pivot))
       .onFalse(Commands.run(() -> pivot.setPivotAngleRaw(0.0), pivot)).debounce(0.1);
 
     // Move pivot motor with left joystick while holding the leftBumper
