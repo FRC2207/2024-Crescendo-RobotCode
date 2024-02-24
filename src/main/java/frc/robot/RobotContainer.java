@@ -5,6 +5,10 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -109,6 +113,8 @@ public class RobotContainer {
     driveXbox.b().onTrue(intake.burpCommand());
     driveXbox.y().onTrue(launcher.launchCommand());
     driveXbox.rightBumper().whileTrue(Commands.run(() -> intake.setIntakeVoltageRaw(1), intake)).onFalse(Commands.run(() -> intake.setIntakeVoltageRaw(0), intake));
+
+    driveXbox.leftBumper().onTrue(Commands.runOnce(() -> drive.setPose(new Pose2d(new Translation2d(), new Rotation2d(Units.degreesToRadians(0))))));
 
     manipulatorXbox.a().onTrue(intake.continuousCommand());    
     manipulatorXbox.b().onTrue(launcher.launcherIntakeCommand());
