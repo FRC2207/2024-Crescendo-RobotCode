@@ -58,11 +58,11 @@ public class Pivot extends ProfiledPIDSubsystem {
     public void setPivotAngleRaw(double percent) {
         io.setPivotVoltage(percent * 12);
 
-        if (getMeasurement() >= IntakeConstants.pivotMaxAngleRad) {
+        if (getMeasurement() >= IntakeConstants.pivotMaxAngleRad && inputs.appliedVolts > 0) {
             io.setPivotVoltage(0.0);
         }
 
-        if (getMeasurement() <= IntakeConstants.pivotMinAngleRad) {
+        if (getMeasurement() <= IntakeConstants.pivotMinAngleRad && inputs.appliedVolts < 0) {
             io.setPivotVoltage(0.0);
         }
 
