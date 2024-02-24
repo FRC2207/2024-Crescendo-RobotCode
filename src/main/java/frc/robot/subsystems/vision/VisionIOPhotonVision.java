@@ -91,7 +91,7 @@ public class VisionIOPhotonVision implements VisionIO {
                     new String[] {
                         "FL-Module",
                         "FR-Module",
-                        "Shooter"
+                        "Shooter2207"
                     };
                 break;
             case "Real":
