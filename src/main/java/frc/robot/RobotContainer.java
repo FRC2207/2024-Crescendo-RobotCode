@@ -70,7 +70,7 @@ public class RobotContainer {
         intake = new Intake(new IntakeIOTalonSRX());
         launcher = new Launcher(new LauncherIOSparkMax(), intake);
         pivot = new Pivot(new PivotIOSparkMax());
-        climber = new Climber(new ClimberIOSparkMax());
+        climber = new Climber(new ClimberIOSparkMax(), new GyroIONavX2());
         break;
     }
 

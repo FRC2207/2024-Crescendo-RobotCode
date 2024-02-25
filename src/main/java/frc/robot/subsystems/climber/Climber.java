@@ -6,17 +6,21 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.climber.ClimberIOInputsAutoLogged;
+import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.Constants.ClimberConstants;
 
 public class Climber extends SubsystemBase {
     private final double upSpeed = 0.5;
     private final double downSpeed = -1 * 0.25;
+    private final double adjustmentSpeed = 0.125;
 
     private final ClimberIO io;
+    private final GyroIO gyro;
     private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
 
-    public Climber(ClimberIO io) {
+    public Climber(ClimberIO io, GyroIO gyro) {
         this.io = io;
+        this.gyro = gyro;
 
         setDefaultCommand(
                 run(() -> {
@@ -49,7 +53,7 @@ public class Climber extends SubsystemBase {
                 io.setLeftSpeed(downSpeed);
                 io.setRightSpeed(downSpeed);
             }),
-            Commands.waitUntil(io.getLeftPosition() <= ClimberConstants.minimumElevation && io.getRightPosition() <= ClimberConstants.minimumElevation),
+            Commands.waitUntil(getLeftPosition() <= ClimberConstants.minimumElevation && getRightPosition() <= ClimberConstants.minimumElevation),
             runOnce(() -> {
                 io.setLeftSpeed(0.0);
                 io.setRightSpeed(0.0);
@@ -82,9 +86,21 @@ public class Climber extends SubsystemBase {
 
     public Command autoClimbAdjustmentCommand() {
         return Commands.sequence(
-            
+            run(() -> {
+                if (gyro.getLeftRightAngle() < 0) {
+                    io.setLeftSpeed(adjustmentSpeed);
+                } else if (gyro.getLeftRightAngle() > 0) {
+                    io.setRightSpeed(adjustmentSpeed);
+                } else {
+                    io.setLeftSpeed(0.0);
+                    io.setRightSpeed(0.0);
+                }
+            })
         );
     }
+
+    private double getLeftPosition() { return io.getLeftPosition(); }
+    private double getRightPosition() { return io.getLeftPosition(); }
 
     /** sets the upward voltage to both arms */
     public Command upBothCommand() {
