@@ -7,6 +7,8 @@ public interface ClimberIO {
     public static class ClimberIOInputs {
         public double leftClimberAppliedVolts = 0.0;
         public double rightClimberAppliedVolts = 0.0;
+        public double leftClimberPosition = 0.0;
+        public double rightClimberPosition = 0.0;
         
         public double[] leftCurrentAmps = new double[] {};
         public double[] rightCurrentAmps = new double[] {};
