@@ -20,8 +20,8 @@ public class Climber extends SubsystemBase {
 
         setDefaultCommand(
                 run(() -> {
-                    io.setLeftVoltage(0.0);
-                    io.setRightVoltage(0.0);
+                    io.setLeftSpeed(0.0);
+                    io.setRightSpeed(0.0);
                 }));
     }
 
@@ -36,11 +36,53 @@ public class Climber extends SubsystemBase {
     public Command autoClimb() {
         return Commands.sequence(
             runOnce(() -> {
-            io.setLeftPosition(ClimberConstants.maxPosition);
-            io.setRightPosition(ClimberConstants.maxPosition);
-            })
+                Commands.print("Autonomous climb has been initiated");
+                io.setLeftPosition(ClimberConstants.maxPosition);
+                io.setRightPosition(ClimberConstants.maxPosition);
+            }),
+            Commands.waitSeconds(1),
+            runOnce(() -> { 
+                Commands.print("Climb is ready, please drive to position, countdown initiated");
+                countDown();
+            }),
+            run(() -> {
+                io.setLeftSpeed(downSpeed);
+                io.setRightSpeed(downSpeed);
+            }),
+            Commands.waitUntil(io.getLeftPosition() <= ClimberConstants.minimumElevation && io.getRightPosition() <= ClimberConstants.minimumElevation),
+            runOnce(() -> {
+                io.setLeftSpeed(0.0);
+                io.setRightSpeed(0.0);
+                Commands.print("Climb is in position, autoAdjust initiated");
+            }),
+            run(() -> {
+                autoClimbAdjustmentCommand();
+            }),
+            runOnce(() -> {
+                Commands.print("Auto climb successful");
+            })          
+        );
+    }
 
+    public Command countDown() {
+        return Commands.sequence(
+            runOnce(() -> { Commands.print("5 seconds remaining"); }),
+            Commands.waitSeconds(1.0),
+            runOnce(() -> { Commands.print("4 seconds remaining"); }),
+            Commands.waitSeconds(1.0),
+            runOnce(() -> { Commands.print("3 seconds remaining"); }),
+            Commands.waitSeconds(1.0),
+            runOnce(() -> { Commands.print("2 seconds remaining"); }),
+            Commands.waitSeconds(1.0),
+            runOnce(() -> { Commands.print("1 seconds remaining"); }),
+            Commands.waitSeconds(1.0),
+            runOnce(() -> { Commands.print("0 seconds remaining"); })
+        );
+    }
 
+    public Command autoClimbAdjustmentCommand() {
+        return Commands.sequence(
+            
         );
     }
 
@@ -48,8 +90,8 @@ public class Climber extends SubsystemBase {
     public Command upBothCommand() {
         return Commands.run(
                 () -> {
-                    io.setLeftVoltage(upSpeed);
-                    io.setRightVoltage(upSpeed);
+                    io.setLeftSpeed(upSpeed);
+                    io.setRightSpeed(upSpeed);
                 });
     }
 
@@ -57,7 +99,7 @@ public class Climber extends SubsystemBase {
     public Command upLeftCommand() {
         return Commands.run(
                 () -> {
-                    io.setLeftVoltage(upSpeed);
+                    io.setLeftSpeed(upSpeed);
                 });
     }
 
@@ -65,7 +107,7 @@ public class Climber extends SubsystemBase {
     public Command upRightCommand() {
         return Commands.run(
                 () -> {
-                    io.setRightVoltage(upSpeed);
+                    io.setRightSpeed(upSpeed);
                 });
     }
 
@@ -73,8 +115,8 @@ public class Climber extends SubsystemBase {
     public Command downBothCommand() {
         return Commands.run(
                 () -> {
-                    io.setLeftVoltage(downSpeed);
-                    io.setRightVoltage(downSpeed);
+                    io.setLeftSpeed(downSpeed);
+                    io.setRightSpeed(downSpeed);
                 });
     }
 
@@ -82,7 +124,7 @@ public class Climber extends SubsystemBase {
     public Command downLeftCommand() {
         return Commands.run(
                 () -> {
-                    io.setLeftVoltage(downSpeed);
+                    io.setLeftSpeed(downSpeed);
                 });
     }
 
@@ -90,7 +132,7 @@ public class Climber extends SubsystemBase {
     public Command downRightCommand() {
         return Commands.run(
                 () -> {
-                    io.setRightVoltage(downSpeed);
+                    io.setRightSpeed(downSpeed);
                 });
     }
 

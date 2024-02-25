@@ -17,15 +17,25 @@ public interface ClimberIO {
     // outputs the values of the left and right climber arms
     public default void updateInputs(ClimberIOInputs inputs) {}
 
-    /** method to bring the left arm to a designated position */
+    /** Method to bring the left arm to a designated position */
     public default void setLeftPosition(double inches) {}
 
-    /** method to bring the right arm to a designated position */
+    /** Method to bring the right arm to a designated position */
     public default void setRightPosition(double inches) {}
 
-    /** sets the voltage for the left climber arm */
-    public default void setLeftVoltage(double volts) {}
+    /** Returns the position of the left arm */
+    public default double getLeftPosition() {
+        return 0;
+    }
 
-    /** sets the voltage for the right climber arm */
-    public default void setRightVoltage(double volts) {}
+    /** Returns the position of the right arm */
+    public default double getRightPosition() {
+        return 0;
+    }
+
+    /** Sets the voltage for the left climber arm */
+    public default void setLeftSpeed(double speed) {}
+
+    /** Sets the voltage for the right climber arm */
+    public default void setRightSpeed(double speed) {}
 }

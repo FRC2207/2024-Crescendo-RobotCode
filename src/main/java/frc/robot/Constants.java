@@ -77,6 +77,9 @@ public class Constants {
         public static double stringDiameter = 0.25;
         public static double maxStringRotationPerStep = axleLength / stringDiameter;
         public static double gearRatio = 80;
+
         public static double maxPosition = 12;
+        public static double minimumElevation = 6;
+        public static double minPosition = 0;
     }
 }
