@@ -149,7 +149,7 @@ public class VisionIOPhotonVision implements VisionIO {
             var cameraProp = new SimCameraProperties();
             cameraProp.setCalibration(1280, 800, Rotation2d.fromDegrees(70));
             cameraProp.setCalibError(0.35, 0.10);
-            cameraProp.setFPS(50);
+            cameraProp.setFPS(15);
             cameraProp.setAvgLatencyMs(30);
             cameraProp.setLatencyStdDevMs(5);
 
