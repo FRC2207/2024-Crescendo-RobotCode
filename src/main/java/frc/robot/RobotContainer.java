@@ -116,6 +116,7 @@ public class RobotContainer {
 
     manipulatorXbox.a().onTrue(intake.continuousCommand());    
     manipulatorXbox.b().onTrue(launcher.launcherIntakeCommand());
+    manipulatorXbox.start().onTrue(climber.autoClimb());
     
     manipulatorXbox.rightBumper().onTrue(launcher.launchCommand());
 

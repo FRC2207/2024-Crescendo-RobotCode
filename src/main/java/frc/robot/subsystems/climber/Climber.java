@@ -38,40 +38,41 @@ public class Climber extends SubsystemBase {
 
     /** command to climb autonomously once in position */
     public Command autoClimb() {
-        return Commands.sequence(
-            runOnce(() -> {
-                Commands.print("Autonomous climb has been initiated");
-                io.setLeftPosition(ClimberConstants.maxPosition);
-                io.setRightPosition(ClimberConstants.maxPosition);
-            }),
-            Commands.waitSeconds(1),
-            runOnce(() -> {
-                Commands.print("Climb is ready, please drive to position, countdown initiated");
-                countDown();
-            }),
-            run(() -> {
-                io.setLeftSpeed(downSpeed);
-                io.setRightSpeed(downSpeed);
-            }),
-            Commands.waitUntil(getLeftPosition() <= ClimberConstants.minimumElevation
-                    && getRightPosition() <= ClimberConstants.minimumElevation),
-            runOnce(() -> {
-                io.setLeftSpeed(0.0);
-                io.setRightSpeed(0.0);
-                Commands.print("Climb is in position, autoAdjust initiated");
-            }),
-            run(() -> {
-                autoClimbAdjustmentCommand();
-            }),
-            runOnce(() -> {
-                Commands.print("Auto climb successful, initiating autoAdjust");
-            }),
-            run(() -> {
-                autoClimbAdjustmentCommand();
-            })
-        );
+        return (runOnce(() -> {
+                    Commands.print("Autonomous climb has been initiated");
+                    io.setBreakMode(true);
+                    io.setLeftPosition(ClimberConstants.maxPosition);
+                    io.setRightPosition(ClimberConstants.maxPosition);
+                })
+            ).andThen(
+                runOnce(() -> {
+                    io.setLeftSpeed(0.0);
+                    io.setRightSpeed(0.0);
+                })
+            ).andThen(
+                runOnce(() -> {
+                    Commands.print("Climb is ready, please drive to position, countdown initiated");
+                    countDown();
+                })
+            ).andThen(
+                runOnce(() -> {
+                    io.setLeftPosition(ClimberConstants.minimumElevation);
+                    io.setRightPosition(ClimberConstants.minimumElevation);
+                })
+            ).andThen(
+                runOnce(() -> {
+                    io.setLeftSpeed(0.0);
+                    io.setRightSpeed(0.0);
+                    Commands.print("Climb is in position, autoAdjust initiated");
+                })
+            ).andThen(
+                run(() -> {
+                    autoClimbAdjustmentCommand();
+                })
+            );
     }
 
+    /** Runs a 5 second countdown with feedback */
     public Command countDown() {
         return Commands.sequence(
             runOnce(() -> { Commands.print("5 seconds remaining"); }),
@@ -88,30 +89,21 @@ public class Climber extends SubsystemBase {
         );
     }
 
+    /** automatically balances the robot while hanging */
     public Command autoClimbAdjustmentCommand() {
         return Commands.sequence(
-            runOnce(() -> {
-                io.setBreakMode(true);
-            }),
             run(() -> {
                 if (gyro.getLeftRightAngle() < 0) {
                     io.setLeftSpeed(adjustmentSpeed);
                 } else if (gyro.getLeftRightAngle() > 0) {
                     io.setRightSpeed(adjustmentSpeed);
                 } else {
+                    Commands.print("Climb Successful, continuing to balance");
                     io.setLeftSpeed(0.0);
                     io.setRightSpeed(0.0);
                 }
             })
         );
-    }
-
-    private double getLeftPosition() {
-        return io.getLeftPosition();
-    }
-
-    private double getRightPosition() {
-        return io.getLeftPosition();
     }
 
     /** sets the upward voltage to both arms */
