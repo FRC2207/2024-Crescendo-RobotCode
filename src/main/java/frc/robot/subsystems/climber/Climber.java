@@ -5,14 +5,13 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.climber.ClimberIOInputsAutoLogged;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.Constants.ClimberConstants;
 
 public class Climber extends SubsystemBase {
     private final double upSpeed = 0.5;
-    private final double downSpeed = -1 * 0.25;
-    private final double adjustmentSpeed = 0.125;
+    private final double downSpeed = -0.25;
+    private final double adjustmentSpeed = -0.125;
 
     private final ClimberIO io;
     private final GyroIO gyro;
@@ -40,7 +39,6 @@ public class Climber extends SubsystemBase {
     public Command autoClimb() {
         return (runOnce(() -> {
                     Commands.print("Autonomous climb has been initiated");
-                    io.setBreakMode(true);
                     io.setLeftPosition(ClimberConstants.maxPosition);
                     io.setRightPosition(ClimberConstants.maxPosition);
                 })

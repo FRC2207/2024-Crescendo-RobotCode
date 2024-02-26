@@ -17,6 +17,8 @@ public class ClimberIOSparkMax implements ClimberIO {
     public ClimberIOSparkMax() {
         rightMotor.setInverted(true);
         rightEncoder.setInverted(true);
+
+        setBreakMode(true);
     }
 
     // outputs the values of the left and right climber arms
