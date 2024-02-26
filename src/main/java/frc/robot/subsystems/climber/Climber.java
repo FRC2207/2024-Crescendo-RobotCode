@@ -45,7 +45,7 @@ public class Climber extends SubsystemBase {
                 io.setRightPosition(ClimberConstants.maxPosition);
             }),
             Commands.waitSeconds(1),
-            runOnce(() -> { 
+            runOnce(() -> {
                 Commands.print("Climb is ready, please drive to position, countdown initiated");
                 countDown();
             }),
@@ -53,7 +53,8 @@ public class Climber extends SubsystemBase {
                 io.setLeftSpeed(downSpeed);
                 io.setRightSpeed(downSpeed);
             }),
-            Commands.waitUntil(getLeftPosition() <= ClimberConstants.minimumElevation && getRightPosition() <= ClimberConstants.minimumElevation),
+            Commands.waitUntil(getLeftPosition() <= ClimberConstants.minimumElevation
+                    && getRightPosition() <= ClimberConstants.minimumElevation),
             runOnce(() -> {
                 io.setLeftSpeed(0.0);
                 io.setRightSpeed(0.0);
@@ -63,8 +64,11 @@ public class Climber extends SubsystemBase {
                 autoClimbAdjustmentCommand();
             }),
             runOnce(() -> {
-                Commands.print("Auto climb successful");
-            })          
+                Commands.print("Auto climb successful, initiating autoAdjust");
+            }),
+            run(() -> {
+                autoClimbAdjustmentCommand();
+            })
         );
     }
 
@@ -86,6 +90,9 @@ public class Climber extends SubsystemBase {
 
     public Command autoClimbAdjustmentCommand() {
         return Commands.sequence(
+            runOnce(() -> {
+                io.setBreakMode(true);
+            }),
             run(() -> {
                 if (gyro.getLeftRightAngle() < 0) {
                     io.setLeftSpeed(adjustmentSpeed);
@@ -99,8 +106,13 @@ public class Climber extends SubsystemBase {
         );
     }
 
-    private double getLeftPosition() { return io.getLeftPosition(); }
-    private double getRightPosition() { return io.getLeftPosition(); }
+    private double getLeftPosition() {
+        return io.getLeftPosition();
+    }
+
+    private double getRightPosition() {
+        return io.getLeftPosition();
+    }
 
     /** sets the upward voltage to both arms */
     public Command upBothCommand() {

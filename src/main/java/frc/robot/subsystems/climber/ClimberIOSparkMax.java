@@ -2,6 +2,7 @@ package frc.robot.subsystems.climber;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
@@ -46,6 +47,17 @@ public class ClimberIOSparkMax implements ClimberIO {
                         2));
         double outputRotations = inputRotations * ClimberConstants.gearRatio;
         rightEncoder.setPosition(outputRotations);
+    }
+
+    /** Toggles break mode for both arms */
+    public void setBreakMode(boolean bool) {
+        if (bool == true) {
+            leftMotor.setIdleMode(IdleMode.kBrake);
+            rightMotor.setIdleMode(IdleMode.kBrake);
+        } else {
+            leftMotor.setIdleMode(IdleMode.kCoast);
+            rightMotor.setIdleMode(IdleMode.kCoast);
+        }
     }
 
     /** Returns the position of the left arm */
