@@ -42,9 +42,7 @@ public class RobotContainer {
   // Controller
   private final CommandXboxController driveXbox = new CommandXboxController(0);
   private final CommandXboxController manipulatorXbox = new CommandXboxController(1);
-
-  private String manipulatorXboxMode = "teleop";
-
+  
   public RobotContainer() {
     switch (Constants.robot) {
       case "SIM":
@@ -116,25 +114,16 @@ public class RobotContainer {
     driveXbox.y().onTrue(launcher.launchCommand());
     driveXbox.rightBumper().whileTrue(Commands.run(() -> intake.setIntakeVoltageRaw(1), intake)).onFalse(Commands.run(() -> intake.setIntakeVoltageRaw(0), intake));
 
-    manipulatorXbox.start().onTrue(Commands.run(() -> { manipulatorXboxMode = "endgame"; }));
-    manipulatorXbox.back().onTrue(Commands.run(() -> { manipulatorXboxMode = "teleop"; }));
+    manipulatorXbox.a().onTrue(intake.continuousCommand());    
+    manipulatorXbox.b().onTrue(launcher.launcherIntakeCommand());
+    manipulatorXbox.rightBumper().onTrue(launcher.launchCommand());
 
-    switch (manipulatorXboxMode) {
-      case "teleop":
-        manipulatorXbox.a().onTrue(intake.continuousCommand());    
-        manipulatorXbox.b().onTrue(launcher.launcherIntakeCommand());
-        manipulatorXbox.rightBumper().onTrue(launcher.launchCommand());
-        break;
-      case "endgame":
-        manipulatorXbox.a().onTrue(climber.autoClimb());
-        manipulatorXbox.povUp().onTrue(climber.upBothCommand());
-        manipulatorXbox.povDown().onTrue(climber.downBothCommand());
-        manipulatorXbox.leftBumper().and(manipulatorXbox.povUp()).whileTrue(climber.upLeftCommand());
-        manipulatorXbox.leftBumper().and(manipulatorXbox.povDown()).whileTrue(climber.downLeftCommand());
-        manipulatorXbox.rightBumper().and(manipulatorXbox.povUp()).whileTrue(climber.upRightCommand());
-        manipulatorXbox.rightBumper().and(manipulatorXbox.povDown()).whileTrue(climber.downRightCommand());
-        break;
-    }
+    manipulatorXbox.povUp().onTrue(climber.upBothCommand());
+    manipulatorXbox.povDown().onTrue(climber.downBothCommand());
+    manipulatorXbox.leftBumper().and(manipulatorXbox.povUp()).whileTrue(climber.upLeftCommand());
+    manipulatorXbox.leftBumper().and(manipulatorXbox.povDown()).whileTrue(climber.downLeftCommand());
+    manipulatorXbox.rightBumper().and(manipulatorXbox.povUp()).whileTrue(climber.upRightCommand());
+    manipulatorXbox.rightBumper().and(manipulatorXbox.povDown()).whileTrue(climber.downRightCommand());
 
     //manipulatorXbox.x().onTrue(pivot.setIntakeAngle(0));
     //manipulatorXbox.y().onTrue(pivot.setIntakeAngle(90));
