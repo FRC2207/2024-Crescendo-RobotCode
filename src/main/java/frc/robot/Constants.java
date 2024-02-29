@@ -53,11 +53,12 @@ public class Constants {
         public static double pivotMinAngleRad = 0.25;  // .02 is absolute min
         public static double rawPivotSpeedLimiter = 0.25;
 
-        public static int kP = 1;
-        public static int kMaxVelocityRadPerSecond = 10000;
-        public static int kMaxAccelerationRadPerSecSquared = 1;
+        public static double kP = 5;
+        public static double kD = 2;
+        public static double kMaxVelocityRadPerSecond = 6.28;
+        public static double kMaxAccelerationRadPerSecSquared = 3.14;
         public static int kEncoderDistancePerPulse = 2048;
-        public static int kArmOffsetRads = 2;
+        public static int kArmOffsetRads = 0;
         public static double encoderZeroOffset = -0.203;
 
         public static double kSVolts = 1;
