@@ -49,14 +49,14 @@ public class Constants {
         public static int pivotMotorID = 15;
         public static int pivotEncoderID = 1;
         public static int pivotGearRatio = 80;
-        public static double pivotMaxAngleRad = 2.6;  //.48 is absolute max
-        public static double pivotMinAngleRad = 0.25;  // .02 is absolute min
+        public static double pivotMaxAngleRad = 2.6;  //2.6 is absolute max
+        public static double pivotMinAngleRad = 0.25;  // .25 is absolute min
         public static double rawPivotSpeedLimiter = 0.25;
 
         public static double kP = 5;
         public static double kD = 2;
-        public static double kMaxVelocityRadPerSecond = 6.28;
-        public static double kMaxAccelerationRadPerSecSquared = 3.14;
+        public static double kMaxVelocityRadPerSecond = Math.PI;
+        public static double kMaxAccelerationRadPerSecSquared = Math.PI / 2;
         public static int kEncoderDistancePerPulse = 2048;
         public static int kArmOffsetRads = 0;
         public static double encoderZeroOffset = -0.203;
