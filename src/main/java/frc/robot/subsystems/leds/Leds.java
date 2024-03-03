@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LedConstants;
 import frc.robot.subsystems.intake.Intake;
 
@@ -18,6 +18,9 @@ public class Leds extends SubsystemBase {
 
   private int m_rainbowFirstPixelHue;
   private static final double waveExponent = 0.4;
+
+  public boolean launchEnabled = false;
+  public boolean climbEnabled = false;
 
   public Leds(Intake intake) {
     this.intake = intake;
@@ -42,6 +45,11 @@ public class Leds extends SubsystemBase {
         rainbow(Section.FULL);
       }
     }));
+  }
+
+   @Override
+  public void periodic() {
+    setStatusColors();
   }
 
   /** Method to set a rainbow effect to a given section of the LED strip */
@@ -93,17 +101,27 @@ public class Leds extends SubsystemBase {
   }
 
   /** Method to set the LEDs to different states during the match */
-  public void setStatusColors() {
-    if (intake.hasNote() == true) { // Sets the LED's to green when the robot has a note in the intake
+  private void setStatusColors() {
+    // Sets the LED's to green when the robot has a note in the intake
+    if (intake.hasNote() == true) {
       setColor(Section.LEFT, LedColor.GREEN);
-    } else if (intake.hasNote() == false) {
-      setColor(Section.LEFT, LedColor.RED);
-    }
-
-    if (DriverStation.isAutonomousEnabled() == true) { // Sets the LED's to orange when the robot is in autonomous mode
-      setColor(Section.FULL, LedColor.ORANGE);
+      setColor(Section.RIGHT, LedColor.GREEN);
     } else {
-      m_Led.stop();
+      setColor(Section.LEFT, LedColor.ORANGE);
+      setColor(Section.RIGHT, LedColor.ORANGE);
+    }
+    // Sets the LED's to orange when the robot is in autonomous mode
+    if (DriverStation.isAutonomousEnabled() == true) {
+      wave(Section.FULL, LedColor.ORANGE, LedColor.YELLOW, 1, 15);
+    }
+    // Sets the LED's to run along the strip when the Launch sequence has been enabled
+    if (launchEnabled == true) {
+      wave(Section.LEFT, LedColor.BLUE, null, .1, 3);
+      wave(Section.RIGHT, LedColor.BLUE, null, .1, 3);
+    }
+    // Sets the LED's to run along the strip when the climbing sequence has been enabled
+    if (climbEnabled == true) {
+      wave(Section.FULL, LedColor.PURPLE, LedColor.PINK, .1, 1);
     }
 
   }
