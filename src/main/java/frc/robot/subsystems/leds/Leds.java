@@ -72,7 +72,7 @@ public class Leds extends SubsystemBase {
 
   /** Method to set a given color to a given section of the LED strip */
   public void setColor(Section section, LedColor color) {
-    for (var i = 0; i < section.end(); i++) {
+    for (var i = section.start(); i < section.end(); i++) {
       final var hue = color.hues();
       // Sets the specified LED to the HSV values for the preferred color
       ledBuffer.setHSV(i, hue, 255, 255);
@@ -84,7 +84,7 @@ public class Leds extends SubsystemBase {
   public void wave(Section section, LedColor color, LedColor color2, double cycleLength, double duration) {
     double x = (1 - ((Timer.getFPGATimestamp() % duration) / duration)) * 2.0 * Math.PI;
     double xDiffPerLed = (2.0 * Math.PI) / cycleLength;
-    for (int i = 0; i < section.end(); i++) {
+    for (int i = section.start(); i < section.end(); i++) {
       x += xDiffPerLed;
       if (i >= section.start()) {
         double ratio = (Math.pow(Math.sin(x), waveExponent) + 1.0) / 2.0;
@@ -94,7 +94,9 @@ public class Leds extends SubsystemBase {
         if (Double.isNaN(ratio)) {
           ratio = 0.5;
         }
+        
         int outputColor = (int) Math.round((color.hues() * (1 - ratio)) + (color2.hues() * ratio));
+
         ledBuffer.setHSV(i, outputColor, 255, 255);
       }
     }
@@ -171,7 +173,7 @@ public class Leds extends SubsystemBase {
         case LEFT:
           return LedConstants.underLength;
         case RIGHT:
-          return LedConstants.underLength + LedConstants.leftLength;
+          return LedConstants.totalLength;
         case FULL:
           return 0;
         case UNDERGLOW:
@@ -186,7 +188,7 @@ public class Leds extends SubsystemBase {
         case LEFT:
           return LedConstants.underLength + LedConstants.leftLength;
         case RIGHT:
-          return LedConstants.totalLength;
+          return LedConstants.underLength + LedConstants.leftLength;
         case FULL:
           return LedConstants.totalLength;
         case UNDERGLOW:
