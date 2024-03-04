@@ -52,7 +52,7 @@ public class Pivot extends ProfiledPIDSubsystem {
 
     public void runStupidPID() {
         double output = -m_controller.calculate(inputs.encoderPosition, m_controller.getGoal());
-        output = MathUtil.clamp(output, -3.0, 3.0);
+        output = MathUtil.clamp(output, -6.0, 6.0);
         io.setPivotVoltage(output);
     }
 

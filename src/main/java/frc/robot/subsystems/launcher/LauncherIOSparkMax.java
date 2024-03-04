@@ -17,6 +17,7 @@ public class LauncherIOSparkMax implements LauncherIO {
 
     public LauncherIOSparkMax() {
     rightLaunchMotor.setInverted(true);
+    leftLaunchMotor.setInverted(false);
   }
 
     @Override

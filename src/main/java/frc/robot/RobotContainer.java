@@ -149,7 +149,7 @@ public class RobotContainer {
     driveXbox.a().onTrue(intake.continuousCommand());
     driveXbox.b().onTrue(intake.burpCommand());
     driveXbox.y().onTrue(launcher.launchCommand());
-    driveXbox.rightBumper().whileTrue(Commands.run(() -> intake.setIntakeVoltageRaw(1), intake)).onFalse(Commands.run(() -> intake.setIntakeVoltageRaw(0), intake));
+    driveXbox.rightBumper().whileTrue(Commands.run(() -> intake.setIntakeVoltageRaw(0.5), intake)).onFalse(Commands.run(() -> intake.setIntakeVoltageRaw(0), intake));
 
     //driveXbox.leftBumper().onTrue(Commands.runOnce(() -> drive.setPose(AutoAlign.speakerCenterPose)));
     // This si our reset command driveXbox.leftBumper().onTrue(Commands.runOnce(() -> drive.setPose(new Pose2d(new Translation2d(), new Rotation2d(Units.degreesToRadians(180))))));
