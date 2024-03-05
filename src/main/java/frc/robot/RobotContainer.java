@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -56,7 +61,7 @@ public class RobotContainer {
   private final CommandXboxController manipulatorXbox = new CommandXboxController(1);
 
   // Autonomous Routine Chooser - This may be changed if we move over to a solution such as PathPlanner that has it's own AutoBuilder. SmartDashboard for now :)
-  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+  private final LoggedDashboardChooser<Command> autoChooser;
   private final Command autoDefault = Commands.print("Default auto selected. No autonomous command configured.");
 
   public RobotContainer() {
@@ -109,8 +114,14 @@ public class RobotContainer {
     // Set up subsystem(s)
     vision.setDataInterfaces(drive::addVisionData, drive::getPose);
 
+    // Create named commands
+    NamedCommands.registerCommand("shootButton", launcher.launchCommand().withTimeout(5.0));
+
+    // Create SendableChooser using PathPlanner AutoBuilder
+    autoChooser = new LoggedDashboardChooser<>("Auto Chooser", AutoBuilder.buildAutoChooser());
+    
     // Add autonomous routines to the SendableChooser
-    autoChooser.setDefaultOption("Default Auto", autoDefault);
+    autoChooser.addDefaultOption("Default Auto", autoDefault);
 
     if (Constants.isTuningMode) {
       autoChooser.addOption("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
@@ -118,9 +129,6 @@ public class RobotContainer {
       autoChooser.addOption("Drive SysId (Quasistatic Forward)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
       autoChooser.addOption("Drive SysId (Quasistatic Reverse)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
     }
-
-    // Put SendableChooser to SmartDashboard
-    SmartDashboard.putData("Auto Chooser", autoChooser);
 
     configureBindings();
   }
@@ -182,8 +190,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    if (autoChooser.getSelected() != null) {
-      return autoChooser.getSelected();
+    if (autoChooser.get() != null) {
+      return autoChooser.get();
     } else {
       return Commands.print("No autonomous command configured");
     }

@@ -5,6 +5,12 @@ import java.util.List;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.PathPlannerLogging;
+import com.pathplanner.lib.util.ReplanningConfig;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -19,6 +25,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -95,6 +102,30 @@ public class Drive extends SubsystemBase {
                 }, 
                 null, 
                 this));
+        
+        // Configure AutoBuilder (PathPlanner)
+        AutoBuilder.configureHolonomic(
+            this::getPose,
+            this::setPose,
+            () -> kinematics.toChassisSpeeds(getModuleStates()),
+            this::runVelocity,
+            new HolonomicPathFollowerConfig(
+                new PIDConstants(5.0, 0.0, 0.0),
+                new PIDConstants(5.0, 0.0, 0.0),
+                maxLinearSpeed,
+                TrackWidthY / 2.0,
+                new ReplanningConfig()),
+            () -> 
+                DriverStation.getAlliance().isPresent()
+                    && DriverStation.getAlliance().get() == Alliance.Red,
+            this);
+        
+        PathPlannerLogging.setLogActivePathCallback((activePath) -> {
+            Logger.recordOutput("Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+        });
+        PathPlannerLogging.setLogTargetPoseCallback((targetPose) -> {
+            Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+        });
     }
 
     public void periodic() {
@@ -158,10 +189,13 @@ public class Drive extends SubsystemBase {
         }
 
         // Log measured states
+        /*
         SwerveModuleState[] measuredStates = new SwerveModuleState[4];
         for (int i = 0; i < 4; i++) {
           measuredStates[i] = modules[i].getState();
         }
+        */
+        SwerveModuleState[] measuredStates = getModuleStates();
         Logger.recordOutput("SwerveStates/Measured", measuredStates);
 
         // Update odometry
@@ -240,6 +274,14 @@ public class Drive extends SubsystemBase {
                 }
             }
         }
+    }
+
+    private SwerveModuleState[] getModuleStates() {
+        SwerveModuleState[] measuredStates = new SwerveModuleState[4];
+        for (int i = 0; i < 4; i++) {
+          measuredStates[i] = modules[i].getState();
+        }
+        return measuredStates;
     }
 
     /** 
