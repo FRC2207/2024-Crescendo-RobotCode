@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
+import frc.robot.Constants.IntakeConstants;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.AutoAlign;
 import frc.robot.commands.DriveToPose;
@@ -149,18 +149,27 @@ public class RobotContainer {
     driveXbox.a().onTrue(intake.continuousCommand());
     driveXbox.b().onTrue(intake.burpCommand());
     driveXbox.y().onTrue(launcher.launchCommand());
-    driveXbox.rightBumper().whileTrue(Commands.run(() -> intake.setIntakeVoltageRaw(1), intake)).onFalse(Commands.run(() -> intake.setIntakeVoltageRaw(0), intake));
+    driveXbox.rightBumper().whileTrue(Commands.run(() -> intake.setIntakeVoltageRaw(0.5), intake)).onFalse(Commands.run(() -> intake.setIntakeVoltageRaw(0), intake));
 
     //driveXbox.leftBumper().onTrue(Commands.runOnce(() -> drive.setPose(AutoAlign.speakerCenterPose)));
-    driveXbox.leftBumper().onTrue(Commands.runOnce(() -> drive.setPose(new Pose2d(new Translation2d(), new Rotation2d(Units.degreesToRadians(180))))));
+    // This si our reset command driveXbox.leftBumper().onTrue(Commands.runOnce(() -> drive.setPose(new Pose2d(new Translation2d(), new Rotation2d(Units.degreesToRadians(180))))));
     //driveXbox.start().whileTrue(new DriveToPose(drive, true, new Pose2d(new Translation2d(3, 2), new Rotation2d(Math.PI/4))));
     driveXbox.start().whileTrue(new AutoAlign(drive, Target.CENTER));
     driveXbox.back().whileTrue(new AutoAlign(drive, Target.SOURCESIDE));
+    driveXbox.leftBumper().onTrue(pivot.setIntakeAngle(Units.degreesToRadians(165)));
+    driveXbox.rightBumper().onTrue(pivot.setIntakeAngle(Units.degreesToRadians(10)));
+    driveXbox.rightTrigger().onTrue(Commands.runOnce(() -> pivot.setShouldRunStupid(true))).onFalse(Commands.runOnce(() -> pivot.setShouldRunStupid(false)).andThen(Commands.runOnce(() -> pivot.setPivotAngleRaw(0))));
 
     manipulatorXbox.a().onTrue(intake.continuousCommand());    
     manipulatorXbox.b().onTrue(launcher.launcherIntakeCommand());
     
     manipulatorXbox.rightBumper().onTrue(launcher.launchCommand());
+
+    manipulatorXbox.povUp().whileTrue(Commands.run(() -> pivot.setPivotAngleRaw(-0.25), pivot))
+      .onFalse(Commands.run(() -> pivot.setPivotAngleRaw(0.0), pivot)).debounce(0.1);
+
+    manipulatorXbox.povDown().whileTrue(Commands.run(() -> pivot.setPivotAngleRaw(0.325), pivot))
+      .onFalse(Commands.run(() -> pivot.setPivotAngleRaw(0.0), pivot)).debounce(0.1);
 
     // Move pivot motor with left joystick while holding the leftBumper
     manipulatorXbox.leftBumper().whileTrue(new RunCommand(  

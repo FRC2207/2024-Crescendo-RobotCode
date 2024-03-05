@@ -26,13 +26,13 @@ public class Robot extends LoggedRobot {
     } else {
       Logger.addDataReceiver(new NT4Publisher());
     }
-    PortForwarder.add(5800, "photonvision.local", 5800);
-    PortForwarder.add(1181, "photonvision.local", 1181);
-    PortForwarder.add(1182, "photonvision.local", 1182);
-    PortForwarder.add(1183, "photonvision.local", 1183);
-    PortForwarder.add(1184, "photonvision.local", 1184);
-    PortForwarder.add(1185, "photonvision.local", 1185);
-    PortForwarder.add(1186, "photonvision.local", 1186);
+    PortForwarder.add(5800, "10.22.7.69", 5800);
+    PortForwarder.add(1181, "10.22.7.69", 1181);
+    PortForwarder.add(1182, "10.22.7.69", 1182);
+    PortForwarder.add(1183, "10.22.7.69", 1183);
+    PortForwarder.add(1184, "10.22.7.69", 1184);
+    PortForwarder.add(1185, "10.22.7.69", 1185);
+    PortForwarder.add(1186, "10.22.7.69", 1186);
 
     m_robotContainer = new RobotContainer();
     Logger.start();
