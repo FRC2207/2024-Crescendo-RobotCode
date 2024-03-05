@@ -1,0 +1,61 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.3656518741608918,
+      "y": 5.54
+    },
+    "rotation": 180.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "shootButton"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Subwoofer to Center Note"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center Note to Subwoofer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Subwoofer to Amp Note"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Amp Note to Subwoofer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Subwoofer to Source Note"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source Note to Subwoofer"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
