@@ -2,12 +2,18 @@ package frc.robot.subsystems.leds;
 
 import java.util.Optional;
 
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
- import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LedConstants;
 import frc.robot.subsystems.intake.Intake;
 
@@ -19,6 +25,20 @@ public class Leds extends SubsystemBase {
   private int m_rainbowFirstPixelHue;
   private static final double waveExponent = 0.4;
 
+  private static final String setColorGreen = "Solid Green";
+  private static final String setColorRed = "Solid Red";
+  private static final String rainbow = "Rainbow";
+  private static final String waveSingleColorGreen = "Wave Green";
+  private static final String waveDoubleColorPinkPurple = "Wave Pink and Purple";
+  private String manualLedState;
+  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+
+  public ShuffleboardTab tab = Shuffleboard.getTab("Robot");
+  public GenericEntry automaticLED = tab.add("Automatic LEDs", true)
+      .withWidget(BuiltInWidgets.kToggleButton)
+      .getEntry();
+
+  // States to automatically set the LEDs
   public boolean launchEnabled = false;
   public boolean climbEnabled = false;
 
@@ -26,10 +46,15 @@ public class Leds extends SubsystemBase {
     this.intake = intake;
 
     m_Led.setLength(ledBuffer.getLength());
-
-    // Set the data
     m_Led.setData(ledBuffer);
     m_Led.start();
+
+    m_chooser.setDefaultOption("Solid Green", setColorGreen);
+    m_chooser.addOption("Solid Red", setColorRed);
+    m_chooser.addOption("Rainbow", rainbow);
+    m_chooser.addOption("Wave Green", waveSingleColorGreen);
+    m_chooser.addOption("Wave Pink and Purple", waveDoubleColorPinkPurple);
+    SmartDashboard.putData("Manual LED States", m_chooser);
 
     /** Default command is setting the underglow of the robot */
     setDefaultCommand(run(() -> {
@@ -47,7 +72,7 @@ public class Leds extends SubsystemBase {
     }));
   }
 
-   @Override
+  @Override
   public void periodic() {
     setStatusColors();
   }
@@ -94,7 +119,7 @@ public class Leds extends SubsystemBase {
         if (Double.isNaN(ratio)) {
           ratio = 0.5;
         }
-        
+
         int outputColor = (int) Math.round((color.hues() * (1 - ratio)) + (color2.hues() * ratio));
 
         ledBuffer.setHSV(i, outputColor, 255, 255);
@@ -104,28 +129,47 @@ public class Leds extends SubsystemBase {
 
   /** Method to set the LEDs to different states during the match */
   private void setStatusColors() {
-    // Sets the LED's to green when the robot has a note in the intake
-    if (intake.hasNote() == true) {
-      setColor(Section.LEFT, LedColor.GREEN);
-      setColor(Section.RIGHT, LedColor.GREEN);
+    if (automaticLED.getBoolean(true) == true) {
+      // Sets the LED's to green when the robot has a note in the intake
+      if (intake.hasNote() == true) {
+        setColor(Section.LEFT, LedColor.GREEN);
+        setColor(Section.RIGHT, LedColor.GREEN);
+      } else {
+        setColor(Section.LEFT, LedColor.ORANGE);
+        setColor(Section.RIGHT, LedColor.ORANGE);
+      }
+      // Sets the LED's to orange when the robot is in autonomous mode
+      if (DriverStation.isAutonomousEnabled() == true) {
+        wave(Section.FULL, LedColor.ORANGE, LedColor.YELLOW, 1, 15);
+      }
+      // Sets the LED's to run along the strip when the Launch sequence has been
+      // enabled
+      if (launchEnabled == true) {
+        wave(Section.LEFT, LedColor.BLUE, null, .1, 3);
+        wave(Section.RIGHT, LedColor.BLUE, null, .1, 3);
+      }
+      // Sets the LED's to run along the strip when the climbing sequence has been
+      // enabled
+      if (climbEnabled == true) {
+        wave(Section.FULL, LedColor.PURPLE, LedColor.PINK, .1, 1);
+      }
     } else {
-      setColor(Section.LEFT, LedColor.ORANGE);
-      setColor(Section.RIGHT, LedColor.ORANGE);
+      switch (manualLedState) {
+        case setColorGreen:
+          setColor(Section.FULL, LedColor.GREEN);
+        case setColorRed:
+          setColor(Section.FULL, LedColor.RED);
+        case waveSingleColorGreen:
+          wave(Section.FULL, LedColor.GREEN, null, .1, 1);
+        case waveDoubleColorPinkPurple:
+          wave(Section.FULL, LedColor.PINK, LedColor.PURPLE, .1, 1);
+        case rainbow:
+          rainbow(Section.FULL);
+        default:
+          setColor(Section.FULL, LedColor.ORANGE);
+          break;
+      }
     }
-    // Sets the LED's to orange when the robot is in autonomous mode
-    if (DriverStation.isAutonomousEnabled() == true) {
-      wave(Section.FULL, LedColor.ORANGE, LedColor.YELLOW, 1, 15);
-    }
-    // Sets the LED's to run along the strip when the Launch sequence has been enabled
-    if (launchEnabled == true) {
-      wave(Section.LEFT, LedColor.BLUE, null, .1, 3);
-      wave(Section.RIGHT, LedColor.BLUE, null, .1, 3);
-    }
-    // Sets the LED's to run along the strip when the climbing sequence has been enabled
-    if (climbEnabled == true) {
-      wave(Section.FULL, LedColor.PURPLE, LedColor.PINK, .1, 1);
-    }
-
   }
 
   public static enum LedColor {

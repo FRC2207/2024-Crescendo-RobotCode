@@ -53,7 +53,7 @@ public class RobotContainer {
             new ModuleIOSim());
 
         intake = new Intake(new IntakeIOSim());
-        launcher = new Launcher(new LauncherIOSim(), intake);
+        launcher = new Launcher(new LauncherIOSim(), intake, null);
         pivot = new Pivot(new PivotIOSim());
         break;
       case "Real":
@@ -66,7 +66,7 @@ public class RobotContainer {
             new ModuleIOSparkMax(3));
 
         intake = new Intake(new IntakeIOTalonSRX());
-        launcher = new Launcher(new LauncherIOTalonSRX(), intake);
+        launcher = new Launcher(new LauncherIOTalonSRX(), intake, leds);
         pivot = new Pivot(new PivotIOSparkMax());
         leds = new Leds(intake);
         break;
