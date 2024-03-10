@@ -47,6 +47,7 @@ public class Launcher extends SubsystemBase {
         runOnce(() -> { // Starts the launch motors to gain speed
           io.setLeftLaunchVoltage(launchSpeed);
           io.setRightLaunchVoltage(launchSpeed);
+          leds.launchEnabled = true;
         }),
         Commands.waitSeconds(spinUpTime),
 

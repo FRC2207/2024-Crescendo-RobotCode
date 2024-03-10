@@ -25,6 +25,7 @@ public class Leds extends SubsystemBase {
   private int m_rainbowFirstPixelHue;
   private static final double waveExponent = 0.4;
 
+  // Constants regarding manual LED states
   private static final String setColorGreen = "Solid Green";
   private static final String setColorRed = "Solid Red";
   private static final String rainbow = "Rainbow";
@@ -33,6 +34,7 @@ public class Leds extends SubsystemBase {
   private String manualLedState;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
+  // Constants regarding autonmatic LED states
   public ShuffleboardTab tab = Shuffleboard.getTab("Robot");
   public GenericEntry automaticLED = tab.add("Automatic LEDs", true)
       .withWidget(BuiltInWidgets.kToggleButton)
@@ -54,7 +56,8 @@ public class Leds extends SubsystemBase {
     m_chooser.addOption("Rainbow", rainbow);
     m_chooser.addOption("Wave Green", waveSingleColorGreen);
     m_chooser.addOption("Wave Pink and Purple", waveDoubleColorPinkPurple);
-    SmartDashboard.putData("Manual LED States", m_chooser);
+    SmartDashboard.putData("Manual LED", m_chooser);
+    manualLedState = m_chooser.getSelected();
 
     /** Default command is setting the underglow of the robot */
     setDefaultCommand(run(() -> {
