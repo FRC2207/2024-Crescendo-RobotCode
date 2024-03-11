@@ -34,9 +34,9 @@ public class Leds extends SubsystemBase {
   private String manualLedState;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
-  // Constants regarding autonmatic LED states
+  // Constants regarding automatic LED states
   public ShuffleboardTab tab = Shuffleboard.getTab("Robot");
-  public GenericEntry automaticLED = tab.add("Automatic LEDs", true)
+  public GenericEntry automaticLED = tab.add("Automatic LEDs", false)
       .withWidget(BuiltInWidgets.kToggleButton)
       .getEntry();
 
@@ -59,9 +59,9 @@ public class Leds extends SubsystemBase {
     SmartDashboard.putData("Manual LED", m_chooser);
     manualLedState = m_chooser.getSelected();
 
-    /** Default command is setting the underglow of the robot */
-    setDefaultCommand(run(() -> {
-      Optional<Alliance> ally = DriverStation.getAlliance();
+    Optional<Alliance> ally = DriverStation.getAlliance();
+
+    setDefaultCommand(runOnce(() -> {
       if (ally.isPresent()) {
         if (ally.get() == Alliance.Blue) {
           setColor(Section.UNDERGLOW, LedColor.BLUE);
@@ -70,32 +70,31 @@ public class Leds extends SubsystemBase {
           setColor(Section.UNDERGLOW, LedColor.RED);
         }
       } else {
-        rainbow(Section.FULL);
+        rainbow(Section.UNDERGLOW);
       }
     }));
   }
 
   @Override
   public void periodic() {
+    m_Led.setData(ledBuffer);
     setStatusColors();
   }
 
   /** Method to set a rainbow effect to a given section of the LED strip */
   public void rainbow(Section section) {
-    // For every pixel
-    for (var i = 0; i < section.end(); i++) {
+    // For designate range
+    for (var i = section.start(); i < section.end(); i++) {
       // Calculate the hue - hue is easier for rainbows because the color
       // shape is a circle so only one value needs to precess
-      final var hue = (m_rainbowFirstPixelHue + (i * 180 / section.start())) % 180;
+      final var hue = (m_rainbowFirstPixelHue + (i * 180 / section.end())) % 180;
       // Set the value
-      ledBuffer.setHSV(i, hue, 255, 255);
+      ledBuffer.setHSV(i, hue, 255, 20);
     }
-    // Increase to make the rainbow "move"
-    m_rainbowFirstPixelHue += 3;
+    // Increase by to make the rainbow "move"
+    m_rainbowFirstPixelHue += 5;
     // Check bounds
     m_rainbowFirstPixelHue %= 180;
-
-    m_Led.setData(ledBuffer);
   }
 
   /** Method to set a given color to a given section of the LED strip */
@@ -105,8 +104,6 @@ public class Leds extends SubsystemBase {
       // Sets the specified LED to the HSV values for the preferred color
       ledBuffer.setHSV(i, hue, 255, 255);
     }
-
-    m_Led.setData(ledBuffer);
   }
 
   public void wave(Section section, LedColor color, LedColor color2, double cycleLength, double duration) {
@@ -132,7 +129,7 @@ public class Leds extends SubsystemBase {
 
   /** Method to set the LEDs to different states during the match */
   private void setStatusColors() {
-    if (automaticLED.getBoolean(true) == true) {
+    if (automaticLED.getBoolean(false) == true) {
       // Sets the LED's to green when the robot has a note in the intake
       if (intake.hasNote() == true) {
         setColor(Section.LEFT, LedColor.GREEN);
@@ -141,35 +138,41 @@ public class Leds extends SubsystemBase {
         setColor(Section.LEFT, LedColor.ORANGE);
         setColor(Section.RIGHT, LedColor.ORANGE);
       }
+
       // Sets the LED's to orange when the robot is in autonomous mode
       if (DriverStation.isAutonomousEnabled() == true) {
         wave(Section.FULL, LedColor.ORANGE, LedColor.YELLOW, 1, 15);
       }
-      // Sets the LED's to run along the strip when the Launch sequence has been
-      // enabled
+      // Sets the LED's to run along the strip when the Launch sequence has been enabled
       if (launchEnabled == true) {
-        wave(Section.LEFT, LedColor.BLUE, null, .1, 3);
-        wave(Section.RIGHT, LedColor.BLUE, null, .1, 3);
+        wave(Section.LEFT, LedColor.BLUE, LedColor.BLUE, .1, 3);
+        wave(Section.RIGHT, LedColor.BLUE, LedColor.BLUE, .1, 3);
       }
-      // Sets the LED's to run along the strip when the climbing sequence has been
-      // enabled
+      // Sets the LED's to run along the strip when the climbing sequence has been enabled
       if (climbEnabled == true) {
         wave(Section.FULL, LedColor.PURPLE, LedColor.PINK, .1, 1);
       }
+
     } else {
       switch (manualLedState) {
         case setColorGreen:
-          setColor(Section.FULL, LedColor.GREEN);
+          setColor(Section.LEFT, LedColor.GREEN);
+          setColor(Section.RIGHT, LedColor.GREEN);
         case setColorRed:
-          setColor(Section.FULL, LedColor.RED);
+          setColor(Section.LEFT, LedColor.RED);
+          setColor(Section.RIGHT, LedColor.RED);
         case waveSingleColorGreen:
-          wave(Section.FULL, LedColor.GREEN, null, .1, 1);
+          wave(Section.LEFT, LedColor.GREEN, LedColor.GREEN, .1, 1);
+          wave(Section.RIGHT, LedColor.GREEN, LedColor.GREEN, .1, 1);
         case waveDoubleColorPinkPurple:
-          wave(Section.FULL, LedColor.PINK, LedColor.PURPLE, .1, 1);
+          wave(Section.LEFT, LedColor.PINK, LedColor.PURPLE, .1, 1);
+          wave(Section.RIGHT, LedColor.PINK, LedColor.PURPLE, .1, 1);
         case rainbow:
-          rainbow(Section.FULL);
+          rainbow(Section.LEFT);
+          rainbow(Section.RIGHT);
         default:
-          setColor(Section.FULL, LedColor.ORANGE);
+          setColor(Section.LEFT, LedColor.ORANGE);
+          setColor(Section.RIGHT, LedColor.ORANGE);
           break;
       }
     }
@@ -220,7 +223,7 @@ public class Leds extends SubsystemBase {
         case LEFT:
           return LedConstants.underLength;
         case RIGHT:
-          return LedConstants.totalLength;
+          return LedConstants.underLength + LedConstants.leftLength;
         case FULL:
           return 0;
         case UNDERGLOW:
@@ -235,7 +238,7 @@ public class Leds extends SubsystemBase {
         case LEFT:
           return LedConstants.underLength + LedConstants.leftLength;
         case RIGHT:
-          return LedConstants.underLength + LedConstants.leftLength;
+          return LedConstants.underLength + LedConstants.leftLength + LedConstants.rightLength;
         case FULL:
           return LedConstants.totalLength;
         case UNDERGLOW:
