@@ -28,9 +28,10 @@ public class Leds extends SubsystemBase {
   // Constants regarding manual LED states
   private static final String setColorGreen = "Solid Green";
   private static final String setColorRed = "Solid Red";
+  private static final String setColorOrange = "Solid Orange";
   private static final String rainbow = "Rainbow";
-  private static final String waveSingleColorGreen = "Wave Green";
-  private static final String waveDoubleColorPinkPurple = "Wave Pink and Purple";
+  private static final String waveBlueGreen = "Wave Blue and Green";
+  private static final String wavePinkPurple = "Wave Pink and Purple";
   private String manualLedState;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
@@ -51,16 +52,16 @@ public class Leds extends SubsystemBase {
     m_Led.setData(ledBuffer);
     m_Led.start();
 
-    m_chooser.setDefaultOption("Solid Green", setColorGreen);
+    m_chooser.setDefaultOption("Solid Orange", setColorOrange);
+    m_chooser.addOption("Solid Green", setColorGreen);
     m_chooser.addOption("Solid Red", setColorRed);
     m_chooser.addOption("Rainbow", rainbow);
-    m_chooser.addOption("Wave Green", waveSingleColorGreen);
-    m_chooser.addOption("Wave Pink and Purple", waveDoubleColorPinkPurple);
+    m_chooser.addOption("Wave Blue and Green", waveBlueGreen);
+    m_chooser.addOption("Wave Pink and Purple", wavePinkPurple);
     SmartDashboard.putData("Manual LED", m_chooser);
     manualLedState = m_chooser.getSelected();
 
     Optional<Alliance> ally = DriverStation.getAlliance();
-
     setDefaultCommand(runOnce(() -> {
       if (ally.isPresent()) {
         if (ally.get() == Alliance.Blue) {
@@ -79,6 +80,7 @@ public class Leds extends SubsystemBase {
   public void periodic() {
     m_Led.setData(ledBuffer);
     setStatusColors();
+    manualLedState = m_chooser.getSelected();
   }
 
   /** Method to set a rainbow effect to a given section of the LED strip */
@@ -92,7 +94,7 @@ public class Leds extends SubsystemBase {
       ledBuffer.setHSV(i, hue, 255, 20);
     }
     // Increase by to make the rainbow "move"
-    m_rainbowFirstPixelHue += 5;
+    m_rainbowFirstPixelHue += 3;
     // Check bounds
     m_rainbowFirstPixelHue %= 180;
   }
@@ -158,21 +160,30 @@ public class Leds extends SubsystemBase {
         case setColorGreen:
           setColor(Section.LEFT, LedColor.GREEN);
           setColor(Section.RIGHT, LedColor.GREEN);
+          break;
         case setColorRed:
           setColor(Section.LEFT, LedColor.RED);
           setColor(Section.RIGHT, LedColor.RED);
-        case waveSingleColorGreen:
-          wave(Section.LEFT, LedColor.GREEN, LedColor.GREEN, .1, 1);
-          wave(Section.RIGHT, LedColor.GREEN, LedColor.GREEN, .1, 1);
-        case waveDoubleColorPinkPurple:
-          wave(Section.LEFT, LedColor.PINK, LedColor.PURPLE, .1, 1);
-          wave(Section.RIGHT, LedColor.PINK, LedColor.PURPLE, .1, 1);
+          break;
+        case setColorOrange:
+          setColor(Section.LEFT, LedColor.ORANGE);
+          setColor(Section.RIGHT, LedColor.ORANGE);
+          break;
+        case waveBlueGreen:
+          wave(Section.LEFT, LedColor.GREEN, LedColor.BLUE, 1, 3);
+          wave(Section.RIGHT, LedColor.GREEN, LedColor.BLUE, 1, 3);
+          break;
+        case wavePinkPurple:
+          wave(Section.LEFT, LedColor.PINK, LedColor.PURPLE, 1, 3);
+          wave(Section.RIGHT, LedColor.PINK, LedColor.PURPLE, 1, 3);
+          break;
         case rainbow:
           rainbow(Section.LEFT);
           rainbow(Section.RIGHT);
+          break;
         default:
-          setColor(Section.LEFT, LedColor.ORANGE);
-          setColor(Section.RIGHT, LedColor.ORANGE);
+          rainbow(Section.LEFT);
+          rainbow(Section.RIGHT);
           break;
       }
     }
@@ -194,13 +205,13 @@ public class Leds extends SubsystemBase {
         case RED:
           return 0;
         case ORANGE:
-          return 30 / 2;
+          return 20 / 2;
         case YELLOW:
           return 60 / 2;
         case GREEN:
           return 110 / 2;
         case BLUE:
-          return 230 / 2;
+          return 240 / 2;
         case PURPLE:
           return 270 / 2;
         case PINK:
