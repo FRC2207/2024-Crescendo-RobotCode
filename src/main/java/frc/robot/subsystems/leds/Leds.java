@@ -25,6 +25,8 @@ public class Leds extends SubsystemBase {
 
   private static int brightnessLimit = 100;
   private int m_rainbowFirstPixelHue;
+  private int m_range;
+  public boolean on = true;
   private static final double fadeExponent = 0.4;
 
   // Constants regarding manual LED states
@@ -73,7 +75,7 @@ public class Leds extends SubsystemBase {
           solid(Section.UNDERGLOW, LedColor.RED);
         }
       } else {
-        rainbow(Section.UNDERGLOW);
+        rainbow(Section.UNDERGLOW, 4);
       }
     }));
   }
@@ -85,30 +87,42 @@ public class Leds extends SubsystemBase {
     manualLedState = m_chooser.getSelected();
   }
 
-  /** Method to set a rainbow effect to a given section of the LED strip */
-  public void rainbow(Section section) {
-    // For designate range
-    for (var i = section.start(); i < section.end(); i++) {
-      // Calculate the hue - hue is easier for rainbows because the color
-      // shape is a circle so only one value needs to precess
-      final var hue = (m_rainbowFirstPixelHue + (i * 180 / section.end())) % 180;
-      // Set the value
-      ledBuffer.setHSV(i, hue, 255, 20);
-    }
-    // Increase by to make the rainbow "move"
-    m_rainbowFirstPixelHue += 3;
-    // Check bounds
-    m_rainbowFirstPixelHue %= 180;
+  /**
+     * Sets the strip to a solid, singular color
+     * 
+     * @param section is the range you want to add the effect
+     * @param color   is the color you want the LEDs to be
+     */
+    public void solid(Section section, LedColor color) {
+      for (var i = section.start(); i < section.end(); i++) {
+          final var hue = color.hues();
+          final var value = color.banana();
+          // Sets the specified LED to the HSV values for the preferred color
+          ledBuffer.setHSV(i, hue, 255, value);
+      }
   }
 
-  /** Method to set a given color to a given section of the LED strip */
-  public void solid(Section section, LedColor color) {
-    for (var i = section.start(); i < section.end(); i++) {
-      final var hue = color.hues();
-      final var value = color.banana();
-      // Sets the specified LED to the HSV values for the preferred color
-      ledBuffer.setHSV(i, hue, 255, value);
-    }
+  /**
+   * Sets the strip to a rainbow pattern that moves along the light strand
+   * 
+   * @param section is the range you want to add the effect
+   * @param speed   is the speed you want the rainbow to run down the strip - 5 is
+   *                recommended for long distance, 3 is recommended for short
+   *                distances
+   */
+  public void rainbow(Section section, int speed) {
+      // For designate range
+      for (var i = section.start(); i < section.end(); i++) {
+          // Calculate the hue - hue is easier for rainbows because the color
+          // shape is a circle so only one value needs to precess
+          final var hue = (m_rainbowFirstPixelHue + (i * 180 / section.end())) % 180;
+          // Set the value
+          ledBuffer.setHSV(i, hue, 255, brightnessLimit);
+      }
+      // Increase by to make the rainbow "move"
+      m_rainbowFirstPixelHue += speed;
+      // Check bounds
+      m_rainbowFirstPixelHue %= 180;
   }
 
   /**
@@ -142,24 +156,82 @@ public class Leds extends SubsystemBase {
   }
 
   /**
-     * Flashes the LEDs on and off at the designated speed
+     * Pulses the lights to give them a breathing effect.
      * 
      * @param section  is the range you want to add the effect
-     * @param color    is the base color
-     * @param duration is the time between each flash
+     * @param color    is the color that with breath
+     * @param duration is the time it takes to go through 1 cycle
      */
-    public void strobe(Section section, LedColor color, double duration) {
-      boolean on = true;
+    public void breath(Section section, LedColor color1, double duration) {
+      double x = ((Timer.getFPGATimestamp() % duration) / duration) * 2.0 * Math.PI;
+      double ratio = (Math.sin(x) + 1.0) / 2.0;
+      LedColor color2 = LedColor.BLACK;
 
-      if (!m_timer.advanceIfElapsed(duration / 2)) return;
+      for (int i = section.start(); i < section.end(); i++) {
+          final var value = (color1.banana() * (1 - ratio)) + (color2.banana() * ratio);
+          ledBuffer.setHSV(i, color1.hues(), 255, (int) value);
+      }
+  }
 
-      if (on) {
-          solid(section, color);
+  /**
+   * Flashes the LEDs on and off at the designated speed
+   * 
+   * @param section  is the range you want to add the effect
+   * @param color    is the color that will flash
+   * @param duration is the time between each flash
+   */
+  public void strobe(Section section, LedColor color, double duration) {
+      strobe(section, color, LedColor.BLACK, duration);
+  }
+
+  /**
+   * Flashes the LEDs between two colors at the designated speed
+   * 
+   * @param section  is the range you want to add the effect
+   * @param color1   is the base color
+   * @param color2   is the secondary color
+   * @param duration is the time between each flash
+   */
+  public void strobe(Section section, LedColor color1, LedColor color2, double duration) {
+      if (!m_timer.advanceIfElapsed(duration / 2))
+          return;
+
+      if (!on) {
+          solid(section, color1);
           on = true;
       } else {
-          solid(section, LedColor.BLACK);
+          solid(section, color2);
           on = false;
       }
+  }
+
+    /**
+     * Fills the section of LEDs with the color incrementally
+     * 
+     * @param section   is the range you want to add the effect
+     * @param color     is the color you want to fill
+     * @param increment is how many LEDs you want to fill per cycle
+     * @param duration  is how long you want each cycle to last
+     */
+    public void fill(Section section, LedColor color, int increment, double duration) {
+      LedColor color2 = LedColor.BLACK;
+      for (int i = section.start(); i < section.end(); i++) {
+          if (i < section.start() + m_range) {
+              ledBuffer.setHSV(i, color.hues(), 255, color.banana());
+          } else {
+              ledBuffer.setHSV(i, color2.hues(), 255, color2.banana());
+          }
+      }
+      //Advances at the calculated speed to
+      double speed = duration / (section.end() - section.start());
+      if (!m_timer.advanceIfElapsed(speed))
+         return;
+
+      //increase to fill the strip
+      m_range += increment;
+      // check bounds
+      m_range %= section.end() - section.start();
+
   }
 
   /** Method to set the LEDs to different states during the match */
@@ -211,12 +283,12 @@ public class Leds extends SubsystemBase {
           fade(Section.RIGHT, LedColor.PINK, LedColor.PURPLE, 1, 3);
           break;
         case rainbow:
-          rainbow(Section.LEFT);
-          rainbow(Section.RIGHT);
+          rainbow(Section.LEFT, 3);
+          rainbow(Section.RIGHT, 3);
           break;
         default:
-          rainbow(Section.LEFT);
-          rainbow(Section.RIGHT);
+          rainbow(Section.LEFT, 3);
+          rainbow(Section.RIGHT, 3);
           break;
       }
     }
