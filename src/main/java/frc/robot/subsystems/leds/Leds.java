@@ -20,10 +20,12 @@ import frc.robot.subsystems.intake.Intake;
 public class Leds extends SubsystemBase {
   public AddressableLED m_Led = new AddressableLED(LedConstants.LedID);
   private static AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(LedConstants.totalLength);
+  private final Timer m_timer = new Timer();
   private final Intake intake;
 
+  private static int brightnessLimit = 100;
   private int m_rainbowFirstPixelHue;
-  private static final double waveExponent = 0.4;
+  private static final double fadeExponent = 0.4;
 
   // Constants regarding manual LED states
   private static final String setColorGreen = "Solid Green";
@@ -65,10 +67,10 @@ public class Leds extends SubsystemBase {
     setDefaultCommand(runOnce(() -> {
       if (ally.isPresent()) {
         if (ally.get() == Alliance.Blue) {
-          setColor(Section.UNDERGLOW, LedColor.BLUE);
+          solid(Section.UNDERGLOW, LedColor.BLUE);
         }
         if (ally.get() == Alliance.Red) {
-          setColor(Section.UNDERGLOW, LedColor.RED);
+          solid(Section.UNDERGLOW, LedColor.RED);
         }
       } else {
         rainbow(Section.UNDERGLOW);
@@ -100,33 +102,64 @@ public class Leds extends SubsystemBase {
   }
 
   /** Method to set a given color to a given section of the LED strip */
-  public void setColor(Section section, LedColor color) {
+  public void solid(Section section, LedColor color) {
     for (var i = section.start(); i < section.end(); i++) {
       final var hue = color.hues();
+      final var value = color.banana();
       // Sets the specified LED to the HSV values for the preferred color
-      ledBuffer.setHSV(i, hue, 255, 255);
+      ledBuffer.setHSV(i, hue, 255, value);
     }
   }
 
-  public void wave(Section section, LedColor color, LedColor color2, double cycleLength, double duration) {
-    double x = (1 - ((Timer.getFPGATimestamp() % duration) / duration)) * 2.0 * Math.PI;
-    double xDiffPerLed = (2.0 * Math.PI) / cycleLength;
-    for (int i = section.start(); i < section.end(); i++) {
-      x += xDiffPerLed;
-      if (i >= section.start()) {
-        double ratio = (Math.pow(Math.sin(x), waveExponent) + 1.0) / 2.0;
-        if (Double.isNaN(ratio)) {
-          ratio = (-Math.pow(Math.sin(x + Math.PI), waveExponent) + 1.0) / 2.0;
-        }
-        if (Double.isNaN(ratio)) {
-          ratio = 0.5;
-        }
+  /**
+     * Fades between the colors designated - on the hue scale
+     * 
+     * @param section     is the range you want to add the effect
+     * @param color1      is the base color
+     * @param color2      is the color to fade in and out of
+     * @param cycleLength is the frequency you fade the color by the pixels
+     * @param duration    is the time it takes to cycle back to the original color
+     */
+    public void fade(Section section, LedColor color1, LedColor color2, int cycleLength, double duration) {
+      double x = (1 - ((Timer.getFPGATimestamp() % duration) / duration)) * 2.0 * Math.PI;
+      double xDiffPerLed = (2.0 * Math.PI) / cycleLength;
+      final var value = color1.banana();
+      for (int i = section.start(); i < section.end(); i++) {
+          x += xDiffPerLed;
+          if (i >= section.start()) {
+              double ratio = (Math.pow(Math.sin(x), fadeExponent) + 1.0) / 2.0;
+              if (Double.isNaN(ratio)) {
+                  ratio = (-Math.pow(Math.sin(x + Math.PI), fadeExponent) + 1.0) / 2.0;
+              }
+              if (Double.isNaN(ratio)) {
+                  ratio = 0.5;
+              }
 
-        int outputColor = (int) Math.round((color.hues() * (1 - ratio)) + (color2.hues() * ratio));
-
-        ledBuffer.setHSV(i, outputColor, 255, 255);
+              int outputColor = (int) Math.round((color1.hues() * (1 - ratio)) + (color2.hues() * ratio));
+              ledBuffer.setHSV(i, outputColor, 255, value);
+          }
       }
-    }
+  }
+
+  /**
+     * Flashes the LEDs on and off at the designated speed
+     * 
+     * @param section  is the range you want to add the effect
+     * @param color    is the base color
+     * @param duration is the time between each flash
+     */
+    public void strobe(Section section, LedColor color, double duration) {
+      boolean on = true;
+
+      if (!m_timer.advanceIfElapsed(duration / 2)) return;
+
+      if (on) {
+          solid(section, color);
+          on = true;
+      } else {
+          solid(section, LedColor.BLACK);
+          on = false;
+      }
   }
 
   /** Method to set the LEDs to different states during the match */
@@ -134,48 +167,48 @@ public class Leds extends SubsystemBase {
     if (automaticLED.getBoolean(false) == true) {
       // Sets the LED's to green when the robot has a note in the intake
       if (intake.hasNote() == true) {
-        setColor(Section.LEFT, LedColor.GREEN);
-        setColor(Section.RIGHT, LedColor.GREEN);
+        solid(Section.LEFT, LedColor.GREEN);
+        solid(Section.RIGHT, LedColor.GREEN);
       } else {
-        setColor(Section.LEFT, LedColor.ORANGE);
-        setColor(Section.RIGHT, LedColor.ORANGE);
+        solid(Section.LEFT, LedColor.ORANGE);
+        solid(Section.RIGHT, LedColor.ORANGE);
       }
 
       // Sets the LED's to orange when the robot is in autonomous mode
       if (DriverStation.isAutonomousEnabled() == true) {
-        wave(Section.FULL, LedColor.ORANGE, LedColor.YELLOW, 1, 15);
+        fade(Section.FULL, LedColor.ORANGE, LedColor.YELLOW, 1, 15);
       }
       // Sets the LED's to run along the strip when the Launch sequence has been enabled
       if (launchEnabled == true) {
-        wave(Section.LEFT, LedColor.BLUE, LedColor.BLUE, .1, 3);
-        wave(Section.RIGHT, LedColor.BLUE, LedColor.BLUE, .1, 3);
+        fade(Section.LEFT, LedColor.BLUE, LedColor.BLUE, 1, 3);
+        fade(Section.RIGHT, LedColor.BLUE, LedColor.BLUE, 1, 3);
       }
       // Sets the LED's to run along the strip when the climbing sequence has been enabled
       if (climbEnabled == true) {
-        wave(Section.FULL, LedColor.PURPLE, LedColor.PINK, .1, 1);
+        fade(Section.FULL, LedColor.PURPLE, LedColor.PINK, 1, 1);
       }
 
     } else {
       switch (manualLedState) {
         case setColorGreen:
-          setColor(Section.LEFT, LedColor.GREEN);
-          setColor(Section.RIGHT, LedColor.GREEN);
+          solid(Section.LEFT, LedColor.GREEN);
+          solid(Section.RIGHT, LedColor.GREEN);
           break;
         case setColorRed:
-          setColor(Section.LEFT, LedColor.RED);
-          setColor(Section.RIGHT, LedColor.RED);
+          solid(Section.LEFT, LedColor.RED);
+          solid(Section.RIGHT, LedColor.RED);
           break;
         case setColorOrange:
-          setColor(Section.LEFT, LedColor.ORANGE);
-          setColor(Section.RIGHT, LedColor.ORANGE);
+          solid(Section.LEFT, LedColor.ORANGE);
+          solid(Section.RIGHT, LedColor.ORANGE);
           break;
         case waveBlueGreen:
-          wave(Section.LEFT, LedColor.GREEN, LedColor.BLUE, 1, 3);
-          wave(Section.RIGHT, LedColor.GREEN, LedColor.BLUE, 1, 3);
+          fade(Section.LEFT, LedColor.GREEN, LedColor.BLUE, 1, 3);
+          fade(Section.RIGHT, LedColor.GREEN, LedColor.BLUE, 1, 3);
           break;
         case wavePinkPurple:
-          wave(Section.LEFT, LedColor.PINK, LedColor.PURPLE, 1, 3);
-          wave(Section.RIGHT, LedColor.PINK, LedColor.PURPLE, 1, 3);
+          fade(Section.LEFT, LedColor.PINK, LedColor.PURPLE, 1, 3);
+          fade(Section.RIGHT, LedColor.PINK, LedColor.PURPLE, 1, 3);
           break;
         case rainbow:
           rainbow(Section.LEFT);
@@ -196,31 +229,56 @@ public class Leds extends SubsystemBase {
     GREEN,
     BLUE,
     PURPLE,
-    PINK;
+    PINK,
+    BLACK;
 
     public int hues() {
-      switch (this) { // Values are divided by 2 because color pickers like Google are x/360, whereas
-                      // WPILib is x/180
-
-        case RED:
-          return 0;
-        case ORANGE:
-          return 20 / 2;
-        case YELLOW:
-          return 60 / 2;
-        case GREEN:
-          return 110 / 2;
-        case BLUE:
-          return 240 / 2;
-        case PURPLE:
-          return 270 / 2;
-        case PINK:
-          return 310 / 2;
-        default:
-          return 0;
-      }
+        switch (this) { // Values are divided by 2 because color pickers like Google are x/360, whereas
+                        // WPILib is x/180
+            case RED:
+                return 0;
+            case ORANGE:
+                return 20 / 2;
+            case YELLOW:
+                return 60 / 2;
+            case GREEN:
+                return 110 / 2;
+            case BLUE:
+                return 240 / 2;
+            case PURPLE:
+                return 270 / 2;
+            case PINK:
+                return 310 / 2;
+            case BLACK:
+                return 0;
+            default:
+                return 0;
+        }
     }
-  }
+
+    public int banana() {
+        switch (this) {
+            case RED:
+                return (int) (brightnessLimit);
+            case ORANGE:
+                return (int) (brightnessLimit);
+            case YELLOW:
+                return (int) (brightnessLimit);
+            case GREEN:
+                return (int) (brightnessLimit);
+            case BLUE:
+                return (int) (brightnessLimit);
+            case PURPLE:
+                return (int) (brightnessLimit);
+            case PINK:
+                return (int) (brightnessLimit);
+            case BLACK:
+                return 0;
+            default:
+                return (int) (brightnessLimit % 255);
+        }
+    }
+}
 
   public static enum Section {
     LEFT,
