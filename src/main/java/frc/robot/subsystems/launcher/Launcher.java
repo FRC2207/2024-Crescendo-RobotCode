@@ -7,8 +7,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.leds.Leds;
-import frc.robot.subsystems.leds.Leds.LedColor;
-import frc.robot.subsystems.leds.Leds.Section;
 
 public class Launcher extends SubsystemBase {
   private static final double launchSpeed = 1.0;
