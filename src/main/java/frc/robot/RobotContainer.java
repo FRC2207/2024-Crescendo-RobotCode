@@ -21,12 +21,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.IntakeConstants;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.AutoAlign;
 import frc.robot.commands.DriveToPose;
 import frc.robot.commands.DriveWithController;
+import frc.robot.commands.IntakeGround;
+import frc.robot.commands.IntakeGroundAuto;
 import frc.robot.commands.AutoAlign.Target;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -117,6 +120,16 @@ public class RobotContainer {
     // Create named commands
     NamedCommands.registerCommand("shootButton", launcher.launchCommand().withTimeout(5.0));
 
+    Command intakeDown = pivot.stupidPIDCommand(Units.degreesToRadians(6));
+    intakeDown.addRequirements(pivot);
+    Command intakeUp = pivot.stupidPIDCommand(Units.degreesToRadians(170));
+    intakeUp.addRequirements(pivot);
+
+    NamedCommands.registerCommand("intakeDown", intakeDown.until(() -> pivot.getPivotAngleAdjusted() <= Units.degreesToRadians(7)));
+    NamedCommands.registerCommand("intakeUp", intakeUp.until(() -> pivot.getPivotAngleAdjusted() >= Units.degreesToRadians(170)));
+    NamedCommands.registerCommand("runIntake", Commands.run(() -> intake.setIntakeVoltageRaw(0.5), intake).until(() -> intake.hasNote()).withTimeout(3).finallyDo(() -> intake.setIntakeVoltageRaw(0)));
+    NamedCommands.registerCommand("intakeBump", Commands.run(() -> intake.setIntakeVoltageRaw(0.5), intake).withTimeout(0.04).finallyDo(() -> intake.setIntakeVoltageRaw(0)));
+
     // Create SendableChooser using PathPlanner AutoBuilder
     autoChooser = new LoggedDashboardChooser<>("Auto Chooser", AutoBuilder.buildAutoChooser());
     
@@ -157,6 +170,7 @@ public class RobotContainer {
     driveXbox.a().onTrue(intake.continuousCommand());
     driveXbox.b().onTrue(intake.burpCommand());
     driveXbox.y().onTrue(launcher.launchCommand());
+    driveXbox.leftBumper().onTrue(launcher.launchCommand());
     driveXbox.rightBumper().whileTrue(Commands.run(() -> intake.setIntakeVoltageRaw(0.5), intake)).onFalse(Commands.run(() -> intake.setIntakeVoltageRaw(0), intake));
 
     //driveXbox.leftBumper().onTrue(Commands.runOnce(() -> drive.setPose(AutoAlign.speakerCenterPose)));
@@ -164,9 +178,17 @@ public class RobotContainer {
     //driveXbox.start().whileTrue(new DriveToPose(drive, true, new Pose2d(new Translation2d(3, 2), new Rotation2d(Math.PI/4))));
     driveXbox.start().whileTrue(new AutoAlign(drive, Target.CENTER));
     driveXbox.back().whileTrue(new AutoAlign(drive, Target.SOURCESIDE));
-    driveXbox.leftBumper().onTrue(pivot.setIntakeAngle(Units.degreesToRadians(165)));
-    driveXbox.rightBumper().onTrue(pivot.setIntakeAngle(Units.degreesToRadians(10)));
-    driveXbox.rightTrigger().onTrue(Commands.runOnce(() -> pivot.setShouldRunStupid(true))).onFalse(Commands.runOnce(() -> pivot.setShouldRunStupid(false)).andThen(Commands.runOnce(() -> pivot.setPivotAngleRaw(0))));
+    //driveXbox.leftBumper().onTrue(pivot.setIntakeAngle(Units.degreesToRadians(165)));
+    //driveXbox.rightBumper().onTrue(pivot.setIntakeAngle(Units.degreesToRadians(10)));
+    //driveXbox.rightTrigger().onTrue(Commands.runOnce(() -> pivot.setShouldRunStupid(true))).onFalse(Commands.runOnce(() -> pivot.setShouldRunStupid(false)).andThen(Commands.runOnce(() -> pivot.setPivotAngleRaw(0))));
+    
+    IntakeGroundAuto intakeGroundAuto = new IntakeGroundAuto(intake, pivot);
+    //driveXbox.leftTrigger().onTrue(intakeGroundAuto).onFalse(Commands.runOnce(() -> {intakeGroundAuto.cancel(); pivot.stupidPIDCommand(Units.DegreesToRadians(165));}));
+    Command intakeDown = pivot.stupidPIDCommand(Units.degreesToRadians(5));
+    intakeDown.addRequirements(pivot);
+    Command intakeUp = pivot.stupidPIDCommand(Units.degreesToRadians(175));
+    intakeUp.addRequirements(pivot);
+    driveXbox.rightTrigger().onTrue(intakeDown).onTrue(intake.continuousCommand()).onFalse(Commands.runOnce(() -> intake.setIntakeVoltageRaw(0.0), intake)).onFalse(intakeUp.until(() -> pivot.getPivotAngleAdjusted() >= Units.degreesToRadians(175)));
 
     manipulatorXbox.a().onTrue(intake.continuousCommand());    
     manipulatorXbox.b().onTrue(launcher.launcherIntakeCommand());

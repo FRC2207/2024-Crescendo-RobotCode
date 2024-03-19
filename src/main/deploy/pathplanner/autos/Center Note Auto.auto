@@ -18,21 +18,65 @@
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "Subwoofer to Center Note"
+            "waitTime": 0.1
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeDown"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "runIntake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Subwoofer to Center Note"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeUp"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Center Note to Subwoofer"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeBump"
           }
         },
         {
           "type": "wait",
           "data": {
             "waitTime": 0.25
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Center Note to Subwoofer"
           }
         },
         {

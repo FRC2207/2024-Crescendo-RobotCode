@@ -74,7 +74,7 @@ public class DriveWithController extends Command {
         rightY = Math.copySign(rightY * rightY, rightY);
  
         // Apply speed limits
-        linearMagnitude *= 1.0/1*.75;
+        linearMagnitude *= 1.0/1*.90;
         rightX *= 0.75/1*.75;
 
         // Calculate new linear components

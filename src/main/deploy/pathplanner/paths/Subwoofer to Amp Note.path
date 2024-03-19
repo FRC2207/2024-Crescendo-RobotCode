@@ -16,26 +16,32 @@
     },
     {
       "anchor": {
-        "x": 2.438259940713889,
-        "y": 6.604911811820771
+        "x": 2.5670791427174855,
+        "y": 6.663465994549679
       },
       "prevControl": {
-        "x": 2.2696925997085557,
-        "y": 6.420290438338739
+        "x": 2.2299444607068195,
+        "y": 6.294223247585616
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Amp Note"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.35,
+      "rotationDegrees": -135.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 3.6,
-    "maxAngularVelocity": 360.0,
-    "maxAngularAcceleration": 480.0
+    "maxAcceleration": 2.7,
+    "maxAngularVelocity": 270.0,
+    "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
     "velocity": 0,

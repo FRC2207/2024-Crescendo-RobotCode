@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 
@@ -45,6 +46,8 @@ public class Pivot extends ProfiledPIDSubsystem {
         Logger.processInputs("Pivot", inputs);
         Logger.recordOutput("Pivot/PIDOutput", m_controller.calculate(inputs.encoderPosition, m_controller.getGoal()));
         Logger.recordOutput("Pivot/ShouldRunStupid", shouldRunStupid);
+        Logger.recordOutput("Pivot/Goal", m_controller.getGoal().position);
+        Logger.recordOutput("Pivot/Setpoint", m_controller.getSetpoint().position);
         if (shouldRunStupid) {
             runStupidPID();
         }
@@ -52,12 +55,39 @@ public class Pivot extends ProfiledPIDSubsystem {
 
     public void runStupidPID() {
         double output = -m_controller.calculate(inputs.encoderPosition, m_controller.getGoal());
-        output = MathUtil.clamp(output, -6.0, 6.0);
+        output = MathUtil.clamp(output, -12.0, 12.0);
         io.setPivotVoltage(output);
     }
 
     public void setShouldRunStupid(boolean shouldRunStupid) {
         this.shouldRunStupid = shouldRunStupid;
+    }
+
+    public double getPivotAngleAdjusted() {
+        return inputs.encoderPosition;
+    }
+
+    public Command stupidPIDCommand (double goal) {
+        return new Command() {
+            @Override
+            public void initialize() {
+                setGoal(goal);
+                setShouldRunStupid(true);
+            }
+
+            @Override
+            public void execute() {
+                if (getPivotAngleAdjusted() >= goal-.1 && getPivotAngleAdjusted() <= goal+.1) {
+                    end(false);
+                }
+            }
+
+            @Override
+            public void end(boolean interrupted) {
+                setShouldRunStupid(false);
+                io.setPivotVoltage(0.0);
+            }
+        };
     }
 
     @Override

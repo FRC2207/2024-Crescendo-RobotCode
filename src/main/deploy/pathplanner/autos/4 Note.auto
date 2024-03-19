@@ -18,39 +18,189 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Subwoofer to Center Note"
+            "name": "intakeDown"
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "Center Note to Subwoofer"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "runIntake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Subwoofer to Center Note"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Subwoofer to Amp Note"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeUp"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Center Note to Subwoofer"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Amp Note to Subwoofer"
+            "name": "intakeBump"
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "Subwoofer to Source Note"
+            "waitTime": 0.25
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Source Note to Subwoofer"
+            "name": "shootButton"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeDown"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "runIntake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Subwoofer to Amp Note"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeUp"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Amp Note to Subwoofer"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeBump"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.25
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shootButton"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeDown"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "runIntake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Subwoofer to Source Note"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeUp"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Source Note to Subwoofer"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeBump"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.25
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shootButton"
           }
         }
       ]

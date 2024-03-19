@@ -54,7 +54,7 @@ public class DriveToPose extends Command {
             case "SIM":
             case "Real":
             default:
-                driveKp = 2.0*3;
+                driveKp = 6.0; // Old value = 6
                 driveKd = 0.0;
                 thetaKp = 5.0;
                 thetaKd = 0.0;
@@ -64,7 +64,7 @@ public class DriveToPose extends Command {
                 thetaMaxVelocity = Units.degreesToRadians(360);
                 thetaMaxVelocitySlow = Units.degreesToRadians(90);
                 thetaMaxAcceleration = Units.degreesToRadians(720/1.5); // keep this low for brownout purposes
-                driveTolerance = 0.01;
+                driveTolerance = 0.05; // Old value = 0.01
                 driveToleranceSlow = 0.06;
                 thetaTolerance = Units.degreesToRadians(1);
                 thetaToleranceSlow = Units.degreesToRadians(3);
