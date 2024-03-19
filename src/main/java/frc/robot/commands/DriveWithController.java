@@ -120,7 +120,7 @@ public class DriveWithController extends Command {
         
         // Heading PID Logic
         // Check if no joystick input for rotation
-        if (rightX == 0.0) {
+        if (rightX == 0.0 && Math.abs(linearMagnitude) > 0.10 ) {
             // Store values and enable further logic
             if (!shouldRunHeadingPID) {
                 shouldRunHeadingPID = true; // Set the enable boolean to true
