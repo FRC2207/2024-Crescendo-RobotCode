@@ -23,6 +23,7 @@ public class Leds extends SubsystemBase {
   private static final String setColorGreen = "Solid Green";
   private static final String setColorRed = "Solid Red";
   private static final String setColorOrange = "Solid Orange";
+  private static final String setTwoToneSolid = "Two Color Orange and Magenta";
   private static final String rainbow = "Rainbow";
   private static final String waveBlueGreen = "Wave Blue and Green";
   private static final String setColorLightBlue = "Wave Blue and Red";
@@ -52,6 +53,7 @@ public class Leds extends SubsystemBase {
     m_chooser.addOption("Solid Green", setColorGreen);
     m_chooser.addOption("Solid Red", setColorRed);
     m_chooser.addOption("Solid Light Blue", setColorLightBlue);
+    m_chooser.addOption("Two Color Orange and Magenta", setTwoToneSolid);
     m_chooser.addOption("Solid Black", setColorBlack);
     m_chooser.addOption("Rainbow", rainbow);
     m_chooser.addOption("Wave Blue and Green", waveBlueGreen);
@@ -143,6 +145,9 @@ public class Leds extends SubsystemBase {
             break;
           case setColorOrange:
             ledClass.solid(Section.LAUNCHER, LedColor.ORANGE);
+            break;
+          case setTwoToneSolid:
+            ledClass.solidTwoColor(Section.LAUNCHER, LedColor.ORANGE, LedColor.MAGENTA);
             break;
           case waveBlueGreen:
             ledClass.fade(Section.LAUNCHER, LedColor.GREEN, LedColor.BLUE, 1, 3);

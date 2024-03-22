@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LedConstants;
 
-public class BrightBearsLedClass extends SubsystemBase{
+public class BrightBearsLedClass extends SubsystemBase {
     public AddressableLED m_Led = new AddressableLED(LedConstants.LedID);
     private static AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(LedConstants.totalLength);
     private final Timer m_timer = new Timer();
@@ -44,6 +44,30 @@ public class BrightBearsLedClass extends SubsystemBase{
             final var value = color.value();
             // Sets the specified LED to the HSV values for the preferred color
             ledBuffer.setHSV(i, hue, 255, value);
+        }
+    }
+
+    /**
+     * Sets the strip to a solid. Currently only a single color
+     * 
+     * @param section is the range you want to add the effect
+     * @param color1  is the color you want the LEDs to be
+     * @param color2  is the second color you want to display
+     */
+    public void solidTwoColor(Section section, LedColor color1, LedColor color2) {
+
+        for (var i = section.start(); i < section.end(); i++) {
+            if (i % 2 == 0) {
+                final var hue = color1.hues();
+                final var value = color1.value();
+                // Sets the specified LED to the HSV values for the preferred color
+                ledBuffer.setHSV(i, hue, 255, value);
+            } else {
+                final var hue = color2.hues();
+                final var value = color2.value();
+                // Sets the specified LED to the HSV values for the preferred color
+                ledBuffer.setHSV(i, hue, 255, value);
+            }
         }
     }
 
