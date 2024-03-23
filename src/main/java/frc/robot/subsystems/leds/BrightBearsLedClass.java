@@ -9,7 +9,9 @@ import frc.robot.Constants.LedConstants;
 public class BrightBearsLedClass extends SubsystemBase {
     public AddressableLED m_Led = new AddressableLED(LedConstants.LedID);
     private static AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(LedConstants.totalLength);
-    private final Timer m_timer = new Timer();
+    private final Timer strobeTimer = new Timer();
+    private final Timer zipTimer = new Timer();
+    private final Timer fillTimer = new Timer();
 
     private static int brightnessLimit = 100;
     private int m_rainbowFirstPixelHue;
@@ -24,7 +26,9 @@ public class BrightBearsLedClass extends SubsystemBase {
         m_Led.setLength(ledBuffer.getLength());
         m_Led.setData(ledBuffer);
         m_Led.start();
-        m_timer.start();
+        strobeTimer.start();
+        zipTimer.start();
+        fillTimer.start();
     }
 
     @Override
@@ -177,7 +181,7 @@ public class BrightBearsLedClass extends SubsystemBase {
      * @param duration is the time between each flash
      */
     public void strobe(Section section, LedColor color1, LedColor color2, double duration) {
-        if (!m_timer.advanceIfElapsed(duration / 2))
+        if (!strobeTimer.advanceIfElapsed(duration / 2))
             return;
 
         if (!on) {
@@ -219,7 +223,7 @@ public class BrightBearsLedClass extends SubsystemBase {
         }
         // Only pass if the time calculated has passed
         double speed = increment * (duration / (section.end() - section.start()));
-        if (!m_timer.advanceIfElapsed(speed))
+        if (!fillTimer.advanceIfElapsed(speed))
             return;
 
         // increase to fill the strip
@@ -268,7 +272,7 @@ public class BrightBearsLedClass extends SubsystemBase {
 
         // Only pass if the time calculated has passed
         double speed = increment * (duration / (section.end() - section.start()));
-        if (!m_timer.advanceIfElapsed(speed))
+        if (!fillTimer.advanceIfElapsed(speed))
             return;
 
         // increase to move the strip
