@@ -18,25 +18,32 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "intakeDown"
-          }
-        },
-        {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "runIntake"
+                  "name": "intakeDown"
                 }
               },
               {
-                "type": "path",
+                "type": "deadline",
                 "data": {
-                  "pathName": "Subwoofer to Center Note"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "runIntake"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Subwoofer to Center Note"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -57,6 +64,12 @@
                 "data": {
                   "pathName": "Center Note to Subwoofer"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shooterSpinUp"
+                }
               }
             ]
           }
@@ -68,25 +81,32 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "intakeDown"
-          }
-        },
-        {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "runIntake"
+                  "name": "intakeDown"
                 }
               },
               {
-                "type": "path",
+                "type": "deadline",
                 "data": {
-                  "pathName": "Subwoofer to Amp Note"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "runIntake"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Subwoofer to Amp Note"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -107,6 +127,12 @@
                 "data": {
                   "pathName": "Amp Note to Subwoofer"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shooterSpinUp"
+                }
               }
             ]
           }
@@ -118,25 +144,32 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "intakeDown"
-          }
-        },
-        {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "runIntake"
+                  "name": "intakeDown"
                 }
               },
               {
-                "type": "path",
+                "type": "deadline",
                 "data": {
-                  "pathName": "Subwoofer to Source Note"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "runIntake"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Subwoofer to Source Note"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -157,6 +190,12 @@
                 "data": {
                   "pathName": "Source Note to Subwoofer"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shooterSpinUp"
+                }
               }
             ]
           }
@@ -165,6 +204,12 @@
           "type": "named",
           "data": {
             "name": "shootButton"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Subwoofer to Middle Center"
           }
         }
       ]

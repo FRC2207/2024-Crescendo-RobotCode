@@ -20,14 +20,14 @@ public class IntakeGround extends Command {
 
     @Override
     public void initialize() {
-        pivot.setIntakeAngle(Units.degreesToRadians(0));
+        pivot.setGoal(Units.degreesToRadians(5));
         pivot.setShouldRunStupid(true);
         intake.setIntakeVoltageRaw(0.5);
     }
 
     @Override
     public void execute() {
-        if (intake.hasNote()) {
+        if (intake.aboveAmpThreshold()) {
             intake.setIntakeVoltageRaw(0);
             end(false);
         }
@@ -36,6 +36,6 @@ public class IntakeGround extends Command {
     @Override
     public void end(boolean interrupted) {
         intake.setIntakeVoltageRaw(0);
-        pivot.stupidPIDCommand(Units.degreesToRadians(165));
+        pivot.stupidPIDCommand(Units.degreesToRadians(175));
     }
 }

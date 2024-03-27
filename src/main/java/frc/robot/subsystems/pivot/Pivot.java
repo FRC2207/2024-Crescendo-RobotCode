@@ -6,6 +6,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -36,8 +37,10 @@ public class Pivot extends ProfiledPIDSubsystem {
                 0);
         this.io = io;
         // Start arm at rest in neutral position
-        setGoal(Constants.IntakeConstants.kArmOffsetRads);
-
+        setGoal(Constants.IntakeConstants.kArmOffsetRads + Units.degreesToRadians(175));
+        m_controller.setI(0.25);
+        m_controller.setIZone(Units.degreesToRadians(5));
+        m_controller.setIntegratorRange(0, 1.5);
     }
 
     @Override
@@ -77,14 +80,14 @@ public class Pivot extends ProfiledPIDSubsystem {
 
             @Override
             public void execute() {
-                if (getPivotAngleAdjusted() >= goal-.1 && getPivotAngleAdjusted() <= goal+.1) {
+                if (getPivotAngleAdjusted() >= goal-.01 && getPivotAngleAdjusted() <= goal+.01) {
                     end(false);
                 }
             }
 
             @Override
             public void end(boolean interrupted) {
-                setShouldRunStupid(false);
+                //setShouldRunStupid(false);
                 io.setPivotVoltage(0.0);
             }
         };

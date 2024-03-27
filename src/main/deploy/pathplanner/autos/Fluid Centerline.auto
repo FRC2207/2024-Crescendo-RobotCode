@@ -14,19 +14,19 @@
         {
           "type": "named",
           "data": {
-            "name": "shooterSpinUp"
+            "name": "shootButton"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.25
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Demo"
+            "pathName": "Fluid Centerline"
           }
         },
         {

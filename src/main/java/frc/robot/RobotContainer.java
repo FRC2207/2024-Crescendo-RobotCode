@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -16,6 +18,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -118,17 +121,18 @@ public class RobotContainer {
     vision.setDataInterfaces(drive::addVisionData, drive::getPose);
 
     // Create named commands
-    NamedCommands.registerCommand("shootButton", launcher.launchCommand().withTimeout(5.0));
+    NamedCommands.registerCommand("shootButton", launcher.launchCommand().withTimeout(10.0));
+    NamedCommands.registerCommand("shooterSpinUp", launcher.launcherSpinUp(0.75).withTimeout(0.5));
 
-    Command intakeDown = pivot.stupidPIDCommand(Units.degreesToRadians(6));
+    Command intakeDown = pivot.stupidPIDCommand(Units.degreesToRadians(5.75));
     intakeDown.addRequirements(pivot);
-    Command intakeUp = pivot.stupidPIDCommand(Units.degreesToRadians(170));
+    Command intakeUp = pivot.stupidPIDCommand(Units.degreesToRadians(175));
     intakeUp.addRequirements(pivot);
 
-    NamedCommands.registerCommand("intakeDown", intakeDown.until(() -> pivot.getPivotAngleAdjusted() <= Units.degreesToRadians(7)));
-    NamedCommands.registerCommand("intakeUp", intakeUp.until(() -> pivot.getPivotAngleAdjusted() >= Units.degreesToRadians(170)));
-    NamedCommands.registerCommand("runIntake", Commands.run(() -> intake.setIntakeVoltageRaw(0.5), intake).until(() -> intake.hasNote()).withTimeout(3).finallyDo(() -> intake.setIntakeVoltageRaw(0)));
-    NamedCommands.registerCommand("intakeBump", Commands.run(() -> intake.setIntakeVoltageRaw(0.5), intake).withTimeout(0.04).finallyDo(() -> intake.setIntakeVoltageRaw(0)));
+    NamedCommands.registerCommand("intakeDown", intakeDown.until(() -> pivot.getPivotAngleAdjusted() <= Units.degreesToRadians(6.5)));
+    NamedCommands.registerCommand("intakeUp", intakeUp.until(() -> pivot.getPivotAngleAdjusted() >= Units.degreesToRadians(175)));
+    NamedCommands.registerCommand("runIntake", Commands.run(() -> intake.setIntakeVoltageRaw(0.5), intake).until(() -> intake.hasNote() || intake.aboveAmpThreshold()).withTimeout(3).finallyDo(() -> intake.setIntakeVoltageRaw(0)));
+    NamedCommands.registerCommand("intakeBump", Commands.run(() -> intake.setIntakeVoltageRaw(0.5), intake).withTimeout(0.02).finallyDo(() -> intake.setIntakeVoltageRaw(0)));
 
     // Create SendableChooser using PathPlanner AutoBuilder
     autoChooser = new LoggedDashboardChooser<>("Auto Chooser", AutoBuilder.buildAutoChooser());
@@ -145,7 +149,9 @@ public class RobotContainer {
 
     configureBindings();
   }
-
+  private boolean atAngle(){
+    return pivot.getPivotAngleAdjusted() >= Units.degreesToRadians(175);
+  }
   private void configureBindings() {
     // Joystick command factories
     // Function<Boolean, DriveWithController> driveWithControllerFactory =
@@ -169,7 +175,6 @@ public class RobotContainer {
     driveXbox.povDown().whileTrue(Commands.run(() -> pivot.setPivotAngleRaw(0.1825), pivot)).onFalse(Commands.run(() -> pivot.setPivotAngleRaw(0.0), pivot)).debounce(0.1);
     driveXbox.a().onTrue(intake.continuousCommand());
     driveXbox.b().onTrue(intake.burpCommand());
-    driveXbox.y().onTrue(launcher.launchCommand());
     driveXbox.leftBumper().onTrue(launcher.launchCommand());
     driveXbox.rightBumper().whileTrue(Commands.run(() -> intake.setIntakeVoltageRaw(0.5), intake)).onFalse(Commands.run(() -> intake.setIntakeVoltageRaw(0), intake));
 
@@ -184,11 +189,37 @@ public class RobotContainer {
     
     IntakeGroundAuto intakeGroundAuto = new IntakeGroundAuto(intake, pivot);
     //driveXbox.leftTrigger().onTrue(intakeGroundAuto).onFalse(Commands.runOnce(() -> {intakeGroundAuto.cancel(); pivot.stupidPIDCommand(Units.DegreesToRadians(165));}));
-    Command intakeDown = pivot.stupidPIDCommand(Units.degreesToRadians(5));
-    intakeDown.addRequirements(pivot);
-    Command intakeUp = pivot.stupidPIDCommand(Units.degreesToRadians(175));
-    intakeUp.addRequirements(pivot);
-    driveXbox.rightTrigger().onTrue(intakeDown).onTrue(intake.continuousCommand()).onFalse(Commands.runOnce(() -> intake.setIntakeVoltageRaw(0.0), intake)).onFalse(intakeUp.until(() -> pivot.getPivotAngleAdjusted() >= Units.degreesToRadians(175)));
+    Command pivotDown = pivot.stupidPIDCommand(Units.degreesToRadians(5));
+    pivotDown.addRequirements(pivot);
+    Command pivotUp = pivot.stupidPIDCommand(Units.degreesToRadians(175));
+    pivotUp.addRequirements(pivot);
+    //driveXbox.rightTrigger().onTrue(intakeDown).onTrue(intake.continuousCommand()).onFalse(Commands.runOnce(() -> intake.setIntakeVoltageRaw(0.0), intake)).onFalse(intakeUp.until(() -> pivot.getPivotAngleAdjusted() >= Units.degreesToRadians(175)));
+    driveXbox.rightTrigger()
+        .onTrue(
+          Commands.parallel(pivotDown, intake.continuousCommand()))
+        .onFalse(
+          Commands.parallel( 
+            Commands.runOnce(() -> intake.setIntakeVoltageRaw(0.0), intake),
+            Commands.race(
+              pivot.stupidPIDCommand(Units.degreesToRadians(175)),
+              Commands.waitUntil(() -> pivot.getPivotAngleAdjusted() >= Units.degreesToRadians(175))
+            )
+            //intakeUp.until(() -> pivot.getPivotAngleAdjusted() >= Units.degreesToRadians(175))
+    ));
+
+    Command intakeAmp = pivot.stupidPIDCommand(2.325 + Units.degreesToRadians(-1));
+    intakeAmp.addRequirements(pivot);
+    // Command scoreAmp = Commands.sequence(
+    //   intakeAmp.until(() -> pivot.getPivotAngleAdjusted() <= 2.4),
+    //   intake.ampCommand(),
+    //   intakeUp);
+
+    Command scoreAmp = Commands.sequence(
+      intakeAmp.withTimeout(1.5),
+      intake.ampCommand(),
+      pivotUp.withTimeout(0.25));
+    
+    driveXbox.y().onTrue(scoreAmp);
 
     manipulatorXbox.a().onTrue(intake.continuousCommand());    
     manipulatorXbox.b().onTrue(launcher.launcherIntakeCommand());

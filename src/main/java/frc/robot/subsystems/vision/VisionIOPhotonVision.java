@@ -115,7 +115,7 @@ public class VisionIOPhotonVision implements VisionIO {
                     Units.inchesToMeters(12),
                     Units.inchesToMeters(0),
                     Units.inchesToMeters(22.5),
-                    new Rotation3d(0, Units.degreesToRadians(-45), 0)
+                    new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-45), 0)
                 )
                 };
                 cameraIdentifiers = new String[] {
@@ -197,7 +197,8 @@ public class VisionIOPhotonVision implements VisionIO {
      * 
      * @param estimatedPose The estimated pose to guess standard deviations for.
      */
-    public Matrix<N3, N1> getEstimationStdDevs(Pose2d estimatedPose) {
+    public Matrix<N3, N1> getEstimationStdDevs(Pose3d estimatedPose) {
+        Pose2d estimatedPose2d = estimatedPose.toPose2d();
         var estStdDevs = VecBuilder.fill(4, 4, 8); // Generic StdDevs for single tag usage
         var targets = getLatestResult().getTargets();
         int numTags = 0;
@@ -206,16 +207,24 @@ public class VisionIOPhotonVision implements VisionIO {
             var tagPose = photonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
             if (tagPose.isEmpty()) continue;
             numTags++;
-            avgDist += tagPose.get().toPose2d().getTranslation().getDistance(estimatedPose.getTranslation());
+            avgDist += tagPose.get().toPose2d().getTranslation().getDistance(estimatedPose2d.getTranslation());
         }
         if (numTags == 0) return estStdDevs; // Return default values if no tags are visible
         avgDist /= numTags;
         // Decrease StdDevs if multiple targets are visible
         if (numTags > 1) estStdDevs = VecBuilder.fill(0.5, 0.5, 1); // Generic StdDevs for multitag
         // Increase StdDevs based on (average) distance
-        if (numTags == 1 && avgDist > 4) 
+        if (numTags == 1 && avgDist > 3) // Original value = 4
             estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE); // If single tag + 4 meters away we probably shouldnt be using this pose data
-        else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
+        else if (avgDist > 6)
+            estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+        else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30)); // Original value = 30. Reduced to trust further measurements less
+
+        // Additional filtering
+        // Throw out pose if off the ground
+        if (estimatedPose.getZ() > 0.25 || estimatedPose.getZ() < -0.25) {
+            estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+        }
 
         return estStdDevs;
     }
@@ -246,7 +255,7 @@ public class VisionIOPhotonVision implements VisionIO {
         poseEst.ifPresentOrElse(
             est -> {
                 inputs.estimatedPose = est.estimatedPose;
-                inputs.stdDevs = getEstimationStdDevs(est.estimatedPose.toPose2d());
+                inputs.stdDevs = getEstimationStdDevs(est.estimatedPose);
                 //inputs.timestamp = Units.secondsToMilliseconds(est.timestampSeconds);
                 inputs.timestamp = est.timestampSeconds;
             },
