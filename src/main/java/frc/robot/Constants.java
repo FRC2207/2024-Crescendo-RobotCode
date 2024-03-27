@@ -2,8 +2,11 @@ package frc.robot;
 
 
 public class Constants {
-    // public static final String robot = "SIM";
+    //public static final String robot = "SIM";
     public static final String robot = "Real";
+
+    // Is tunable constant. Enables SysId routines in the autonomous selectable chooser.
+    public static final boolean isTuningMode = true;
 
     public static class SwerveConstants {
         public static class Modules {
@@ -50,11 +53,13 @@ public class Constants {
         public static double pivotMinAngleRad = 0.25;  // .25 is absolute min
         public static double rawPivotSpeedLimiter = 0.25;
 
-        public static int kP = 1;
-        public static int kMaxVelocityRadPerSecond = 10000;
-        public static int kMaxAccelerationRadPerSecSquared = 1;
+        public static double kP = 3; // Old value = 9
+        public static double kD = 2.5; // Old value = 1.75
+        public static double kMaxVelocityRadPerSecond = Math.PI * 2; // 2PI works well
+        public static double kMaxAccelerationRadPerSecSquared = Math.PI * 2; // 2PI works well
         public static int kEncoderDistancePerPulse = 2048;
-        public static int kArmOffsetRads = 2;
+        public static int kArmOffsetRads = 0;
+        public static double encoderZeroOffset = -0.203;
 
         public static double kSVolts = 1;
         public static double kGVolts = 1;
