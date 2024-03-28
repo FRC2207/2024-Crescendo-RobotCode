@@ -16,7 +16,7 @@ public class Module {
     private ModuleIO io;
     private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
 
-    private static double wheelRadius = Units.inchesToMeters(1.95866);
+    private static double wheelRadius = Units.inchesToMeters(2.0);
     private double driveKp;
     private double driveKd;
     private double driveKs;
@@ -47,19 +47,11 @@ public class Module {
                 this.turnKp = 23.0;
                 this.turnKd = 0.0;
                 break;
-            case "RealOld":
+            case "Real":
                 this.driveKp = 0.1;
                 this.driveKd = 0.0;
                 this.driveKs = 0.18868;
                 this.driveKv = 0.12825;
-                this.turnKp = 4.0;
-                this.turnKd = 0.0;
-                break;
-            case "Real":
-                this.driveKp = 0.036297;
-                this.driveKd = 0.0;
-                this.driveKs = 0.0;
-                this.driveKv = 0.11369;
                 this.turnKp = 4.0;
                 this.turnKd = 0.0;
         }
@@ -74,13 +66,6 @@ public class Module {
         Logger.processInputs("Drive/Module" + Integer.toString(index), inputs);
     }
 
-    /**
-     * Runs the module using setpoints provided by a SwerveModuleState while optimizing the angle.
-     * 
-     * @param state Setpoint in the form of a SwerveModuleState.
-     * 
-     * @return The optimized SwerveModuleState.
-     */
     public SwerveModuleState runSetpoint(SwerveModuleState state) {
         // Optimize state based on current angle
         // This avoids "taking the long road" to a module angle. (270 degrees to 0 degrees should only be a 90 degree route, not 270.)
@@ -102,21 +87,7 @@ public class Module {
         return optimizedState;
     }
 
-    /**
-     * Sends a voltage value to the drive motor of a module while maintaining closed loop control with an angle setpoint of 0.0 on the turn motor.
-     * 
-     * @param volts Voltage to be sent to the drive motor.
-     */
-    public void runCharacterization(double volts) {
-        // Closed loop control of module rotation
-        io.setTurnVoltage(
-            turnFeedback.calculate(getAngle().getRadians(), 0.0));
-
-        // Open loop control of module drive
-        io.setDriveVoltage(volts);
-    }
-
-    /** Disables all outputs to motors. */
+    /** Disables al outputs to motors. */
     public void stop() {
         io.setTurnVoltage(0.0);
         io.setDriveVoltage(0.0);

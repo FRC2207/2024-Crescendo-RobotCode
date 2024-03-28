@@ -13,8 +13,6 @@ public class ModuleIOSim implements ModuleIO {
     private double driveAppliedVolts = 0.0;
     private double turnAppliedVolts = 0.0;
 
-    private double driveErrorMultiplier = (100.0 - (int)(Math.random() * 16.0)) / 100.0;
-
     public ModuleIOSim() {
         System.out.println("[Init] Creating ModuleIOSim");
     }
@@ -35,7 +33,7 @@ public class ModuleIOSim implements ModuleIO {
 
         inputs.drivePositionRad =
             inputs.drivePositionRad
-                + (driveSim.getAngularVelocityRadPerSec() * 0.02 * driveErrorMultiplier);
+                + (driveSim.getAngularVelocityRadPerSec() * 0.02);
         inputs.driveVelocityRadPerSec = driveSim.getAngularVelocityRadPerSec();
         inputs.driveAppliedVolts = driveAppliedVolts;
         inputs.driveCurrentAmps = new double[] {Math.abs(driveSim.getCurrentDrawAmps())};

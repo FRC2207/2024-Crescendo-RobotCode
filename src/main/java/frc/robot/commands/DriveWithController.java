@@ -2,10 +2,7 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -27,10 +24,6 @@ public class DriveWithController extends Command {
     private final Supplier<Boolean> robotRelativeOverride;
     private ChassisSpeeds lastSpeeds = new ChassisSpeeds();
 
-    private final PIDController headingPIDController = new PIDController(5.0, 0, 0, 0.02);
-    private Rotation2d lastHeading = new Rotation2d();
-    private boolean shouldRunHeadingPID = false;
-
     public DriveWithController(
         Drive drive,
         Supplier<Double> leftXSupplier,
@@ -50,9 +43,6 @@ public class DriveWithController extends Command {
     @Override
     public void initialize() {
         lastSpeeds = new ChassisSpeeds();
-        
-        // Setup heading PID controller
-        headingPIDController.enableContinuousInput(0, Math.PI * 2);
     }
 
     @Override
@@ -84,8 +74,8 @@ public class DriveWithController extends Command {
         rightY = Math.copySign(rightY * rightY, rightY);
  
         // Apply speed limits
-        linearMagnitude *= 1.0/1*.90;
-        rightX *= 0.75/1*.75;
+        linearMagnitude *= 1.0/4;
+        rightX *= 0.75/4;
 
         // Calculate new linear components
         Translation2d linearVelocity =
@@ -104,7 +94,7 @@ public class DriveWithController extends Command {
         if (!robotRelativeOverride.get()) {
             var driveRotation = drive.getRotation();
             // This was giving a weird error as written. Trying this and we'll see what happens
-            if (DriverStation.getAlliance().get() == Alliance.Red) {
+            if (DriverStation.getAlliance().equals(Alliance.Red)) {
                 driveRotation = driveRotation.plus(new Rotation2d(Math.PI));
             }
             speeds = 
@@ -117,37 +107,6 @@ public class DriveWithController extends Command {
 
         // Send X command to drive logic. Not included due to extra implementation required
         //var driveTranslation = AllianceFlipUtil.apply(drive.getPose().getTranslation());
-        
-        // Heading PID Logic
-        // Check if no joystick input for rotation
-        if (rightX == 0.0 && Math.abs(linearMagnitude) > 0.10 ) {
-            // Store values and enable further logic
-            if (!shouldRunHeadingPID) {
-                shouldRunHeadingPID = true; // Set the enable boolean to true
-                lastHeading = drive.getRotation(); // Store last heading
-            }
-
-            // Check if we have deviated more than PI/12 (or 15 degrees) from our initial heading. If so, stop running heading PID control.
-            // This logic should help eliminate corrections following collisions or other cases where the heading may have changed from outside influence (beyond typical drift).
-            if (Math.abs(lastHeading.minus(drive.getRotation()).getRadians()) > Math.PI / 12) {
-                shouldRunHeadingPID = false;
-            }
-
-            // Run setpoint on ChassisSpeeds
-            if (shouldRunHeadingPID) {
-                double output = headingPIDController.calculate(drive.getRotation().getRadians(), lastHeading.getRadians());
-                speeds.omegaRadiansPerSecond = output;
-                Logger.recordOutput("Drive/HeadingPIDOutputRadPerSec", output);
-            }
-
-            Logger.recordOutput("Drive/HeadingPIDEnabled", shouldRunHeadingPID);
-            Logger.recordOutput("Drive/LastHeading", lastHeading);
-        } else {
-            shouldRunHeadingPID = false;
-            Logger.recordOutput("Drive/HeadingPIDOutputRadPerSec", 0.0);
-            Logger.recordOutput("Drive/HeadingPIDEnabled", shouldRunHeadingPID);
-            Logger.recordOutput("Drive/LastHeading", new Rotation2d());
-        }
         
         // Send to drive
         drive.runVelocity(speeds);

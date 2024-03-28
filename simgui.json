@@ -10,9 +10,7 @@
   },
   "NTProvider": {
     "types": {
-      "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/Auto Chooser": "String Chooser",
-      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
+      "/FMSInfo": "FMSInfo"
     }
   },
   "NetworkTables Info": {

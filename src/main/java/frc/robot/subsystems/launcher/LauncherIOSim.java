@@ -16,13 +16,13 @@ public class LauncherIOSim implements LauncherIO{
     leftSim.update(0.02);
     rightSim.update(0.02);
 
-    //inputs.leftLaunchPositionRad = leftSim.getAngularPositionRad();
-    //inputs.leftLaunchVelocityRadPerSec = leftSim.getAngularVelocityRadPerSec();
+    inputs.leftLaunchPositionRad = leftSim.getAngularPositionRad();
+    inputs.leftLaunchVelocityRadPerSec = leftSim.getAngularVelocityRadPerSec();
     inputs.leftLaunchAppliedVolts = leftLaunchAppliedVolts;
     inputs.leftLaunchCurrentAmps = new double[] {leftSim.getCurrentDrawAmps()};
 
-    //inputs.rightLaunchPositionRad = rightSim.getAngularPositionRad();
-    //inputs.rightLaunchVelocityRadPerSec = rightSim.getAngularVelocityRadPerSec();
+    inputs.rightLaunchPositionRad = rightSim.getAngularPositionRad();
+    inputs.rightLaunchVelocityRadPerSec = rightSim.getAngularVelocityRadPerSec();
     inputs.rightLaunchAppliedVolts = rightLaunchAppliedVolts;
     inputs.rightLaunchCurrentAmps = new double[] {rightSim.getCurrentDrawAmps()};
    
