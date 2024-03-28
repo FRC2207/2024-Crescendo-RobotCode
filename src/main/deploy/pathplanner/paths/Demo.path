@@ -1,0 +1,209 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.3656518741608918,
+        "y": 5.54
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.8292964403332503,
+        "y": 3.9231302428368044
+      },
+      "isLocked": false,
+      "linkedName": "Subwoofer Center"
+    },
+    {
+      "anchor": {
+        "x": 2.3211515752560734,
+        "y": 2.6466490593466205
+      },
+      "prevControl": {
+        "x": 1.6653447286923089,
+        "y": 3.1970583769983527
+      },
+      "nextControl": {
+        "x": 2.9183270554398772,
+        "y": 2.145448209906641
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.698423243000334,
+        "y": 1.2136339657294701
+      },
+      "prevControl": {
+        "x": 3.533784554201256,
+        "y": 1.5529988816709228
+      },
+      "nextControl": {
+        "x": 6.188331607432447,
+        "y": 0.779488482053888
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.510501944080813,
+        "y": 1.4701744788104976
+      },
+      "prevControl": {
+        "x": 6.936764870268392,
+        "y": 0.907470810263701
+      },
+      "nextControl": {
+        "x": 8.536663996404918,
+        "y": 2.476602645512984
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.6881069146753696,
+        "y": 6.660186397295872
+      },
+      "prevControl": {
+        "x": 7.996126170446674,
+        "y": 6.178069301306008
+      },
+      "nextControl": {
+        "x": 7.234227545378168,
+        "y": 7.3706062796740985
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.698423243000334,
+        "y": 7.202868251890351
+      },
+      "prevControl": {
+        "x": 5.546980324729883,
+        "y": 7.36073933686329
+      },
+      "nextControl": {
+        "x": 3.8498661612707856,
+        "y": 7.044997166917412
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.3656518741608918,
+        "y": 5.54
+      },
+      "prevControl": {
+        "x": 2.115539527782353,
+        "y": 6.132016568648521
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Subwoofer Center"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 2.3000000000000003,
+      "rotationDegrees": -135.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 4.25,
+      "rotationDegrees": -135.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 2.3000000000000003,
+      "maxWaypointRelativePos": 3.3000000000000003,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 270.0,
+        "maxAngularAcceleration": 360.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "shootButton"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 2.3000000000000003,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "deadline",
+              "data": {
+                "commands": [
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "runIntake"
+                    }
+                  },
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "intakeDown"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "intakeUp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 270.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 175.76360520094116,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
