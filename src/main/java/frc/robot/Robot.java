@@ -10,11 +10,17 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.leds.Leds;
 
 public class Robot extends LoggedRobot {
+  private Intake intake;
+
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+
+  private final Leds leds = new Leds(intake);
 
   @Override
   public void robotInit() {
@@ -36,7 +42,9 @@ public class Robot extends LoggedRobot {
   public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    leds.robotStatus();
+  }
 
   @Override
   public void disabledExit() {}
@@ -64,7 +72,9 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    leds.setStatusColors();
+  }
 
   @Override
   public void teleopExit() {}

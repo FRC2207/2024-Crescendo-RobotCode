@@ -69,15 +69,6 @@ public class Leds extends SubsystemBase {
   @Override
   public void periodic() {
     manualLedState = m_chooser.getSelected();
-    setStatusColors();
-  }
-
-  public void teleopPeriodic() {
-    setStatusColors();
-  }
-
-  public void disabledPeriodic() {
-    robotStatus();
   }
 
   public void robotStatus() {
@@ -88,14 +79,19 @@ public class Leds extends SubsystemBase {
     if (DriverStation.isDSAttached()) {
       ledClass.solid(Section.LAUNCHER, LedColor.ORANGE);
     } else if (DriverStation.isFMSAttached()) {
-      ledClass.rainbow(Section.LAUNCHER, 5);
+      ledClass.fade(Section.LAUNCHER, LedColor.RED, LedColor.YELLOW, 3, 2);
     } else {
       ledClass.fill(Section.LAUNCHER, LedColor.ORANGE, 1, 1, false);
     }
   }
 
+  /** Method to set the LED effect during autonomous period*/
+  public void setAutotonomousColors() {
+    ledClass.rainbow(Section.FULL, 5);
+  }
+
   /** Method to set the LEDs to different states during the match */
-  private void setStatusColors() {
+  public void setStatusColors() {
     if (DriverStation.isEStopped()) {
       ledClass.strobe(Section.FULL, LedColor.RED, 1);
     } else {
@@ -103,8 +99,7 @@ public class Leds extends SubsystemBase {
       if (ally.isPresent()) {
         if (ally.get() == Alliance.Blue) {
           ledClass.solid(Section.UNDERGLOW, LedColor.BLUE);
-        }
-        if (ally.get() == Alliance.Red) {
+        } else {
           ledClass.solid(Section.UNDERGLOW, LedColor.RED);
         }
       } else {
@@ -116,23 +111,19 @@ public class Leds extends SubsystemBase {
 
         if (intake.hasNote()) {
           ledClass.solid(Section.LAUNCHER, LedColor.GREEN);
-        } else {
-          ledClass.solid(Section.LAUNCHER, LedColor.ORANGE);
-        }
-
-        // Sets the LED's to orange when the robot is in autonomous mode
-        if (DriverStation.isAutonomousEnabled()) {
-          ledClass.fade(Section.LAUNCHER, LedColor.ORANGE, LedColor.YELLOW, 1, 1);
-        }
-        // Sets the LED's to run along the strip when the Launch sequence has been
-        // enabled
+        }        
+        // Sets the LED's to run along the strip when the Launch sequence has been enabled
         if (launchEnabled) {
           ledClass.fill(Section.LEFT, LedColor.BLUE, 1, .25, false);
           ledClass.fill(Section.RIGHT, LedColor.BLUE, 1, .25, true);
         }
-    
-        if (climbEnabled) {
+
+        else if (climbEnabled) {
           ledClass.fade(Section.LAUNCHER, LedColor.PURPLE, LedColor.PINK, 2, 1);
+        }
+
+        else {
+          ledClass.solid(Section.LAUNCHER, LedColor.ORANGE);
         }
 
       } else {
