@@ -14,6 +14,8 @@ public class ClimberIOSparkMax implements ClimberIO {
     private final RelativeEncoder leftEncoder = leftMotor.getEncoder();
     private final RelativeEncoder rightEncoder = rightMotor.getEncoder();
 
+
+
     public ClimberIOSparkMax() {
         rightMotor.setInverted(true);
         rightEncoder.setInverted(true);

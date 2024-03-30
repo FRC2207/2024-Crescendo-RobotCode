@@ -2,6 +2,8 @@ package frc.robot.subsystems.climber;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,6 +18,14 @@ public class Climber extends SubsystemBase {
     private final ClimberIO io;
     private final GyroIO gyro;
     private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
+
+    /// TTHIS IS WORK IN PROGRESS - WE NEED TO UPDATE HOW cLIMBRER USES THESE CONTROLERS DURING PERIODIC()
+    // AND UPDATE ALL THE COMMANDS TO USE SetGoal AND 
+    private final ProfiledPIDController leftController = new ProfiledPIDController(0, 0, 0, 
+     new Constraints(null, null));
+    private final ProfiledPIDController rightController = new ProfiledPIDController(0, 0, 0,
+     new Constraints(null, null));
+
 
     public Climber(ClimberIO io, GyroIO gyro) {
         this.io = io;
@@ -33,6 +43,9 @@ public class Climber extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("Launcher", inputs);
 
+        // Need to check this - is this going to work? Compare with how Module does it.
+        io.setRightSpeed(rightController.calculate(io.getRightPosition()));
+        io.setLeftSpeed(leftController.calculate(io.getLeftPosition()));
     }
 
     /** command to climb autonomously once in position */
@@ -155,5 +168,4 @@ public class Climber extends SubsystemBase {
                     io.setRightSpeed(downSpeed);
                 });
     }
-
 }

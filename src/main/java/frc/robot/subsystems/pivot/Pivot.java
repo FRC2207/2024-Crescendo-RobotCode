@@ -50,7 +50,6 @@ public class Pivot extends ProfiledPIDSubsystem {
 
     @Override
     protected double getMeasurement() {
-        // TODO Auto-generated method stub
         return io.getMeasurement();
     }
 
