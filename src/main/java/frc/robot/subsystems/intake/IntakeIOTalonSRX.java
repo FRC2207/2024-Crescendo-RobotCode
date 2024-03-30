@@ -19,6 +19,7 @@ public class IntakeIOTalonSRX implements IntakeIO {
     config.continuousCurrentLimit = 30;
     config.voltageCompSaturation = 12.0;
     intakeMotor.configAllSettings(config);
+
   }
 
   @Override

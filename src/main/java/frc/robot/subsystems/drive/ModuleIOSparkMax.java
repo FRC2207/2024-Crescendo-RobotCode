@@ -10,10 +10,7 @@ import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.util.CleanSparkMaxValue;
 import frc.robot.util.SparkMaxPeriodicFrameConfig;
 

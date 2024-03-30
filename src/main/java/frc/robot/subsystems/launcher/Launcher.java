@@ -39,49 +39,34 @@ public class Launcher extends SubsystemBase {
   /** Returns a command that launches a note. */
   public Command launchCommand() {
     return Commands.sequence(
-      runOnce(() -> {
-          io.setLeftLaunchVoltage(launchSpeed);
-          io.setRightLaunchVoltage(launchSpeed);
+        runOnce(() -> {
+          io.setLeftLaunchVoltage(launchSpeed * 12.0);
+          io.setRightLaunchVoltage(launchSpeed * 12.0);
         }),
         Commands.waitSeconds(spinUpTime),
 
         intake.burpCommand(),
 
         Commands.waitSeconds(stopDelay)
-      
-      ).finallyDo(() -> {
-        io.setLeftLaunchVoltage(0.0);
-        io.setRightLaunchVoltage(0.0);
-      });
-  }
-
-  /** Returns a command that launches without intake usage */
-  public Command testLaunchCommand() {
-    return Commands.sequence(
-      runOnce(() -> {
-        io.setLeftLaunchVoltage(launchSpeed);
-        io.setRightLaunchVoltage(launchSpeed);
-      }),
-      Commands.waitSeconds(stopDelay)
 
     ).finallyDo(() -> {
       io.setLeftLaunchVoltage(0.0);
       io.setRightLaunchVoltage(0.0);
-    });  
+    });
   }
 
+  /** Returns a command that intakes a note using the launcher */
   public Command launcherIntakeCommand() {
     return Commands.sequence(
-      runOnce(() -> {
-        io.setLeftLaunchVoltage(intakeSpeed);
-        io.setRightLaunchVoltage(intakeSpeed);
-      }),
-      intake.intakeCommand(),
+        runOnce(() -> {
+          io.setLeftLaunchVoltage(intakeSpeed);
+          io.setRightLaunchVoltage(intakeSpeed);
+        }),
+        intake.continuousCommand(),
 
-      Commands.waitSeconds(intakeDelay)
-    ).finallyDo(() -> {
-        io.setLeftLaunchVoltage(0.0);
-        io.setRightLaunchVoltage(0.0);
-      });
+        Commands.waitUntil(() -> intake.hasNote() == true).withTimeout(5)).finallyDo(() -> {
+          io.setLeftLaunchVoltage(0.0);
+          io.setRightLaunchVoltage(0.0);
+        });
   }
 }

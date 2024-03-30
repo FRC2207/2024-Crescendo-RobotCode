@@ -11,13 +11,11 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.commands.DriveWithController;
-
-import frc.robot.subsystems.claw.Claw;
-import frc.robot.subsystems.claw.ClawIOSparkMax;
-
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberIOSparkMax;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
-import frc.robot.subsystems.drive.GyroIOADXRS450;
+import frc.robot.subsystems.drive.GyroIONavX2;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSparkMax;
 
@@ -27,7 +25,7 @@ import frc.robot.subsystems.intake.IntakeIOTalonSRX;
 
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherIOSim;
-import frc.robot.subsystems.launcher.LauncherIOTalonSRX;
+import frc.robot.subsystems.launcher.LauncherIOSparkMax;
 
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIOSim;
@@ -39,12 +37,12 @@ public class RobotContainer {
   private Intake intake;
   private Launcher launcher;
   private Pivot pivot;
-  private Claw claw;
+  private Climber climber;
 
   // Controller
   private final CommandXboxController driveXbox = new CommandXboxController(0);
   private final CommandXboxController manipulatorXbox = new CommandXboxController(1);
-
+  
   public RobotContainer() {
     switch (Constants.robot) {
       case "SIM":
@@ -61,18 +59,18 @@ public class RobotContainer {
         pivot = new Pivot(new PivotIOSim());
         break;
       case "Real":
-        drive = new Drive(
-            new GyroIOADXRS450() {
-            },
+        drive =
+          new Drive(
+            new GyroIONavX2() {},
             new ModuleIOSparkMax(0),
             new ModuleIOSparkMax(1),
             new ModuleIOSparkMax(2),
             new ModuleIOSparkMax(3));
 
         intake = new Intake(new IntakeIOTalonSRX());
-        launcher = new Launcher(new LauncherIOTalonSRX(), intake);
+        launcher = new Launcher(new LauncherIOSparkMax(), intake);
         pivot = new Pivot(new PivotIOSparkMax());
-        claw = new Claw(new ClawIOSparkMax());
+        climber = new Climber(new ClimberIOSparkMax(), new GyroIONavX2());
         break;
     }
 
@@ -109,26 +107,23 @@ public class RobotContainer {
     System.out.println("Set default command");
 
     // Single controller commands
-    driveXbox.povUp().whileTrue(new RunCommand(() -> pivot.setPivotAngleRaw(-0.125))).onFalse(new RunCommand(() -> pivot.setPivotAngleRaw(0.0))).debounce(0.1);
-    driveXbox.povDown().whileTrue(new RunCommand(() -> pivot.setPivotAngleRaw(0.125))).onFalse(new RunCommand(() -> pivot.setPivotAngleRaw(0.0))).debounce(0.1);
+    driveXbox.povUp().whileTrue(Commands.run(() -> pivot.setPivotAngleRaw(-0.1825), pivot)).onFalse(Commands.run(() -> pivot.setPivotAngleRaw(0.0), pivot)).debounce(0.1);
+    driveXbox.povDown().whileTrue(Commands.run(() -> pivot.setPivotAngleRaw(0.1825), pivot)).onFalse(Commands.run(() -> pivot.setPivotAngleRaw(0.0), pivot)).debounce(0.1);
     driveXbox.a().onTrue(intake.continuousCommand());
     driveXbox.b().onTrue(intake.burpCommand());
+    driveXbox.y().onTrue(launcher.launchCommand());
+    driveXbox.rightBumper().whileTrue(Commands.run(() -> intake.setIntakeVoltageRaw(1), intake)).onFalse(Commands.run(() -> intake.setIntakeVoltageRaw(0), intake));
 
     manipulatorXbox.a().onTrue(intake.continuousCommand());    
     manipulatorXbox.b().onTrue(launcher.launcherIntakeCommand());
-    
     manipulatorXbox.rightBumper().onTrue(launcher.launchCommand());
-    manipulatorXbox.x().onTrue(launcher.testLaunchCommand());
 
-    manipulatorXbox.povUp().onTrue(claw.upBothCommand());
-    manipulatorXbox.povDown().onTrue(claw.downBothCommand());
-    manipulatorXbox.leftBumper().and(manipulatorXbox.povUp()).whileTrue(claw.upLeftCommand());
-    manipulatorXbox.leftBumper().and(manipulatorXbox.povDown()).whileTrue(claw.downLeftCommand());
-    manipulatorXbox.rightBumper().and(manipulatorXbox.povUp()).whileTrue(claw.upRightCommand());
-    manipulatorXbox.rightBumper().and(manipulatorXbox.povDown()).whileTrue(claw.downRightCommand());
-
-
-
+    manipulatorXbox.povUp().onTrue(climber.upBothCommand());
+    manipulatorXbox.povDown().onTrue(climber.downBothCommand());
+    manipulatorXbox.leftBumper().and(manipulatorXbox.povUp()).whileTrue(climber.upLeftCommand());
+    manipulatorXbox.leftBumper().and(manipulatorXbox.povDown()).whileTrue(climber.downLeftCommand());
+    manipulatorXbox.rightBumper().and(manipulatorXbox.povUp()).whileTrue(climber.upRightCommand());
+    manipulatorXbox.rightBumper().and(manipulatorXbox.povDown()).whileTrue(climber.downRightCommand());
 
     //manipulatorXbox.x().onTrue(pivot.setIntakeAngle(0));
     //manipulatorXbox.y().onTrue(pivot.setIntakeAngle(90));
