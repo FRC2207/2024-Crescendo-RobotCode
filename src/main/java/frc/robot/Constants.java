@@ -72,7 +72,7 @@ public class Constants {
         public static int leftMotorID = 18;
         public static int rightMotorID = 19;
 
-        public static double axleRadius = 0.125;
+        public static double axleRadius = 0.25;
         public static double axleLength = 2;
         public static double stringDiameter = 0.25;
         public static double maxStringRotationPerStep = axleLength / stringDiameter;

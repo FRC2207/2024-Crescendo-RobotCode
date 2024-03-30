@@ -31,24 +31,18 @@ public class ClimberIOSparkMax implements ClimberIO {
 
     /** Method to bring the left arm to a designated position */
     public void setLeftPosition(double inches) {
-        double inputRotations = inches
-                / (Math.PI * Math.pow(
-                        ClimberConstants.axleRadius + (ClimberConstants.stringDiameter
-                                * Math.floor(leftEncoder.getPosition() / ClimberConstants.maxStringRotationPerStep)),
-                        2));
-        double outputRotations = inputRotations * ClimberConstants.gearRatio;
-        leftEncoder.setPosition(outputRotations);
+        double outputRotations = inches / (2 * Math.PI) * (ClimberConstants.axleRadius);
+                
+        double inputRotations = outputRotations * ClimberConstants.gearRatio;
+        leftEncoder.setPosition(inputRotations);
     }
 
     /** Method to bring the right arm to a designated position */
     public void setRightPosition(double inches) {
-        double inputRotations = inches
-                / (Math.PI * Math.pow(
-                        ClimberConstants.axleRadius + (ClimberConstants.stringDiameter
-                                * Math.floor(rightEncoder.getPosition() / ClimberConstants.maxStringRotationPerStep)),
-                        2));
-        double outputRotations = inputRotations * ClimberConstants.gearRatio;
-        rightEncoder.setPosition(outputRotations);
+        double outputRotations = inches / (2 * Math.PI) * (ClimberConstants.axleRadius);
+                
+        double inputRotations = outputRotations * ClimberConstants.gearRatio;
+        rightEncoder.setPosition(inputRotations);
     }
 
     /** Toggles break mode for both arms */
