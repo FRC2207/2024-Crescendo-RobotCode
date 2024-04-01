@@ -68,7 +68,7 @@ public class Intake extends SubsystemBase {
         });
   }
 
-  /** Returns a command that burps a note out of the intake. */
+  /** Returns a command that burps a note out into the amp. */
   public Command ampCommand() {
     return Commands.sequence(
         runOnce(() -> {
@@ -82,7 +82,6 @@ public class Intake extends SubsystemBase {
   /** Method to manually operate the intake rollers  */
   public void setIntakeVoltageRaw(double percent) {
     io.setIntakeVoltage(percent * 12);
-
   }
 
   public boolean hasNote() {

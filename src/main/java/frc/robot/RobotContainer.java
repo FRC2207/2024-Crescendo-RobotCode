@@ -221,9 +221,19 @@ public class RobotContainer {
     
     driveXbox.y().onTrue(scoreAmp);
 
-    manipulatorXbox.a().onTrue(intake.continuousCommand());    
-    manipulatorXbox.b().onTrue(launcher.launcherIntakeCommand());
-    
+    manipulatorXbox.rightTrigger()
+        .onTrue(
+          Commands.parallel(pivotDown, intake.continuousCommand()))
+        .onFalse(
+          Commands.parallel( 
+            Commands.runOnce(() -> intake.setIntakeVoltageRaw(0.0), intake),
+            Commands.race(
+              pivot.stupidPIDCommand(Units.degreesToRadians(175)),
+              Commands.waitUntil(() -> pivot.getPivotAngleAdjusted() >= Units.degreesToRadians(175))
+            )));
+
+    manipulatorXbox.a().onTrue(intake.burpCommand());
+    manipulatorXbox.y().onTrue(scoreAmp);
     manipulatorXbox.rightBumper().onTrue(launcher.launchCommand());
 
     manipulatorXbox.povUp().whileTrue(Commands.run(() -> pivot.setPivotAngleRaw(-0.25), pivot))
@@ -231,15 +241,6 @@ public class RobotContainer {
 
     manipulatorXbox.povDown().whileTrue(Commands.run(() -> pivot.setPivotAngleRaw(0.325), pivot))
       .onFalse(Commands.run(() -> pivot.setPivotAngleRaw(0.0), pivot)).debounce(0.1);
-
-    // Move pivot motor with left joystick while holding the leftBumper
-    manipulatorXbox.leftBumper().whileTrue(new RunCommand(  
-      () -> pivot.setPivotAngleRaw(MathUtil.applyDeadband(manipulatorXbox.getLeftY(), .15) * Constants.IntakeConstants.rawPivotSpeedLimiter)
-    ));
-
-     manipulatorXbox.leftBumper().whileTrue(new RunCommand(  
-      () -> intake.setIntakeVoltageRaw(MathUtil.applyDeadband(manipulatorXbox.getRightY(), .15) * Constants.IntakeConstants.rawIntakeSpeedLimiter)
-    ));
   }
 
   public Command getAutonomousCommand() {
