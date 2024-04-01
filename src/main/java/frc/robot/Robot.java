@@ -59,7 +59,9 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    leds.setAutotonomousColors();
+  }
 
   @Override
   public void autonomousExit() {}
