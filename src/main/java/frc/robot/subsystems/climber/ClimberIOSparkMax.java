@@ -33,18 +33,30 @@ public class ClimberIOSparkMax implements ClimberIO {
 
     /** Method to bring the left arm to a designated position */
     public void setLeftPosition(double inches) {
-        double outputRotations = inches / (2 * Math.PI) * (ClimberConstants.axleRadius);
-                
+        double outputRotations = inches / (2 * Math.PI) * (ClimberConstants.axleRadius);      
         double inputRotations = outputRotations * ClimberConstants.gearRatio;
-        leftEncoder.setPosition(inputRotations);
+
+        if (inputRotations <= leftEncoder.getPosition()) {
+            leftMotor.setVoltage(.125);
+        } else if (inputRotations >= leftEncoder.getPosition()) {
+            leftMotor.setVoltage(-.125);
+        } else {
+            leftMotor.setVoltage(0.0);
+        }
     }
 
     /** Method to bring the right arm to a designated position */
     public void setRightPosition(double inches) {
-        double outputRotations = inches / (2 * Math.PI) * (ClimberConstants.axleRadius);
-                
+        double outputRotations = inches / (2 * Math.PI) * (ClimberConstants.axleRadius);       
         double inputRotations = outputRotations * ClimberConstants.gearRatio;
-        rightEncoder.setPosition(inputRotations);
+
+        if (inputRotations <= rightEncoder.getPosition()) {
+            rightMotor.setVoltage(.125);
+        } else if (inputRotations >= leftEncoder.getPosition()) {
+            rightMotor.setVoltage(-.125);
+        } else {
+            leftMotor.setVoltage(0.0);
+        }
     }
 
     /** Toggles break mode for both arms */
@@ -69,14 +81,14 @@ public class ClimberIOSparkMax implements ClimberIO {
     }
 
     /** Sets the voltage for the left climber arm */
-    public void setLeftSpeed(double speed) {
-        speed = MathUtil.clamp(speed, -1, 1);
-        leftMotor.set(speed);
+    public void setLeftVoltage(double voltage) {
+        voltage = MathUtil.clamp(voltage, -1, 1);
+        leftMotor.setVoltage(voltage);
     }
 
     /** Sets the voltage for the right climber arm */
-    public void setRightSpeed(double speed) {
-        speed = MathUtil.clamp(speed, -1, 1);
-        rightMotor.set(speed);
+    public void setRightVoltage(double voltage) {
+        voltage = MathUtil.clamp(voltage, -1, 1);
+        rightMotor.setVoltage(voltage);
     }
 }

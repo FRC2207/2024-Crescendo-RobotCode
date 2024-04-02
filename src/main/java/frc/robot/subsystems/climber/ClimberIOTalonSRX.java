@@ -30,13 +30,13 @@ public class ClimberIOTalonSRX implements ClimberIO {
     public void setRightPosition(double inches) {}
 
     // sets the voltage for the left climber arm
-    public void setLeftSpeed(double volts) {
+    public void setLeftVoltage(double volts) {
         volts = MathUtil.clamp(volts, -1, 1);
         leftMotor.set(TalonSRXControlMode.PercentOutput, volts);
     }
 
     // sets the voltage for the right climber arm
-    public void setRightSpeed(double volts) {
+    public void setRightVoltage(double volts) {
         volts = MathUtil.clamp(volts, -1, 1);
         rightMotor.set(TalonSRXControlMode.PercentOutput, volts);
     }

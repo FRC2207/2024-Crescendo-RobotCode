@@ -36,8 +36,8 @@ public interface ClimberIO {
     public default void setBreakMode(boolean bool) {}
 
     /** Sets the voltage for the left climber arm */
-    public default void setLeftSpeed(double speed) {}
+    public default void setLeftVoltage(double speed) {}
 
     /** Sets the voltage for the right climber arm */
-    public default void setRightSpeed(double speed) {}
+    public default void setRightVoltage(double speed) {}
 }

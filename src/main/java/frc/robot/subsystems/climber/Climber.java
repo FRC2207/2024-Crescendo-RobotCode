@@ -11,15 +11,19 @@ import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.Constants.ClimberConstants;
 
 public class Climber extends SubsystemBase {
-    private final double upSpeed = 0.5;
-    private final double downSpeed = -0.25;
-    private final double adjustmentSpeed = -0.125;
+    private final double upSpeed = 0.25;
+    private final double downSpeed = -0.125;
+    private final double adjustmentSpeed = 0.125;
+
+    private boolean autoUp = false;
+    private boolean autoDown = true;
+    private boolean autoAdjust = false;
 
     private final ClimberIO io;
     private final GyroIO gyro;
     private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
 
-    /// TTHIS IS WORK IN PROGRESS - WE NEED TO UPDATE HOW cLIMBRER USES THESE CONTROLERS DURING PERIODIC()
+    /// TTHIS IS WORK IN PROGRESS - WE NEED TO UPDATE HOW CLIMBER USES THESE CONTROLERS DURING PERIODIC()
     // AND UPDATE ALL THE COMMANDS TO USE SetGoal AND 
     private final ProfiledPIDController leftController = new ProfiledPIDController(0, 0, 0, 
      new Constraints(null, null));
@@ -33,8 +37,8 @@ public class Climber extends SubsystemBase {
 
         setDefaultCommand(
                 run(() -> {
-                    io.setLeftSpeed(0.0);
-                    io.setRightSpeed(0.0);
+                    io.setLeftVoltage(0.0);
+                    io.setRightVoltage(0.0);
                 }));
     }
 
@@ -44,77 +48,48 @@ public class Climber extends SubsystemBase {
         Logger.processInputs("Launcher", inputs);
 
         // Need to check this - is this going to work? Compare with how Module does it.
-        io.setRightSpeed(rightController.calculate(io.getRightPosition()));
-        io.setLeftSpeed(leftController.calculate(io.getLeftPosition()));
+        io.setRightVoltage(rightController.calculate(io.getRightPosition()));
+        io.setLeftVoltage(leftController.calculate(io.getLeftPosition()));
     }
 
     /** command to climb autonomously once in position */
     public Command autoClimb() {
         return (runOnce(() -> {
-            Commands.print("Autonomous climb has been initiated");
-            io.setLeftPosition(ClimberConstants.maxPosition);
-            io.setRightPosition(ClimberConstants.maxPosition);
-        })).andThen(
-                runOnce(() -> {
-                    io.setLeftSpeed(0.0);
-                    io.setRightSpeed(0.0);
-                })).andThen(
-                        Commands.print("Climb is ready, please drive to position, countdown initiated"),
-                        countDown())
-                .andThen(
-                        runOnce(() -> {
-                            io.setLeftPosition(ClimberConstants.minimumElevation);
-                            io.setRightPosition(ClimberConstants.minimumElevation);
-                        }))
-                .andThen(
-                        runOnce(() -> {
-                            io.setLeftSpeed(0.0);
-                            io.setRightSpeed(0.0);
-                            Commands.print("Climb is in position, autoAdjust initiated");
-                        }))
-                .andThen(
-                        autoClimbAdjustmentCommand());
-    }
+            if (autoUp == false && autoDown == false && autoAdjust == true) {
+                io.setLeftPosition(ClimberConstants.maxPosition);
+                io.setRightPosition(ClimberConstants.maxPosition);
 
-    /** Runs a 5 second countdown with feedback */
-    public Command countDown() {
-        return Commands.sequence(
-                runOnce(() -> {
-                    Commands.print("5 seconds remaining");
-                }),
-                Commands.waitSeconds(1.0),
-                runOnce(() -> {
-                    Commands.print("4 seconds remaining");
-                }),
-                Commands.waitSeconds(1.0),
-                runOnce(() -> {
-                    Commands.print("3 seconds remaining");
-                }),
-                Commands.waitSeconds(1.0),
-                runOnce(() -> {
-                    Commands.print("2 seconds remaining");
-                }),
-                Commands.waitSeconds(1.0),
-                runOnce(() -> {
-                    Commands.print("1 seconds remaining");
-                }),
-                Commands.waitSeconds(1.0),
-                runOnce(() -> {
-                    Commands.print("0 seconds remaining");
-                }));
+                autoUp = true;
+                autoDown = false;
+                autoAdjust = false;
+            } else if (autoUp == true && autoDown == false && autoAdjust == false) {
+                io.setLeftPosition(ClimberConstants.minimumElevation);
+                io.setRightPosition(ClimberConstants.minimumElevation);
+
+                autoUp = false;
+                autoDown = true;
+                autoAdjust = false;
+            } else {
+                autoClimbAdjustmentCommand();
+
+                autoUp = false;
+                autoDown = false;
+                autoAdjust = true;
+            }
+        }));
     }
 
     /** automatically balances the robot while hanging */
     public Command autoClimbAdjustmentCommand() {
         return Commands.run(() -> {
             if (gyro.getLeftRightAngle() < 0) {
-                io.setLeftSpeed(adjustmentSpeed);
+                io.setLeftVoltage(adjustmentSpeed);
             } else if (gyro.getLeftRightAngle() > 0) {
-                io.setRightSpeed(adjustmentSpeed);
+                io.setRightVoltage(adjustmentSpeed);
             } else {
                 Commands.print("Climb Successful, continuing to balance");
-                io.setLeftSpeed(0.0);
-                io.setRightSpeed(0.0);
+                io.setLeftVoltage(0.0);
+                io.setRightVoltage(0.0);
             }
         });
     }
@@ -123,8 +98,8 @@ public class Climber extends SubsystemBase {
     public Command upBothCommand() {
         return Commands.run(
                 () -> {
-                    io.setLeftSpeed(upSpeed);
-                    io.setRightSpeed(upSpeed);
+                    io.setLeftVoltage(upSpeed);
+                    io.setRightVoltage(upSpeed);
                 });
     }
 
@@ -132,7 +107,7 @@ public class Climber extends SubsystemBase {
     public Command upLeftCommand() {
         return Commands.run(
                 () -> {
-                    io.setLeftSpeed(upSpeed);
+                    io.setLeftVoltage(upSpeed);
                 });
     }
 
@@ -140,7 +115,7 @@ public class Climber extends SubsystemBase {
     public Command upRightCommand() {
         return Commands.run(
                 () -> {
-                    io.setRightSpeed(upSpeed);
+                    io.setRightVoltage(upSpeed);
                 });
     }
 
@@ -148,8 +123,8 @@ public class Climber extends SubsystemBase {
     public Command downBothCommand() {
         return Commands.run(
                 () -> {
-                    io.setLeftSpeed(downSpeed);
-                    io.setRightSpeed(downSpeed);
+                    io.setLeftVoltage(downSpeed);
+                    io.setRightVoltage(downSpeed);
                 });
     }
 
@@ -157,7 +132,7 @@ public class Climber extends SubsystemBase {
     public Command downLeftCommand() {
         return Commands.run(
                 () -> {
-                    io.setLeftSpeed(downSpeed);
+                    io.setLeftVoltage(downSpeed);
                 });
     }
 
@@ -165,7 +140,7 @@ public class Climber extends SubsystemBase {
     public Command downRightCommand() {
         return Commands.run(
                 () -> {
-                    io.setRightSpeed(downSpeed);
+                    io.setRightVoltage(downSpeed);
                 });
     }
 }
