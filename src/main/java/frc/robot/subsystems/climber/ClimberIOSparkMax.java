@@ -37,9 +37,9 @@ public class ClimberIOSparkMax implements ClimberIO {
         double inputRotations = outputRotations * ClimberConstants.gearRatio;
 
         if (inputRotations <= leftEncoder.getPosition()) {
-            leftMotor.setVoltage(.125);
+            leftMotor.setVoltage(percentToVoltage(.125));
         } else if (inputRotations >= leftEncoder.getPosition()) {
-            leftMotor.setVoltage(-.125);
+            leftMotor.setVoltage(percentToVoltage(-.125));
         } else {
             leftMotor.setVoltage(0.0);
         }
@@ -51,9 +51,9 @@ public class ClimberIOSparkMax implements ClimberIO {
         double inputRotations = outputRotations * ClimberConstants.gearRatio;
 
         if (inputRotations <= rightEncoder.getPosition()) {
-            rightMotor.setVoltage(.125);
+            rightMotor.setVoltage(percentToVoltage(.125));
         } else if (inputRotations >= leftEncoder.getPosition()) {
-            rightMotor.setVoltage(-.125);
+            rightMotor.setVoltage(percentToVoltage(-.125));
         } else {
             leftMotor.setVoltage(0.0);
         }
@@ -81,14 +81,19 @@ public class ClimberIOSparkMax implements ClimberIO {
     }
 
     /** Sets the voltage for the left climber arm */
-    public void setLeftVoltage(double voltage) {
-        voltage = MathUtil.clamp(voltage, -1, 1);
-        leftMotor.setVoltage(voltage);
+    public void setLeftPercent(double percent) {
+        percent = MathUtil.clamp(percent, -1, 1);
+        leftMotor.setVoltage(percentToVoltage(percent));
     }
 
     /** Sets the voltage for the right climber arm */
-    public void setRightVoltage(double voltage) {
-        voltage = MathUtil.clamp(voltage, -1, 1);
-        rightMotor.setVoltage(voltage);
+    public void setRightPercent(double percent) {
+        percent = MathUtil.clamp(percent, -1, 1);
+        rightMotor.setVoltage(percentToVoltage(percent));
+    }
+
+    /** pecent to voltage */
+    public double percentToVoltage(double percent) {
+        return percent * 12;
     }
 }

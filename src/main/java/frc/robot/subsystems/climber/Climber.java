@@ -2,8 +2,6 @@ package frc.robot.subsystems.climber;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,10 +23,10 @@ public class Climber extends SubsystemBase {
 
     /// TTHIS IS WORK IN PROGRESS - WE NEED TO UPDATE HOW CLIMBER USES THESE CONTROLERS DURING PERIODIC()
     // AND UPDATE ALL THE COMMANDS TO USE SetGoal AND 
-    private final ProfiledPIDController leftController = new ProfiledPIDController(0, 0, 0, 
-     new Constraints(null, null));
-    private final ProfiledPIDController rightController = new ProfiledPIDController(0, 0, 0,
-     new Constraints(null, null));
+    //private final ProfiledPIDController leftController = new ProfiledPIDController(0, 0, 0, 
+    // new Constraints(null, null));
+    //private final ProfiledPIDController rightController = new ProfiledPIDController(0, 0, 0,
+    // new Constraints(null, null));
 
 
     public Climber(ClimberIO io, GyroIO gyro) {
@@ -37,8 +35,8 @@ public class Climber extends SubsystemBase {
 
         setDefaultCommand(
                 run(() -> {
-                    io.setLeftVoltage(0.0);
-                    io.setRightVoltage(0.0);
+                    io.setLeftPercent(0.0);
+                    io.setRightPercent(0.0);
                 }));
     }
 
@@ -48,8 +46,8 @@ public class Climber extends SubsystemBase {
         Logger.processInputs("Launcher", inputs);
 
         // Need to check this - is this going to work? Compare with how Module does it.
-        io.setRightVoltage(rightController.calculate(io.getRightPosition()));
-        io.setLeftVoltage(leftController.calculate(io.getLeftPosition()));
+        //io.setRightVoltage(rightController.calculate(io.getRightPosition()));
+        //io.setLeftVoltage(leftController.calculate(io.getLeftPosition()));
     }
 
     /** command to climb autonomously once in position */
@@ -83,13 +81,13 @@ public class Climber extends SubsystemBase {
     public Command autoClimbAdjustmentCommand() {
         return Commands.run(() -> {
             if (gyro.getLeftRightAngle() < 0) {
-                io.setLeftVoltage(adjustmentSpeed);
+                io.setLeftPercent(adjustmentSpeed);
             } else if (gyro.getLeftRightAngle() > 0) {
-                io.setRightVoltage(adjustmentSpeed);
+                io.setRightPercent(adjustmentSpeed);
             } else {
                 Commands.print("Climb Successful, continuing to balance");
-                io.setLeftVoltage(0.0);
-                io.setRightVoltage(0.0);
+                io.setLeftPercent(0.0);
+                io.setRightPercent(0.0);
             }
         });
     }
@@ -98,8 +96,8 @@ public class Climber extends SubsystemBase {
     public Command upBothCommand() {
         return Commands.run(
                 () -> {
-                    io.setLeftVoltage(upSpeed);
-                    io.setRightVoltage(upSpeed);
+                    io.setLeftPercent(upSpeed);
+                    io.setRightPercent(upSpeed);
                 });
     }
 
@@ -107,7 +105,7 @@ public class Climber extends SubsystemBase {
     public Command upLeftCommand() {
         return Commands.run(
                 () -> {
-                    io.setLeftVoltage(upSpeed);
+                    io.setLeftPercent(upSpeed);
                 });
     }
 
@@ -115,7 +113,7 @@ public class Climber extends SubsystemBase {
     public Command upRightCommand() {
         return Commands.run(
                 () -> {
-                    io.setRightVoltage(upSpeed);
+                    io.setRightPercent(upSpeed);
                 });
     }
 
@@ -123,8 +121,8 @@ public class Climber extends SubsystemBase {
     public Command downBothCommand() {
         return Commands.run(
                 () -> {
-                    io.setLeftVoltage(downSpeed);
-                    io.setRightVoltage(downSpeed);
+                    io.setLeftPercent(downSpeed);
+                    io.setRightPercent(downSpeed);
                 });
     }
 
@@ -132,7 +130,7 @@ public class Climber extends SubsystemBase {
     public Command downLeftCommand() {
         return Commands.run(
                 () -> {
-                    io.setLeftVoltage(downSpeed);
+                    io.setLeftPercent(downSpeed);
                 });
     }
 
@@ -140,7 +138,7 @@ public class Climber extends SubsystemBase {
     public Command downRightCommand() {
         return Commands.run(
                 () -> {
-                    io.setRightVoltage(downSpeed);
+                    io.setRightPercent(downSpeed);
                 });
     }
 }
