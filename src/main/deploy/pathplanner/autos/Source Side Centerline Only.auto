@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.857297007033385,
+      "y": 4.520382906671662
+    },
+    "rotation": 120.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "shootButton"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source Side To Outside Center"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Outside Center to Source Side"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shootButton"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Comp",
+  "choreoAuto": false
+}

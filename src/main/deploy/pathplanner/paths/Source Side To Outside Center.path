@@ -1,0 +1,98 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.857297007033385,
+        "y": 4.520382906671662
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.03295735857386,
+        "y": 3.2907447555599987
+      },
+      "isLocked": false,
+      "linkedName": "Source Side"
+    },
+    {
+      "anchor": {
+        "x": 2.192332373252477,
+        "y": 1.9322880300539491
+      },
+      "prevControl": {
+        "x": 1.2541800805324832,
+        "y": 2.2785108999863297
+      },
+      "nextControl": {
+        "x": 3.176042643098124,
+        "y": 1.5692520971347208
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.766690569044476,
+        "y": 0.7612043754757987
+      },
+      "prevControl": {
+        "x": 5.7524266831700555,
+        "y": 0.8197585582047061
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Source Side Center Far"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.3,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Drop Intake",
+      "waypointRelativePos": 1.7,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intakeDown"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "runIntake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.6,
+    "maxAngularVelocity": 270.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Source Side Centerline Only",
+  "previewStartingState": {
+    "rotation": 120.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
