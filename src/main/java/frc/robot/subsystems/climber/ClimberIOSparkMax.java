@@ -18,7 +18,6 @@ public class ClimberIOSparkMax implements ClimberIO {
 
     public ClimberIOSparkMax() {
         rightMotor.setInverted(true);
-        rightEncoder.setInverted(true);
 
         setBreakMode(true);
     }

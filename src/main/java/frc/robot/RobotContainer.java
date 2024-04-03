@@ -116,10 +116,10 @@ public class RobotContainer {
 
     manipulatorXbox.a().onTrue(intake.continuousCommand());    
     manipulatorXbox.b().onTrue(launcher.launcherIntakeCommand());
-    manipulatorXbox.rightBumper().onTrue(launcher.launchCommand());
+    //manipulatorXbox.rightBumper().onTrue(launcher.launchCommand());
 
-    manipulatorXbox.povUp().onTrue(climber.upBothCommand());
-    manipulatorXbox.povDown().onTrue(climber.downBothCommand());
+    manipulatorXbox.leftBumper().and(manipulatorXbox.rightBumper()).negate().and(manipulatorXbox.povUp()).whileTrue(climber.upBothCommand());
+    manipulatorXbox.leftBumper().and(manipulatorXbox.rightBumper()).negate().and(manipulatorXbox.povDown()).whileTrue(climber.downBothCommand());
     manipulatorXbox.leftBumper().and(manipulatorXbox.povUp()).whileTrue(climber.upLeftCommand());
     manipulatorXbox.leftBumper().and(manipulatorXbox.povDown()).whileTrue(climber.downLeftCommand());
     manipulatorXbox.rightBumper().and(manipulatorXbox.povUp()).whileTrue(climber.upRightCommand());
