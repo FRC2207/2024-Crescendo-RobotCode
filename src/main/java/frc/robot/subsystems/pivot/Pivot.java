@@ -56,6 +56,21 @@ public class Pivot extends ProfiledPIDSubsystem {
         }
     }
 
+    /** returns a commmand to position the pivot for amp scoring */
+    public Command pivotAmp() {
+        return stupidPIDCommand(2.325 + Units.degreesToRadians(-1));
+    }
+
+    /** returns a command to position the pivot to pick up notes */
+    public Command pivotDown() {
+        return stupidPIDCommand(Units.degreesToRadians(5));
+    }
+
+    /** returns a command to position the pivot to launch a note */
+    public Command pivotUp() {
+        return stupidPIDCommand(Units.degreesToRadians(175));
+    }
+
     public void runStupidPID() {
         double output = -m_controller.calculate(inputs.encoderPosition, m_controller.getGoal());
         output = MathUtil.clamp(output, -12.0, 12.0);

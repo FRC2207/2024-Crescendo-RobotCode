@@ -189,14 +189,10 @@ public class RobotContainer {
     
     IntakeGroundAuto intakeGroundAuto = new IntakeGroundAuto(intake, pivot);
     //driveXbox.leftTrigger().onTrue(intakeGroundAuto).onFalse(Commands.runOnce(() -> {intakeGroundAuto.cancel(); pivot.stupidPIDCommand(Units.DegreesToRadians(165));}));
-    Command pivotDown = pivot.stupidPIDCommand(Units.degreesToRadians(5));
-    pivotDown.addRequirements(pivot);
-    Command pivotUp = pivot.stupidPIDCommand(Units.degreesToRadians(175));
-    pivotUp.addRequirements(pivot);
     //driveXbox.rightTrigger().onTrue(intakeDown).onTrue(intake.continuousCommand()).onFalse(Commands.runOnce(() -> intake.setIntakeVoltageRaw(0.0), intake)).onFalse(intakeUp.until(() -> pivot.getPivotAngleAdjusted() >= Units.degreesToRadians(175)));
     driveXbox.rightTrigger()
         .onTrue(
-          Commands.parallel(pivotDown, intake.continuousCommand()))
+          Commands.parallel(pivot.pivotDown(), intake.continuousCommand()))
         .onFalse(
           Commands.parallel( 
             Commands.runOnce(() -> intake.setIntakeVoltageRaw(0.0), intake),
@@ -207,23 +203,21 @@ public class RobotContainer {
             //intakeUp.until(() -> pivot.getPivotAngleAdjusted() >= Units.degreesToRadians(175))
     ));
 
-    Command intakeAmp = pivot.stupidPIDCommand(2.325 + Units.degreesToRadians(-1));
-    intakeAmp.addRequirements(pivot);
     // Command scoreAmp = Commands.sequence(
     //   intakeAmp.until(() -> pivot.getPivotAngleAdjusted() <= 2.4),
     //   intake.ampCommand(),
     //   intakeUp);
 
     Command scoreAmp = Commands.sequence(
-      intakeAmp.withTimeout(1.5),
+      pivot.pivotAmp().withTimeout(1.5),
       intake.ampCommand(),
-      pivotUp.withTimeout(0.25));
+      pivot.pivotUp().withTimeout(0.25));
     
     driveXbox.y().onTrue(scoreAmp);
 
     manipulatorXbox.rightTrigger()
         .onTrue(
-          Commands.parallel(pivotDown, intake.continuousCommand()))
+          Commands.parallel(pivot.pivotDown(), intake.continuousCommand()))
         .onFalse(
           Commands.parallel( 
             Commands.runOnce(() -> intake.setIntakeVoltageRaw(0.0), intake),
@@ -233,14 +227,14 @@ public class RobotContainer {
             )));
 
     manipulatorXbox.a().onTrue(intake.burpCommand());
-    manipulatorXbox.y().onTrue(scoreAmp);
-    manipulatorXbox.rightBumper().onTrue(launcher.launchCommand());
 
-    manipulatorXbox.povUp().whileTrue(Commands.run(() -> pivot.setPivotAngleRaw(-0.25), pivot))
-      .onFalse(Commands.run(() -> pivot.setPivotAngleRaw(0.0), pivot)).debounce(0.1);
+    Command manipulatorScoreAmp = Commands.sequence(
+      pivot.pivotAmp().withTimeout(1.5),
+      intake.ampCommand(),
+      pivot.pivotUp().withTimeout(0.25));
 
-    manipulatorXbox.povDown().whileTrue(Commands.run(() -> pivot.setPivotAngleRaw(0.325), pivot))
-      .onFalse(Commands.run(() -> pivot.setPivotAngleRaw(0.0), pivot)).debounce(0.1);
+    manipulatorXbox.y().onTrue(manipulatorScoreAmp);
+    manipulatorXbox.b().onTrue(launcher.launchCommand());
   }
 
   public Command getAutonomousCommand() {
