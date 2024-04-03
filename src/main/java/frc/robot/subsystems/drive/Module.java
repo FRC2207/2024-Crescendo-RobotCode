@@ -60,7 +60,7 @@ public class Module {
                 this.driveKd = 0.0;
                 this.driveKs = 0.0;
                 this.driveKv = 0.11369;
-                this.turnKp = 4.0;
+                this.turnKp = 5.0; // Old 4.0
                 this.turnKd = 0.0;
         }
 
