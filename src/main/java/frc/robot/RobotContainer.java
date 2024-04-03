@@ -221,6 +221,7 @@ public class RobotContainer {
     
     driveXbox.y().onTrue(scoreAmp);
 
+    /*
     manipulatorXbox.rightTrigger()
         .onTrue(
           Commands.parallel(pivotDown, intake.continuousCommand()))
@@ -235,6 +236,7 @@ public class RobotContainer {
     manipulatorXbox.a().onTrue(intake.burpCommand());
     manipulatorXbox.y().onTrue(scoreAmp);
     manipulatorXbox.rightBumper().onTrue(launcher.launchCommand());
+    */
 
     manipulatorXbox.povUp().whileTrue(Commands.run(() -> pivot.setPivotAngleRaw(-0.25), pivot))
       .onFalse(Commands.run(() -> pivot.setPivotAngleRaw(0.0), pivot)).debounce(0.1);
