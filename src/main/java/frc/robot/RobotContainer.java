@@ -4,34 +4,19 @@
 
 package frc.robot;
 
-import java.util.function.BooleanSupplier;
-
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.IntakeConstants;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
 import frc.robot.commands.AutoAlign;
-import frc.robot.commands.DriveToPose;
 import frc.robot.commands.DriveWithController;
-import frc.robot.commands.IntakeGround;
 import frc.robot.commands.IntakeGroundAuto;
 import frc.robot.commands.AutoAlign.Target;
 import frc.robot.subsystems.drive.Drive;
@@ -149,9 +134,11 @@ public class RobotContainer {
 
     configureBindings();
   }
+
   private boolean atAngle(){
     return pivot.getPivotAngleAdjusted() >= Units.degreesToRadians(175);
   }
+  
   private void configureBindings() {
     // Joystick command factories
     // Function<Boolean, DriveWithController> driveWithControllerFactory =

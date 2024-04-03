@@ -4,7 +4,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;

@@ -10,10 +10,8 @@ import frc.robot.subsystems.intake.Intake;
 public class Launcher extends SubsystemBase {
   private static final double launchSpeed = 1.0;
   private static final double minLaunchRPM = 3000;
-  private static final double spinUpTime = 0.5;
   private static final double stopDelay = 0.25;
   private static final double intakeSpeed = -1.0;
-  private static final double intakeDelay = 1.0;
 
   private final LauncherIO io;
   private final LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
