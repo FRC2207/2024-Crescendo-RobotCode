@@ -7,6 +7,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import frc.robot.Constants;
@@ -23,7 +24,7 @@ public class Pivot extends ProfiledPIDSubsystem {
     private final ArmFeedforward m_feedforward = new ArmFeedforward(0.0, 0.0, 0.0, 0.0);
 
     private boolean shouldRunStupid = false;
-    
+
     public Pivot(PivotIO io) {
         super(
                 new ProfiledPIDController(
@@ -118,7 +119,6 @@ public class Pivot extends ProfiledPIDSubsystem {
 
     @Override
     protected double getMeasurement() {
-        // TODO Auto-generated method stub
         return io.getMeasurement();
     }
 

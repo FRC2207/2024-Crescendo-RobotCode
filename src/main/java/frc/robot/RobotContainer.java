@@ -19,6 +19,10 @@ import frc.robot.commands.AutoAlign;
 import frc.robot.commands.DriveWithController;
 import frc.robot.commands.IntakeGroundAuto;
 import frc.robot.commands.AutoAlign.Target;
+
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberIOSparkMax;
+
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX2;
@@ -46,6 +50,7 @@ public class RobotContainer {
   private Intake intake;
   private Launcher launcher;
   private Pivot pivot;
+  private Climber climber;
 
   // Controller
   private final CommandXboxController driveXbox = new CommandXboxController(0);
@@ -82,6 +87,7 @@ public class RobotContainer {
         intake = new Intake(new IntakeIOTalonSRX());
         launcher = new Launcher(new LauncherIOSparkMax(), intake);
         pivot = new Pivot(new PivotIOSparkMax());
+        climber = new Climber(new ClimberIOSparkMax(), new GyroIONavX2());
         break;
     }
 
@@ -201,7 +207,13 @@ public class RobotContainer {
       pivot.pivotUp().withTimeout(0.25));
     
     driveXbox.y().onTrue(scoreAmp);
-
+    
+    manipulatorXbox.leftBumper().and(manipulatorXbox.rightBumper()).negate().and(manipulatorXbox.povUp()).whileTrue(climber.upBothCommand());
+    manipulatorXbox.leftBumper().and(manipulatorXbox.rightBumper()).negate().and(manipulatorXbox.povDown()).whileTrue(climber.downBothCommand());
+    manipulatorXbox.leftBumper().and(manipulatorXbox.povUp()).whileTrue(climber.upLeftCommand());
+    manipulatorXbox.leftBumper().and(manipulatorXbox.povDown()).whileTrue(climber.downLeftCommand());
+    manipulatorXbox.rightBumper().and(manipulatorXbox.povUp()).whileTrue(climber.upRightCommand());
+    manipulatorXbox.rightBumper().and(manipulatorXbox.povDown()).whileTrue(climber.downRightCommand());
 
     manipulatorXbox.rightTrigger()
         .onTrue(

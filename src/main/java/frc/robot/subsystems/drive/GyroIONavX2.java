@@ -24,4 +24,6 @@ public class GyroIONavX2 implements GyroIO{
         inputs.pitchVelocityRadPerSec = Units.degreesToRadians(navX2.getRawGyroY());
         inputs.yawVelocityRadPerSec = Units.degreesToRadians(rate);
     }
+
+    public double getLeftRightAngle() { return navX2.getRoll();}
 }
