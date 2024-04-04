@@ -221,8 +221,8 @@ public class RobotContainer {
     
     driveXbox.y().onTrue(scoreAmp);
     
-    manipulatorXbox.leftBumper().and(manipulatorXbox.rightBumper()).negate().and(manipulatorXbox.povUp()).whileTrue(climber.upBothCommand());
-    manipulatorXbox.leftBumper().and(manipulatorXbox.rightBumper()).negate().and(manipulatorXbox.povDown()).whileTrue(climber.downBothCommand());
+    manipulatorXbox.leftBumper().negate().and(manipulatorXbox.rightBumper().negate()).and(manipulatorXbox.povUp()).whileTrue(climber.upBothCommand());
+    manipulatorXbox.leftBumper().negate().and(manipulatorXbox.rightBumper().negate()).and(manipulatorXbox.povDown()).whileTrue(climber.downBothCommand());
     manipulatorXbox.leftBumper().and(manipulatorXbox.povUp()).whileTrue(climber.upLeftCommand());
     manipulatorXbox.leftBumper().and(manipulatorXbox.povDown()).whileTrue(climber.downLeftCommand());
     manipulatorXbox.rightBumper().and(manipulatorXbox.povUp()).whileTrue(climber.upRightCommand());
