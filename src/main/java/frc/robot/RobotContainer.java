@@ -4,13 +4,19 @@
 
 package frc.robot;
 
+import java.util.Map;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -62,6 +68,12 @@ public class RobotContainer {
   // Autonomous Routine Chooser - This may be changed if we move over to a solution such as PathPlanner that has it's own AutoBuilder. SmartDashboard for now :)
   private final LoggedDashboardChooser<Command> autoChooser;
   private final Command autoDefault = Commands.print("Default auto selected. No autonomous command configured.");
+
+  private ShuffleboardTab tab = Shuffleboard.getTab("Amp");
+  private GenericEntry positioningDelay = tab.add("Positioning Delay", 1.5)
+      .withWidget(BuiltInWidgets.kNumberSlider)
+      .withProperties(Map.of("min", 0, "max", 3))
+      .getEntry();
 
   public RobotContainer() {
     switch (Constants.robot) {
@@ -249,7 +261,7 @@ public class RobotContainer {
     manipulatorXbox.a().onTrue(intake.burpCommand());
 
     Command manipulatorScoreAmp = Commands.sequence(
-      pivot.pivotAmp().withTimeout(1.5),
+      pivot.pivotAmp().withTimeout(positioningDelay.getDouble(1.5)),
       intake.ampCommand(),
       pivot.pivotUp().withTimeout(0.25));
 

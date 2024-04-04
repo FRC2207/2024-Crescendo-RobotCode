@@ -2,7 +2,11 @@ package frc.robot.subsystems.intake;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,6 +22,11 @@ public class Intake extends SubsystemBase {
 
   private final IntakeIO io;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
+
+  private ShuffleboardTab tab = Shuffleboard.getTab("Amp");
+  private GenericEntry ampSpeed = tab.add("Amp Speed", .47)
+      .withWidget(BuiltInWidgets.kNumberSlider)
+      .getEntry();
 
   public Intake(IntakeIO io) {
     this.io = io;
@@ -72,7 +81,7 @@ public class Intake extends SubsystemBase {
   public Command ampCommand() {
     return Commands.sequence(
         runOnce(() -> {
-          io.setIntakeVoltage(-0.47);
+          io.setIntakeVoltage(-1 * ampSpeed.getDouble(.47));
         }),
         Commands.waitSeconds(1.0)).finallyDo(() -> {
           io.setIntakeVoltage(0.0);
