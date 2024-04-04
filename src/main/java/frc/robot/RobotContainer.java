@@ -230,10 +230,10 @@ public class RobotContainer {
     
     manipulatorXbox.leftBumper().negate().and(manipulatorXbox.rightBumper().negate()).and(manipulatorXbox.povUp()).whileTrue(climber.upBothCommand());
     manipulatorXbox.leftBumper().negate().and(manipulatorXbox.rightBumper().negate()).and(manipulatorXbox.povDown()).whileTrue(climber.downBothCommand());
-    manipulatorXbox.leftBumper().and(manipulatorXbox.povUp()).whileTrue(climber.upLeftCommand());
-    manipulatorXbox.leftBumper().and(manipulatorXbox.povDown()).whileTrue(climber.downLeftCommand());
-    manipulatorXbox.rightBumper().and(manipulatorXbox.povUp()).whileTrue(climber.upRightCommand());
-    manipulatorXbox.rightBumper().and(manipulatorXbox.povDown()).whileTrue(climber.downRightCommand());
+    manipulatorXbox.rightBumper().negate().and(manipulatorXbox.leftBumper()).and(manipulatorXbox.povUp()).whileTrue(climber.upLeftCommand());
+    manipulatorXbox.rightBumper().negate().and(manipulatorXbox.leftBumper()).and(manipulatorXbox.povDown()).whileTrue(climber.downLeftCommand());
+    manipulatorXbox.leftBumper().negate().and(manipulatorXbox.rightBumper()).and(manipulatorXbox.povUp()).whileTrue(climber.upRightCommand());
+    manipulatorXbox.leftBumper().negate().and(manipulatorXbox.rightBumper()).and(manipulatorXbox.povDown()).whileTrue(climber.downRightCommand());
 
     manipulatorXbox.rightTrigger()
         .onTrue(
