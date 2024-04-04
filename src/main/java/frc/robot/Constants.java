@@ -71,10 +71,10 @@ public class Constants {
     public static class LedConstants {
         public static int LedID = 3;
 
-        public static int underLength = 104;
-        public static int leftLength = 26;
-        public static int topLength = 26;
-        public static int rightLength = 26;
-        public static int totalLength = underLength + leftLength + rightLength;
+        public static int underLength = 160; //26 x 26 inch frame
+        public static int leftLength = 40; //26 inches
+        public static int rightLength = 40; //26 inches
+        public static int topLength = 40; // 26 inches
+        public static int totalLength = underLength + leftLength + topLength + rightLength;
     }
 }

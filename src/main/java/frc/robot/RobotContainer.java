@@ -24,7 +24,6 @@ import frc.robot.subsystems.intake.IntakeIOTalonSRX;
 import frc.robot.subsystems.launcher.Launcher;
 import frc.robot.subsystems.launcher.LauncherIOSim;
 import frc.robot.subsystems.launcher.LauncherIOSparkMax;
-import frc.robot.subsystems.launcher.LauncherIOTalonSRX;
 import frc.robot.subsystems.leds.Leds;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIOSim;

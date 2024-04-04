@@ -7,8 +7,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.leds.Leds;
-import frc.robot.subsystems.leds.Leds.LedColor;
-import frc.robot.subsystems.leds.Leds.Section;
 
 public class Launcher extends SubsystemBase {
   private static final double launchSpeed = 1.0;
@@ -44,29 +42,20 @@ public class Launcher extends SubsystemBase {
   /** Returns a command that launches a note. */
   public Command launchCommand() {
     return Commands.sequence(
-        runOnce(() -> {            // Starts the launch motors to gain speed
+        runOnce(() -> { // Starts the launch motors to gain speed
           io.setLeftLaunchVoltage(launchSpeed);
           io.setRightLaunchVoltage(launchSpeed);
-        }),
-
-        run(() -> {
-          leds.wave(Section.LEFT, LedColor.GREEN, null, .1, spinUpTime + stopDelay); // Runs the LED effect
-          leds.wave(Section.RIGHT, LedColor.GREEN, null, .1, spinUpTime + stopDelay);
+          leds.launchEnabled = true;
         }),
         Commands.waitSeconds(spinUpTime),
 
-        intake.burpCommand(),      // Intake ejects the disc into the launcher
-        runOnce(() -> {
-          leds.setColor(Section.LEFT, LedColor.GREEN); // Fixes the LED state once the disc has been ejected
-          leds.setColor(Section.RIGHT, LedColor.GREEN);
-        }),
+        intake.burpCommand(), // Intake ejects the disc into the launcher
         Commands.waitSeconds(stopDelay)
 
-    ).finallyDo(() -> {           // Stops the launch wheels and turns the LED off. 
+    ).finallyDo(() -> { // Stops the launch wheels and turns the LED off.
       io.setLeftLaunchVoltage(0.0);
       io.setRightLaunchVoltage(0.0);
-      leds.m_Led.stop();
-      leds.m_Led.stop();
+      leds.launchEnabled = false;
     });
   }
 

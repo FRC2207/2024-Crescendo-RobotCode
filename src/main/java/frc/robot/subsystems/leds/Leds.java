@@ -2,184 +2,175 @@ package frc.robot.subsystems.leds;
 
 import java.util.Optional;
 
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.LedConstants;
 import frc.robot.subsystems.intake.Intake;
 
-public class Leds extends SubsystemBase {
-  public AddressableLED m_Led = new AddressableLED(LedConstants.LedID);
-  private static AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(LedConstants.totalLength);
-  private final Intake intake;
+import frc.robot.subsystems.leds.BrightBearsLedClass.Section;
+import frc.robot.subsystems.leds.BrightBearsLedClass.LedColor;
 
-  private int m_rainbowFirstPixelHue;
-  private static final double waveExponent = 0.4;
+public class Leds extends SubsystemBase {
+  private final Intake intake;
+  private static BrightBearsLedClass ledClass = new BrightBearsLedClass();
+
+  // Constants regarding manual LED states
+  private static final String setColorGreen = "Solid Green";
+  private static final String setColorRed = "Solid Red";
+  private static final String setColorOrange = "Solid Orange";
+  private static final String setTwoToneSolid = "Two Color Orange and Magenta";
+  private static final String rainbow = "Rainbow";
+  private static final String waveBlueGreen = "Wave Blue and Green";
+  private static final String setColorLightBlue = "Wave Blue and Red";
+  private static final String breathBlue = "Breath Blue";
+  private static final String strobeRed = "Red Strobe";
+  private static final String setColorBlack = "Black Light";
+  private static final String fillGreen = "Fill Green";
+  private static final String zipAqua = "Zip Aqua";
+  private static final String colorTest = "Color Testing";
+  private String manualLedState;
+  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+
+  // Constants regarding automatic LED states
+  public ShuffleboardTab tab = Shuffleboard.getTab("Robot");
+  public GenericEntry hueValue = tab.add("Hue Value", 0)
+      .getEntry();
+
+  // States to automatically set the LEDs
+  public boolean launchEnabled = false;
+  public boolean climbEnabled = false;
+  public boolean automaticLED = false;
 
   public Leds(Intake intake) {
     this.intake = intake;
 
-    m_Led.setLength(ledBuffer.getLength());
-
-    // Set the data
-    m_Led.setData(ledBuffer);
-    m_Led.start();
-
-    /** Default command is setting the underglow of the robot */
-    setDefaultCommand(run(() -> {
-      Optional<Alliance> ally = DriverStation.getAlliance();
-      if (ally.isPresent()) {
-        if (ally.get() == Alliance.Blue) {
-          setColor(Section.UNDERGLOW, LedColor.BLUE);
-        }
-        if (ally.get() == Alliance.Red) {
-          setColor(Section.UNDERGLOW, LedColor.RED);
-        }
-      } else {
-        rainbow(Section.FULL);
-      }
-    }));
+    m_chooser.setDefaultOption("Solid Orange", setColorOrange);
+    m_chooser.addOption("Solid Green", setColorGreen);
+    m_chooser.addOption("Solid Red", setColorRed);
+    m_chooser.addOption("Solid Light Blue", setColorLightBlue);
+    m_chooser.addOption("Two Color Orange and Magenta", setTwoToneSolid);
+    m_chooser.addOption("Solid Black", setColorBlack);
+    m_chooser.addOption("Rainbow", rainbow);
+    m_chooser.addOption("Wave Blue and Green", waveBlueGreen);
+    m_chooser.addOption("Breath Blue", breathBlue);
+    m_chooser.addOption("Red Strobe", strobeRed);
+    m_chooser.addOption("Fill Green", fillGreen);
+    m_chooser.addOption("Zip Aqua", zipAqua);
+    m_chooser.addOption("Color testing", colorTest);
+    SmartDashboard.putData("Manual LED", m_chooser);
+    manualLedState = m_chooser.getSelected();
   }
 
-  /** Method to set a rainbow effect to a given section of the LED strip */
-  public void rainbow(Section section) {
-    // For every pixel
-    for (var i = section.start(); i < section.end(); i++) {
-      // Calculate the hue - hue is easier for rainbows because the color
-      // shape is a circle so only one value needs to precess
-      final var hue = (m_rainbowFirstPixelHue + (i * 180 / section.start())) % 180;
-      // Set the value
-      ledBuffer.setHSV(i, hue, 255, 255);
-    }
-    // Increase to make the rainbow "move"
-    m_rainbowFirstPixelHue += 3;
-    // Check bounds
-    m_rainbowFirstPixelHue %= 180;
-
-    m_Led.setData(ledBuffer);
+  @Override
+  public void periodic() {
+    manualLedState = m_chooser.getSelected();
   }
 
-  /** Method to set a given color to a given section of the LED strip */
-  public void setColor(Section section, LedColor color) {
-    for (var i = section.start(); i < section.end(); i++) {
-      final var hue = color.hues();
-      // Sets the specified LED to the HSV values for the preferred color
-      ledBuffer.setHSV(i, hue, 255, 255);
+  public void robotStatus() {
+    if (DriverStation.isEStopped()) {
+      ledClass.strobe(Section.FULL, LedColor.RED, 1);
     }
 
-    m_Led.setData(ledBuffer);
+    if (DriverStation.isDSAttached()) {
+      ledClass.solid(Section.LAUNCHER, LedColor.ORANGE);
+    } else if (DriverStation.isFMSAttached()) {
+      ledClass.fade(Section.LAUNCHER, LedColor.RED, LedColor.YELLOW, 3, 2);
+    } else {
+      ledClass.fill(Section.LAUNCHER, LedColor.ORANGE, 1, 1, false);
+    }
   }
 
-  public void wave(Section section, LedColor color, LedColor color2, double cycleLength, double duration) {
-    double x = (1 - ((Timer.getFPGATimestamp() % duration) / duration)) * 2.0 * Math.PI;
-    double xDiffPerLed = (2.0 * Math.PI) / cycleLength;
-    for (int i = section.start(); i < section.end(); i++) {
-      x += xDiffPerLed;
-      if (i >= section.start()) {
-        double ratio = (Math.pow(Math.sin(x), waveExponent) + 1.0) / 2.0;
-        if (Double.isNaN(ratio)) {
-          ratio = (-Math.pow(Math.sin(x + Math.PI), waveExponent) + 1.0) / 2.0;
-        }
-        if (Double.isNaN(ratio)) {
-          ratio = 0.5;
-        }
-        int outputColor = (int) Math.round((color.hues() * (1 - ratio)) + (color2.hues() * ratio));
-        ledBuffer.setHSV(i, outputColor, 255, 255);
-      }
-    }
+  /** Method to set the LED effect during autonomous period*/
+  public void setAutotonomousColors() {
+    ledClass.rainbow(Section.FULL, 5);
   }
 
   /** Method to set the LEDs to different states during the match */
   public void setStatusColors() {
-    if (intake.hasNote() == true) { // Sets the LED's to green when the robot has a note in the intake
-      setColor(Section.LEFT, LedColor.GREEN);
-    } else if (intake.hasNote() == false) {
-      setColor(Section.LEFT, LedColor.RED);
-    }
-
-    if (DriverStation.isAutonomousEnabled() == true) { // Sets the LED's to orange when the robot is in autonomous mode
-      setColor(Section.FULL, LedColor.ORANGE);
+    if (DriverStation.isEStopped()) {
+      ledClass.strobe(Section.FULL, LedColor.RED, 1);
     } else {
-      m_Led.stop();
-    }
-
-  }
-
-  public static enum LedColor {
-    RED,
-    ORANGE,
-    YELLOW,
-    GREEN,
-    BLUE,
-    PURPLE,
-    PINK;
-
-    public int hues() {
-      switch (this) { // Values are divided by 2 because color pickers like Google are x/360, whereas
-                      // WPILib is x/180
-
-        case RED:
-          return 0;
-        case ORANGE:
-          return 30 / 2;
-        case YELLOW:
-          return 60 / 2;
-        case GREEN:
-          return 110 / 2;
-        case BLUE:
-          return 230 / 2;
-        case PURPLE:
-          return 270 / 2;
-        case PINK:
-          return 310 / 2;
-        default:
-          return 0;
+      Optional<Alliance> ally = DriverStation.getAlliance();
+      if (ally.isPresent()) {
+        if (ally.get() == Alliance.Blue) {
+          ledClass.solid(Section.UNDERGLOW, LedColor.BLUE);
+        } else {
+          ledClass.solid(Section.UNDERGLOW, LedColor.RED);
+        }
+      } else {
+        ledClass.rainbow(Section.UNDERGLOW, 5);
       }
-    }
-  }
 
-  public static enum Section {
-    LEFT,
-    TOP,
-    RIGHT,
-    FULL,
-    UNDERGLOW;
+      if (automaticLED == true) {
+        // Sets the LED's to green when the robot has a note in the intake
 
-    public int start() {
-      switch (this) {
+        if (intake.hasNote()) {
+          ledClass.solid(Section.LAUNCHER, LedColor.GREEN);
+        }        
+        // Sets the LED's to run along the strip when the Launch sequence has been enabled
+        if (launchEnabled) {
+          ledClass.fill(Section.LEFT, LedColor.BLUE, 1, .25, false);
+          ledClass.fill(Section.RIGHT, LedColor.BLUE, 1, .25, true);
+        }
 
-        case LEFT:
-          return LedConstants.underLength;
-        case TOP:
-          return LedConstants.underLength + LedConstants.leftLength;
-        case RIGHT:
-          return LedConstants.underLength + LedConstants.leftLength + LedConstants.topLength;
-        case FULL:
-          return 0;
-        case UNDERGLOW:
-          return 0;
-        default:
-          return 0;
-      }
-    }
+        else if (climbEnabled) {
+          ledClass.fade(Section.LAUNCHER, LedColor.PURPLE, LedColor.PINK, 2, 1);
+        }
 
-    public int end() {
-      switch (this) {
-        case LEFT:
-          return LedConstants.underLength + LedConstants.leftLength;
-        case TOP:
-          return LedConstants.underLength + LedConstants.leftLength + LedConstants.topLength;
-        case RIGHT:
-          return LedConstants.totalLength;
-        case FULL:
-          return LedConstants.totalLength;
-        case UNDERGLOW:
-          return LedConstants.underLength;
-        default:
-          return LedConstants.totalLength;
+        else {
+          ledClass.solid(Section.LAUNCHER, LedColor.ORANGE);
+        }
+
+      } else {
+        switch (manualLedState) {
+          case setColorGreen:
+            ledClass.solid(Section.LAUNCHER, LedColor.GREEN);
+            break;
+          case setColorRed:
+            ledClass.solid(Section.LAUNCHER, LedColor.RED);
+            break;
+          case setColorOrange:
+            ledClass.solid(Section.LAUNCHER, LedColor.ORANGE);
+            break;
+          case setTwoToneSolid:
+            ledClass.solidTwoColor(Section.LAUNCHER, LedColor.ORANGE, LedColor.MAGENTA);
+            break;
+          case waveBlueGreen:
+            ledClass.fade(Section.LAUNCHER, LedColor.GREEN, LedColor.BLUE, 1, 3);
+            break;
+          case setColorLightBlue:
+            ledClass.solid(Section.LAUNCHER, LedColor.LIGHT_BLUE);
+            break;
+          case breathBlue:
+            ledClass.breath(Section.LAUNCHER, LedColor.BLUE, 3);
+            break;
+          case rainbow:
+            ledClass.rainbow(Section.LAUNCHER, 3);
+            break;
+          case strobeRed:
+            ledClass.strobe(Section.LAUNCHER, LedColor.RED, 1);
+            break;
+          case setColorBlack:
+            ledClass.solid(Section.LAUNCHER, LedColor.BLACK);
+            break;
+          case fillGreen:
+            ledClass.fill(Section.LAUNCHER, LedColor.GREEN, 1, 2, true);
+            break;
+          case zipAqua:
+            ledClass.zip(Section.LAUNCHER, LedColor.AQUA, 10, 1, 2, true);
+            break;
+          case colorTest:
+            ledClass.colorTest(Section.LAUNCHER, hueValue.getDouble(0));
+            break;
+          default:
+            ledClass.rainbow(Section.LAUNCHER, 3);
+            break;
+        }
       }
     }
   }
