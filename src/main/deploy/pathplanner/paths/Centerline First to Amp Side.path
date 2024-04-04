@@ -1,0 +1,76 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.6881069146753696,
+        "y": 7.439674879349759
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.290439811645618,
+        "y": 7.380473222488205
+      },
+      "isLocked": false,
+      "linkedName": "Amp Side Centerline First"
+    },
+    {
+      "anchor": {
+        "x": 0.857297007033385,
+        "y": 6.581490138729208
+      },
+      "prevControl": {
+        "x": 2.458627224943522,
+        "y": 7.252202965947692
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Amp Side"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.3,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Spin Up Shooter",
+      "waypointRelativePos": 0.4,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "shooterSpinUp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.6,
+    "maxAngularVelocity": 270.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -120.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Amp Side Centerline",
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.766690569044476,
-        "y": 0.7612043754757987
+        "x": 7.743268895952912,
+        "y": 2.2601914533358305
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.635318317712241,
-        "y": 0.8080477216589235
+        "x": 6.056908433360374,
+        "y": 1.5809629336805036
       },
       "isLocked": false,
-      "linkedName": "Source Side Center Far"
+      "linkedName": "Source Side Center Second"
     },
     {
       "anchor": {
-        "x": 2.9066934025451485,
-        "y": 1.6278062798636284
+        "x": 3.316572681647502,
+        "y": 1.955709703145511
       },
       "prevControl": {
-        "x": 4.206596259126895,
-        "y": 0.9719994332998643
+        "x": 4.534499682408779,
+        "y": 1.4404328951311258
       },
       "nextControl": {
-        "x": 1.6862082880277753,
-        "y": 2.2435465178183405
+        "x": 1.6232371799154273,
+        "y": 2.6721208769552334
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 4.520382906671662
       },
       "prevControl": {
-        "x": 0.8221644973960404,
-        "y": 3.0682391749947553
+        "x": 1.3491521419562087,
+        "y": 3.665491838829612
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,12 +46,12 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": 180.0,
+      "waypointRelativePos": 1.1,
+      "rotationDegrees": -160.0,
       "rotateFast": false
     },
     {
-      "waypointRelativePos": 1.9,
+      "waypointRelativePos": 1.75,
       "rotationDegrees": 120.0,
       "rotateFast": false
     }
@@ -60,17 +60,24 @@
   "eventMarkers": [
     {
       "name": "Intake Up",
-      "waypointRelativePos": 0.1,
+      "waypointRelativePos": 0.0,
       "command": {
         "type": "parallel",
         "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "intakeUp"
+              }
+            }
+          ]
         }
       }
     },
     {
-      "name": "Spinup",
-      "waypointRelativePos": 1.2,
+      "name": "Spin Up",
+      "waypointRelativePos": 0.85,
       "command": {
         "type": "parallel",
         "data": {
@@ -86,7 +93,7 @@
       }
     },
     {
-      "name": "VisionOn",
+      "name": "Vision On",
       "waypointRelativePos": 0.45,
       "command": {
         "type": "parallel",
@@ -117,7 +124,7 @@
   "reversed": false,
   "folder": "Source Side Centerline Only",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": -160.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

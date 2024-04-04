@@ -115,6 +115,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("shootButton", launcher.launchCommand().withTimeout(10.0));
     NamedCommands.registerCommand("shooterSpinUp", launcher.launcherSpinUp(0.75).withTimeout(0.5));
 
+    NamedCommands.registerCommand("visionOff", Commands.runOnce(() -> vision.setVisionUpdatesEnabled(false)));
+    NamedCommands.registerCommand("visionOn", Commands.runOnce(() -> vision.setVisionUpdatesEnabled(true)));
+
     Command intakeDown = pivot.stupidPIDCommand(Units.degreesToRadians(5.75));
     intakeDown.addRequirements(pivot);
     Command intakeUp = pivot.stupidPIDCommand(Units.degreesToRadians(175));
@@ -130,6 +133,7 @@ public class RobotContainer {
     
     // Add autonomous routines to the SendableChooser
     autoChooser.addDefaultOption("Default Auto", autoDefault);
+    autoChooser.addOption("COMP-Shoot Only", launcher.launchCommand());
 
     if (Constants.isTuningMode) {
       autoChooser.addOption("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));

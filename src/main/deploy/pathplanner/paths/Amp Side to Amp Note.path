@@ -1,0 +1,58 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.857297007033385,
+        "y": 6.581490138729208
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.2671762861357376,
+        "y": 7.06163443710625
+      },
+      "isLocked": false,
+      "linkedName": "Amp Side"
+    },
+    {
+      "anchor": {
+        "x": 2.3445732483476367,
+        "y": 6.991369417831561
+      },
+      "prevControl": {
+        "x": 1.852718113424813,
+        "y": 7.003080254377342
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Amp Side Amp Note"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 1.25,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 360.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Amp Side Centerline",
+  "previewStartingState": {
+    "rotation": -120.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

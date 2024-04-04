@@ -3,74 +3,59 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.766690569044476,
-        "y": 0.7612043754757987
+        "x": 0.857297007033385,
+        "y": 4.520382906671662
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.635318317712241,
-        "y": 0.8080477216589235
+        "x": 0.9158511897622923,
+        "y": 2.6583598958924024
       },
       "isLocked": false,
-      "linkedName": "Source Side Center Far"
+      "linkedName": "Source Side"
     },
     {
       "anchor": {
-        "x": 2.9066934025451485,
-        "y": 1.6278062798636284
+        "x": 3.375126864376409,
+        "y": 1.8386013376876962
       },
       "prevControl": {
-        "x": 4.206596259126895,
-        "y": 0.9719994332998643
+        "x": 2.56788195260076,
+        "y": 2.1103471495725676
       },
       "nextControl": {
-        "x": 1.6862082880277753,
-        "y": 2.2435465178183405
+        "x": 4.5579213555003415,
+        "y": 1.4404328951311258
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.857297007033385,
-        "y": 4.520382906671662
+        "x": 7.743268895952912,
+        "y": 2.2601914533358305
       },
       "prevControl": {
-        "x": 0.8221644973960404,
-        "y": 3.0682391749947553
+        "x": 5.529920788800206,
+        "y": 1.2530595103986197
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Source Side"
+      "linkedName": "Source Side Center Second"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": 180.0,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 1.9,
-      "rotationDegrees": 120.0,
+      "waypointRelativePos": 0.7,
+      "rotationDegrees": -160.0,
       "rotateFast": false
     }
   ],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Intake Up",
-      "waypointRelativePos": 0.1,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": []
-        }
-      }
-    },
-    {
-      "name": "Spinup",
-      "waypointRelativePos": 1.2,
+      "name": "Drop Intake",
+      "waypointRelativePos": 0.95,
       "command": {
         "type": "parallel",
         "data": {
@@ -78,7 +63,13 @@
             {
               "type": "named",
               "data": {
-                "name": "shooterSpinUp"
+                "name": "intakeDown"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "runIntake"
               }
             }
           ]
@@ -86,8 +77,8 @@
       }
     },
     {
-      "name": "VisionOn",
-      "waypointRelativePos": 0.45,
+      "name": "Vision Off",
+      "waypointRelativePos": 1.05,
       "command": {
         "type": "parallel",
         "data": {
@@ -95,7 +86,7 @@
             {
               "type": "named",
               "data": {
-                "name": "visionOn"
+                "name": "visionOff"
               }
             }
           ]
@@ -111,13 +102,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 120.0,
+    "rotation": -160.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Source Side Centerline Only",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": 120.0,
     "velocity": 0
   },
   "useDefaultConstraints": true
