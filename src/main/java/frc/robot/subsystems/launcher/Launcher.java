@@ -55,6 +55,7 @@ public class Launcher extends SubsystemBase {
     ).finallyDo(() -> { // Stops the launch wheels and turns the LED off.
       io.setLeftLaunchVoltage(0.0);
       io.setRightLaunchVoltage(0.0);
+      leds.launchEnabled = false;
     });
   }
 
