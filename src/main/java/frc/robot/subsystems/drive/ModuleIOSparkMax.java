@@ -80,7 +80,7 @@ public class ModuleIOSparkMax implements ModuleIO {
       
             turnSparkMax.setInverted(isTurnMotorInverted);
       
-            driveSparkMax.setSmartCurrentLimit(40);
+            driveSparkMax.setSmartCurrentLimit(60);
             turnSparkMax.setSmartCurrentLimit(30);
             driveSparkMax.enableVoltageCompensation(12.0);
             turnSparkMax.enableVoltageCompensation(12.0);
@@ -106,12 +106,13 @@ public class ModuleIOSparkMax implements ModuleIO {
             CleanSparkMaxValue.cleanSparkMaxValue(
                 inputs.drivePositionRad,
                 Units.rotationsToRadians(driveEncoder.getPosition()) / driveAfterEncoderReduction);
+        inputs.driveVelocityRadPerSec = 
             CleanSparkMaxValue.cleanSparkMaxValue(
                 inputs.driveVelocityRadPerSec,
                 Units.rotationsPerMinuteToRadiansPerSecond(driveEncoder.getVelocity()) / driveAfterEncoderReduction);
         inputs.driveAppliedVolts = driveSparkMax.getAppliedOutput() * driveSparkMax.getBusVoltage();
         inputs.driveCurrentAmps = new double[] {driveSparkMax.getOutputCurrent()};
-        inputs.driveTempCelcius = new double[] {driveSparkMax.getMotorTemperature()};
+        //inputs.driveTempCelcius = new double[] {driveSparkMax.getMotorTemperature()};
 
         inputs.turnAbsolutePositionRad =
             MathUtil.angleModulus(
@@ -126,9 +127,13 @@ public class ModuleIOSparkMax implements ModuleIO {
                 inputs.turnPositionRad, 
                 Units.rotationsToRadians(turnRelativeEncoder.getPosition())
                 / turnAfterEncoderReduction);
+        inputs.turnVelocityRadPerSec = 
+            CleanSparkMaxValue.cleanSparkMaxValue(
+                inputs.turnVelocityRadPerSec, 
+                Units.rotationsPerMinuteToRadiansPerSecond(turnRelativeEncoder.getVelocity()) / turnAfterEncoderReduction);
         inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
         inputs.turnCurrentAmps = new double[] {turnSparkMax.getOutputCurrent()};
-        inputs.turnTempCelcius = new double[] {turnSparkMax.getMotorTemperature()};
+        //inputs.turnTempCelcius = new double[] {turnSparkMax.getMotorTemperature()};
     }
 
     public void setDriveVoltage(double volts) {
