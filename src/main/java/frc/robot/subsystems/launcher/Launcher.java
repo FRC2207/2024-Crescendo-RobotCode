@@ -9,10 +9,9 @@ import frc.robot.subsystems.intake.Intake;
 
 public class Launcher extends SubsystemBase {
   private static final double launchSpeed = 1.0;
-  private static final double spinUpTime = 0.5;
-  private static final double stopDelay = 0.5;
+  private static final double minLaunchRPM = 3000;
+  private static final double stopDelay = 0.25;
   private static final double intakeSpeed = -1.0;
-  private static final double intakeDelay = 1.0;
 
   private final LauncherIO io;
   private final LauncherIOInputsAutoLogged inputs = new LauncherIOInputsAutoLogged();
@@ -25,7 +24,7 @@ public class Launcher extends SubsystemBase {
     setDefaultCommand(
         run(
             () -> {
-              io.setLeftLaunchVoltage(0.0);
+              //io.setLeftLaunchVoltage(0.0);
             }));
   }
 
@@ -40,10 +39,10 @@ public class Launcher extends SubsystemBase {
   public Command launchCommand() {
     return Commands.sequence(
         runOnce(() -> {
-          io.setLeftLaunchVoltage(launchSpeed * 12.0);
-          io.setRightLaunchVoltage(launchSpeed * 12.0);
+          io.setLeftLaunchSpeed(launchSpeed);
+          io.setRightLaunchSpeed(launchSpeed);
         }),
-        Commands.waitSeconds(spinUpTime),
+        Commands.waitUntil(() -> io.getLeftLaunchSpeed() >= minLaunchRPM && io.getRightLaunchSpeed() >= minLaunchRPM),
 
         intake.burpCommand(),
 
@@ -59,8 +58,8 @@ public class Launcher extends SubsystemBase {
   public Command launcherIntakeCommand() {
     return Commands.sequence(
         runOnce(() -> {
-          io.setLeftLaunchVoltage(intakeSpeed);
-          io.setRightLaunchVoltage(intakeSpeed);
+          io.setLeftLaunchSpeed(intakeSpeed);
+          io.setRightLaunchSpeed(intakeSpeed);
         }),
         intake.continuousCommand(),
 
@@ -68,5 +67,12 @@ public class Launcher extends SubsystemBase {
           io.setLeftLaunchVoltage(0.0);
           io.setRightLaunchVoltage(0.0);
         });
+  }
+
+  public Command launcherSpinUp(double percentage) {
+    return Commands.run(() -> {
+      io.setLeftLaunchSpeed(percentage);
+      io.setRightLaunchSpeed(percentage);
+    });
   }
 }

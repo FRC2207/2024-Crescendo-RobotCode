@@ -4,7 +4,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -26,14 +25,12 @@ public class PivotIOSparkMax implements PivotIO {
 
     @Override
     public double getMeasurement(){ 
-        return throughEncoder.getAbsolutePosition();     
+        return (.716 + (-((throughEncoder.getAbsolutePosition() + 0.5) % 1))) * (2 * Math.PI);
     }
-
 
     @Override
     public void updateInputs(PivotIOInputs inputs) {
-        //inputs.positionRad = Units.rotationsToRadians(throughEncoder.getAbsolutePosition() / Constants.IntakeConstants.pivotGearRatio);
-        inputs.positionRad = Units.rotationsToRadians(-throughEncoder.get()) + 1.2693; // The encoder is mounted to the output. No gear ratio is required.
+        inputs.encoderPosition = getMeasurement();
         //inputs.velocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(throughEncoder.get() / Constants.IntakeConstants.pivotGearRatio);
         inputs.appliedVolts = pivotMotor.getAppliedOutput() * pivotMotor.getBusVoltage();
         inputs.currentAmps = new double[] { pivotMotor.getOutputCurrent(), pivotMotor.getOutputCurrent() };
