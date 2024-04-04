@@ -178,8 +178,8 @@ public class RobotContainer {
     //driveXbox.leftBumper().onTrue(Commands.runOnce(() -> drive.setPose(AutoAlign.speakerCenterPose)));
     // This si our reset command driveXbox.leftBumper().onTrue(Commands.runOnce(() -> drive.setPose(new Pose2d(new Translation2d(), new Rotation2d(Units.degreesToRadians(180))))));
     //driveXbox.start().whileTrue(new DriveToPose(drive, true, new Pose2d(new Translation2d(3, 2), new Rotation2d(Math.PI/4))));
-    driveXbox.start().whileTrue(new AutoAlign(drive, Target.CENTER));
-    driveXbox.back().whileTrue(new AutoAlign(drive, Target.SOURCESIDE));
+    driveXbox.start().whileTrue(new AutoAlign(drive, Target.CENTER)).onTrue(Commands.runOnce(() -> vision.setVisionUpdatesEnabled(true)));
+    driveXbox.back().whileTrue(new AutoAlign(drive, Target.SOURCESIDE)).onTrue(Commands.runOnce(() -> vision.setVisionUpdatesEnabled(true)));
     //driveXbox.leftBumper().onTrue(pivot.setIntakeAngle(Units.degreesToRadians(165)));
     //driveXbox.rightBumper().onTrue(pivot.setIntakeAngle(Units.degreesToRadians(10)));
     //driveXbox.rightTrigger().onTrue(Commands.runOnce(() -> pivot.setShouldRunStupid(true))).onFalse(Commands.runOnce(() -> pivot.setShouldRunStupid(false)).andThen(Commands.runOnce(() -> pivot.setPivotAngleRaw(0))));
