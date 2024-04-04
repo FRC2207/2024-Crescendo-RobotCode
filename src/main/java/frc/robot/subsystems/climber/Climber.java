@@ -9,8 +9,8 @@ import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.Constants.ClimberConstants;
 
 public class Climber extends SubsystemBase {
-    private final double upSpeed = 0.5;
-    private final double downSpeed = -0.5;
+    private final double upSpeed = 0.75;
+    private final double downSpeed = -0.75;
     private final double adjustmentSpeed = 0.25;
 
     private boolean autoUp = false;

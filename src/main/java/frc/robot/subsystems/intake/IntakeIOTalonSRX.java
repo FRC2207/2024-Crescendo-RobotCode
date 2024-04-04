@@ -15,6 +15,7 @@ public class IntakeIOTalonSRX implements IntakeIO {
   public IntakeIOTalonSRX() {
     var config = new TalonSRXConfiguration();
     config.peakCurrentLimit = 40;
+    // config.continuousCurrentLimit = 50;
     config.peakCurrentDuration = 250;
     config.continuousCurrentLimit = 30;
     config.voltageCompSaturation = 12.0;

@@ -187,7 +187,7 @@ public class RobotContainer {
     driveXbox.povDown().whileTrue(Commands.run(() -> pivot.setPivotAngleRaw(0.1825), pivot)).onFalse(Commands.run(() -> pivot.setPivotAngleRaw(0.0), pivot)).debounce(0.1);
     driveXbox.a().onTrue(intake.continuousCommand());
     driveXbox.b().onTrue(intake.burpCommand());
-    driveXbox.leftBumper().onTrue(launcher.launchCommand());
+    //driveXbox.leftBumper().onTrue(launcher.launchCommand()); // Drive shoot command
     driveXbox.rightBumper().whileTrue(Commands.run(() -> intake.setIntakeVoltageRaw(0.5), intake)).onFalse(Commands.run(() -> intake.setIntakeVoltageRaw(0), intake));
 
     //driveXbox.leftBumper().onTrue(Commands.runOnce(() -> drive.setPose(AutoAlign.speakerCenterPose)));
@@ -202,7 +202,7 @@ public class RobotContainer {
     IntakeGroundAuto intakeGroundAuto = new IntakeGroundAuto(intake, pivot);
     //driveXbox.leftTrigger().onTrue(intakeGroundAuto).onFalse(Commands.runOnce(() -> {intakeGroundAuto.cancel(); pivot.stupidPIDCommand(Units.DegreesToRadians(165));}));
     //driveXbox.rightTrigger().onTrue(intakeDown).onTrue(intake.continuousCommand()).onFalse(Commands.runOnce(() -> intake.setIntakeVoltageRaw(0.0), intake)).onFalse(intakeUp.until(() -> pivot.getPivotAngleAdjusted() >= Units.degreesToRadians(175)));
-    driveXbox.rightTrigger()
+    /*driveXbox.rightTrigger()
         .onTrue(
           Commands.parallel(pivot.pivotDown(), intake.continuousCommand()))
         .onFalse(
@@ -214,6 +214,7 @@ public class RobotContainer {
             )
             //intakeUp.until(() -> pivot.getPivotAngleAdjusted() >= Units.degreesToRadians(175))
     ));
+    */ // Drive intake command
 
     // Command scoreAmp = Commands.sequence(
     //   intakeAmp.until(() -> pivot.getPivotAngleAdjusted() <= 2.4),
