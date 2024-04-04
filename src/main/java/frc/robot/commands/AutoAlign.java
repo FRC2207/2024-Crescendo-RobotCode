@@ -18,7 +18,7 @@ import frc.robot.util.AllianceFlipUtil;
 public class AutoAlign extends DriveToPose {
     public static final Pose2d speakerCenterPose =
         new Pose2d(
-            FieldConstants.Speaker.centerSpeakerOpening.toTranslation2d().plus(new Translation2d(1.20, 0.0)),
+            FieldConstants.Speaker.centerSpeakerOpening.toTranslation2d().plus(new Translation2d(1.08, 0.0)),
             Rotation2d.fromDegrees(-180));
 
     public static enum Target {

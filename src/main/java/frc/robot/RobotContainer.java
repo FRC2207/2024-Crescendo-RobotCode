@@ -23,6 +23,7 @@ import frc.robot.commands.IntakeGroundAuto;
 import frc.robot.commands.AutoAlign.Target;
 
 import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberIOSim;
 import frc.robot.subsystems.climber.ClimberIOSparkMax;
 
 import frc.robot.subsystems.drive.Drive;
@@ -76,6 +77,7 @@ public class RobotContainer {
         intake = new Intake(new IntakeIOSim());
         launcher = new Launcher(new LauncherIOSim(), intake);
         pivot = new Pivot(new PivotIOSim());
+        climber = new Climber(new ClimberIOSim(), new GyroIONavX2());
         break;
       case "Real":
         drive =
