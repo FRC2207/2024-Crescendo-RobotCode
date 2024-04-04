@@ -10,9 +10,11 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import frc.robot.commands.AutoAlign;
@@ -146,6 +148,17 @@ public class RobotContainer {
   }
   
   private void configureBindings() {
+    
+    (new Trigger(() -> intake.hasNote())).whileTrue(Commands.startEnd(
+      () -> {
+        manipulatorXbox.getHID().setRumble(RumbleType.kBothRumble, 1.0);
+        driveXbox.getHID().setRumble(RumbleType.kBothRumble, 1.0);
+      },
+      () -> {
+        manipulatorXbox.getHID().setRumble(RumbleType.kBothRumble, 0.0);
+        driveXbox.getHID().setRumble(RumbleType.kBothRumble, 0.0);
+      }
+    ));
     // Joystick command factories
     // Function<Boolean, DriveWithController> driveWithControllerFactory =
     // () ->
