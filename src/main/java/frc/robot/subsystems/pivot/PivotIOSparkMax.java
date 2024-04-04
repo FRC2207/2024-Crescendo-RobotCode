@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.util.SparkMaxPeriodicFrameConfig;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 
 public class PivotIOSparkMax implements PivotIO {
@@ -15,6 +16,17 @@ public class PivotIOSparkMax implements PivotIO {
 
     public PivotIOSparkMax() {
         throughEncoder.getDistancePerRotation();
+
+        // Set current limits and burn
+        for (int i = 0; i < 2; i++) {
+            SparkMaxPeriodicFrameConfig.configNotLeader(pivotMotor);
+
+            pivotMotor.setInverted(false);
+            pivotMotor.setSmartCurrentLimit(40);
+            pivotMotor.enableVoltageCompensation(12.0);
+        }
+        
+    pivotMotor.burnFlash();
     }
 
     @Override
