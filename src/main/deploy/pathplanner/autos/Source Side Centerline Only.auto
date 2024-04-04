@@ -34,6 +34,24 @@
           "data": {
             "name": "shootButton"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source Side To Outside Second Center"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Outside Second Center to Source Side"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shootButton"
+          }
         }
       ]
     }

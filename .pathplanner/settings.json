@@ -3,6 +3,7 @@
   "robotLength": 0.83,
   "holonomicMode": true,
   "pathFolders": [
+    "Amp Side Centerline",
     "Source Side Centerline Only"
   ],
   "autoFolders": [
