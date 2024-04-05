@@ -5,6 +5,8 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
@@ -51,6 +53,7 @@ public class Pivot extends ProfiledPIDSubsystem {
         Logger.recordOutput("Pivot/ShouldRunStupid", shouldRunStupid);
         Logger.recordOutput("Pivot/Goal", m_controller.getGoal().position);
         Logger.recordOutput("Pivot/Setpoint", m_controller.getSetpoint().position);
+        updateModel();
         if (shouldRunStupid) {
             runStupidPID();
         }
@@ -120,6 +123,11 @@ public class Pivot extends ProfiledPIDSubsystem {
     @Override
     protected double getMeasurement() {
         return io.getMeasurement();
+    }
+
+    /** Method to update 3d mechanism pose for AdvantageScope usage. Call this periodically */
+    public void updateModel() {
+        Logger.recordOutput("Pivot/PivotPoseSetpoint", new Pose3d(-0.2159, 0.0, 0.2413, new Rotation3d(0.0, m_controller.getSetpoint().position, 0.0)));
     }
 
     /** Method to manually operate the pivot angle */
