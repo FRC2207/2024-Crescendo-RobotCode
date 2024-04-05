@@ -242,8 +242,8 @@ public class RobotContainer {
           Commands.parallel( 
             Commands.runOnce(() -> intake.setIntakeVoltageRaw(0.0), intake),
             Commands.race(
-              pivot.stupidPIDCommand(Units.degreesToRadians(175)),
-              Commands.waitUntil(() -> pivot.getPivotAngleAdjusted() >= Units.degreesToRadians(175))
+              pivot.stupidPIDCommand(Units.degreesToRadians(178)),
+              Commands.waitUntil(() -> pivot.getPivotAngleAdjusted() >= Units.degreesToRadians(178))
             )));
 
     manipulatorXbox.a().onTrue(intake.burpCommand());
