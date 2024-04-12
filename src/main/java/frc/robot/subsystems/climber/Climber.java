@@ -10,7 +10,7 @@ import frc.robot.Constants.ClimberConstants;
 
 public class Climber extends SubsystemBase {
     private final double upSpeed = 0.75;
-    private final double downSpeed = -0.75;
+    private final double downSpeed = -0.5;
     private final double adjustmentSpeed = 0.25;
 
     private boolean autoUp = false;
@@ -22,7 +22,7 @@ public class Climber extends SubsystemBase {
     private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
 
     /// TTHIS IS WORK IN PROGRESS - WE NEED TO UPDATE HOW CLIMBER USES THESE CONTROLERS DURING PERIODIC()
-    // AND UPDATE ALL THE COMMANDS TO USE SetGoal AND 
+    // AN                               D UPDATE ALL THE COMMANDS TO USE SetGoal AND 
     //private final ProfiledPIDController leftController = new ProfiledPIDController(0, 0, 0, 
     // new Constraints(null, null));
     //private final ProfiledPIDController rightController = new ProfiledPIDController(0, 0, 0,

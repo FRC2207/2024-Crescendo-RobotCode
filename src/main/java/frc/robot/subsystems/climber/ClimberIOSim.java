@@ -38,7 +38,9 @@ public class ClimberIOSim implements ClimberIO{
     public void setBreakMode(boolean bool) {}
 
     /** Sets the voltage for the left climber arm */
-    public void setLeftVoltage(double speed) {}
+    public void setLeftVoltage(double speed) {
+        leftSim.setInput(speed);
+    }
 
     /** Sets the voltage for the right climber arm */
     public void setRightVoltage(double speed) {}
