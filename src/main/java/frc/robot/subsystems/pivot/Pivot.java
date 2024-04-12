@@ -7,7 +7,10 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import frc.robot.Constants;
@@ -24,6 +27,11 @@ public class Pivot extends ProfiledPIDSubsystem {
     private final ArmFeedforward m_feedforward = new ArmFeedforward(0.0, 0.0, 0.0, 0.0);
 
     private boolean shouldRunStupid = false;
+
+    private ShuffleboardTab tab = Shuffleboard.getTab("Amp");
+    private GenericEntry pivotAngle = tab.add("Pivot Angle", 2.310)
+      .withWidget(BuiltInWidgets.kNumberSlider)
+      .getEntry();
 
     public Pivot(PivotIO io) {
         super(
@@ -58,7 +66,7 @@ public class Pivot extends ProfiledPIDSubsystem {
 
     /** returns a commmand to position the pivot for amp scoring */
     public Command pivotAmp() {
-        return stupidPIDCommand(2.325 + Units.degreesToRadians(-1));
+        return stupidPIDCommand(2.307);
     }
 
     /** returns a command to position the pivot to pick up notes */
@@ -68,7 +76,7 @@ public class Pivot extends ProfiledPIDSubsystem {
 
     /** returns a command to position the pivot to launch a note */
     public Command pivotUp() {
-        return stupidPIDCommand(Units.degreesToRadians(175));
+        return stupidPIDCommand(Units.degreesToRadians(173));
     }
 
     public void runStupidPID() {

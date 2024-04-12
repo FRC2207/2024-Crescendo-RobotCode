@@ -72,7 +72,7 @@ public class Intake extends SubsystemBase {
   public Command ampCommand() {
     return Commands.sequence(
         runOnce(() -> {
-          io.setIntakeVoltage(-0.47);
+          io.setIntakeVoltage(-0.46);
         }),
         Commands.waitSeconds(1.0)).finallyDo(() -> {
           io.setIntakeVoltage(0.0);
