@@ -64,6 +64,7 @@ public class Drive extends SubsystemBase {
     private frc.robot.util.PoseEstimator poseEstimator = new frc.robot.util.PoseEstimator(VecBuilder.fill(0.3, 0.3, 0.02)); // dif standard devs
     private double[] lastModulePositionMeters = new double[] {0.0, 0.0, 0.0, 0.0};
     private Rotation2d lastGyroYaw = new Rotation2d();
+    private boolean gyroWasConnected = false;
     private Twist2d fieldVelocity = new Twist2d();
 
     public Drive(
@@ -210,9 +211,10 @@ public class Drive extends SubsystemBase {
         }
         var twist = kinematics.toTwist2d(wheelDeltas);
         var gyroYaw = new Rotation2d(gyroInputs.yawPositionRad);
-        if (gyroInputs.connected) {
+        if (gyroInputs.connected && gyroWasConnected) {
             twist = new Twist2d(twist.dx, twist.dy, gyroYaw.minus(lastGyroYaw).getRadians());
         }
+        gyroWasConnected = gyroInputs.connected;
         lastGyroYaw = gyroYaw;
         poseEstimator.addDriveData(Timer.getFPGATimestamp(), twist);
         Logger.recordOutput("Odometry/Robot", getPose());
